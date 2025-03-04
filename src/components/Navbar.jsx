@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="nav-left">
-        <span className="logo">TaskOra</span>
+        <span className="logo">TaskCrew</span>
       </div>
       <div className="nav-right">
         <input type="text" placeholder="Start searching now..." className="search-bar" />
