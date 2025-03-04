@@ -1,0 +1,171 @@
+.dashboard {
+    margin-left: 250px;
+    padding: 2rem;
+    background-color: #f5f7fa;
+    min-height: calc(100vh - 60px);
+    overflow-y: auto;
+    padding-top: 110px;
+  }
+  
+.dashboard-title{
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+  .dashboard-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-card span {
+    color: #666;
+    font-size:1rem;
+    font-weight: 600;
+  }
+  
+  .stat-card h3 {
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+    color: #1958f9;
+  }
+  
+  .notifications {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height:100px;
+  }
+  
+  .notifications button {
+    background-color: #1958f9;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 30px;
+    width: 100px;
+  }
+  
+  .projects, .graphs, .top-performers {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .projects{
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  .top-performers{
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+
+  .graph-placeholder{
+    margin-top: 10px;
+  }
+
+
+
+  .project-title {
+    padding-left: 15px;
+    height: 50px;
+    border: 2px solid white;
+}
+
+ .project-title h3, .top-performers h3{
+    margin-top: 10px !important;
+    border: 2px solid white;
+    margin: auto;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+ }
+
+  
+  .project-card, .performer-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    height: 80px;
+    margin-bottom: 10px;
+    padding-left: 10px; 
+    background-color: #dcd5d5;
+    border-radius: 12px;
+}
+
+  .project-img, .performer-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .graph-placeholder {
+    height: 200px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .dashboard {
+      margin-left: 200px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .stats {
+      grid-template-columns: 1fr;
+    }
+  
+    .dashboard {
+      margin-left: 0;
+      padding: 1rem;
+    }
+  
+    .project-card, .performer-card {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stats, .project-card, .performer-card {
+      padding: 0.5rem;
+    }
+  
+    .stat-card h3 {
+      font-size: 1.2rem;
+    }
+  }
