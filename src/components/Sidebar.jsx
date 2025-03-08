@@ -14,6 +14,7 @@ const Sidebar = ({ onSelect }) => {
     { name: 'Client List', icon: '👥' },
     { name: 'Notification', icon: '🔔' },
     { name: 'Help Center', icon: '❓' },
+    { name: 'Personalized Dashboard', icon: '👤' },
   ];
 
   const handleSelect = (name) => {

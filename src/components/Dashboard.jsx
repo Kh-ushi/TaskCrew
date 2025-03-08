@@ -3,6 +3,7 @@ import "./Dashboard.css";
 import Performances from './Performances';
 import Projects from './Projects';
 import EmployeesList from './EmployeesList';
+import PersonalizedDashboard from './PersonalizedDashboard';
 
 const Dashboard = ({ section }) => {
   const renderContent = () => {
@@ -84,6 +85,8 @@ const Dashboard = ({ section }) => {
         return <Projects/>
        case 'Employee Task' :
         return <EmployeesList></EmployeesList>
+      case 'Personalized Dashboard':
+        return <PersonalizedDashboard/>
       default:
         return <div className="dashboard-content"><h2>{section} Content</h2></div>;
     }
