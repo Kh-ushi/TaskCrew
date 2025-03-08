@@ -1,9 +1,10 @@
 import React from 'react';
 import "./Dashboard.css";
 import Performances from './Performances';
-import Projects from './Projects';
+import ProjectManagement from './ProjectManagement';
 import EmployeesList from './EmployeesList';
 import PersonalizedDashboard from './PersonalizedDashboard';
+import ProjectDetails from './ProjectDetails';
 
 const Dashboard = ({ section }) => {
   const renderContent = () => {
@@ -82,7 +83,9 @@ const Dashboard = ({ section }) => {
       case 'Performances':
         return <Performances />;
       case 'Projects':
-        return <Projects/>
+        return <ProjectManagement/>
+      case 'Project Details':
+        return <ProjectDetails/>
        case 'Employee Task' :
         return <EmployeesList></EmployeesList>
       case 'Personalized Dashboard':

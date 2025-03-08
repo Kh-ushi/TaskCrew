@@ -8,6 +8,7 @@ const Sidebar = ({ onSelect }) => {
     { name: 'Dashboard', icon: '📊' },
     // { name: 'Performances', icon: '📈' },
     { name: 'Projects', icon: '📋' },
+    { name: 'Project Details', icon: '📋' },
     { name: 'Employee Task', icon: '👤' },
     { name: 'Absence', icon: '⛔' },
     { name: 'Analytics', icon: '📉' },
