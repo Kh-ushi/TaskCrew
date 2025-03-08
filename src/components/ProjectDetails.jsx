@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './ProjectDetails.css';
+import AddTaskForm from './AddTaskForm';
+
 import { 
   Edit, 
   Plus, 
@@ -58,6 +60,8 @@ const ProjectDetails = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [filterPriority, setFilterPriority] = useState('All');
+
+  const[showAddTask,setShowAddTask]=useState(false);
 
   
   const filteredTasks = project.tasks.filter((task) => {
@@ -211,7 +215,7 @@ const ProjectDetails = () => {
               </table>
             </div>
           )}
-          <button className="add-task-btn"><Plus size={16} /> Add New Task</button>
+          <button className="add-task-btn" onClick={()=>setShowAddTask(true)} ><Plus size={16} /> Add New Task</button>
         </div>
 
         
@@ -264,7 +268,7 @@ const ProjectDetails = () => {
           <h2>Analytics & Reports</h2>
           <div className="analytics-grid">
             <div className="analytics-card">
-              <p>Task Completion Rate</p>
+              <p>Project Completion Rate</p>
               <h3>{project.progress}%</h3>
             </div>
             <div className="analytics-card">
@@ -280,7 +284,7 @@ const ProjectDetails = () => {
         </div>
 
        
-        <div className="files-section">
+        {/* <div className="files-section">
           <h2>Files & Resources</h2>
           <div className="file-list">
             {project.files.map((file, index) => (
@@ -291,7 +295,7 @@ const ProjectDetails = () => {
             ))}
           </div>
           <button className="upload-btn"><Plus size={16} /> Add File</button>
-        </div>
+        </div> */}
 
         
         <div className="settings-section">
@@ -311,6 +315,18 @@ const ProjectDetails = () => {
           <button className="panel-btn"><Trash2 size={16} /> Archive Project</button>
         </div> */}
       </div>
+
+      {showAddTask && (
+        <AddTaskForm
+        onSave={(data)=>{
+        console.log('Task Saved:',data);
+        setShowAddTask(false);
+        }}
+
+         onCancel={()=>setShowAddTask(false)}
+         projectId="P123" 
+        />
+      )}
     </main>
   );
 };
