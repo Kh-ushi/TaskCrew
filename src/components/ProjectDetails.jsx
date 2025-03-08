@@ -38,6 +38,12 @@ const projectData = {
   ],
   files: [
     { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    { name: 'Wireframe.pdf', url: '#', uploaded: '2025-01-20' },
+    
   ],
   activityLog: [
     { action: 'Task "Wireframe Design" created', user: 'Jane Doe', timestamp: '2025-01-15' },
@@ -221,8 +227,9 @@ const ProjectDetails = () => {
                 </div>
               </div>
             ))}
-            <button className="add-member-btn"><Users size={16} /> Add Member</button>
+            
           </div>
+          <button className="add-member-btn"><Users size={16} /> Add Member</button>
         </div>
 
             
