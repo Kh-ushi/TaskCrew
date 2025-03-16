@@ -1,0 +1,77 @@
+.landing-page {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.landing-page-header {
+    width: 90%;
+    padding: 2rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.landing-page-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgb(25,96,249);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.landing-page-header p {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.landing-page-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    flex-grow: 1;
+    gap: 2rem;
+}
+
+.landing-page-body div {
+    width: 280px;
+    height: 280px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.landing-page-body div p {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+    padding: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.landing-page-body div:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(25,96,249,0.5);
+}
+
+.landing-page-body div:hover p {
+    font-weight: 600;
+}
+
+.landing-page-footer {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+}
