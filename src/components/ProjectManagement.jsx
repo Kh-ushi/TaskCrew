@@ -2,15 +2,32 @@ import React, { useState } from 'react';
 import './ProjectManagement.css';
 import {Search,Plus} from 'lucide-react';
 import AddProjectForm from './AddProjectForm';
+import axios from 'axios';
 
 const ProjectManagement = () => {
+  
+  const [showAddProjectForm, setShowAddProjectForm] = useState(false);
 
-  const [addProjectForm,setAddProjectForm]=useState(false);
-  const currentUser={name:'John Doe',email:'john@example.com'};
+  const handleAddProject=async(formData)=>{
+    console.log("New Project Data:", formData);
+    
+    try{
+      const response=await axios.post('http://localhost:5000/api/projects/add',formData);
+      if(response.status==201){
+        console.log("Project added successfully:",response.data); 
+        alert("Project added successfully");
+        setShowAddProjectForm(false);
+      }
+      else{
+        console.error("Failed to add project:",response.data);
+        alert("Failed to add project. Please try again.");
+      }
+    }
+    catch(error){
+      console.error("Error adding project:",error);
+      alert("An error occurred while adding the project. Please try again.");
+    }
 
-  const handleAddProject=()=>{
-    console.log("New Project Added");
-    setAddProjectForm(false);   
   }
 
   const projects = [
@@ -110,13 +127,19 @@ const ProjectManagement = () => {
             </div>
 
             <div className="add-project-btn">
-                <button className="add-btn" onClick={()=>setAddProjectForm(true)}>
+                <button className="add-btn" onClick={()=>setShowAddProjectForm(true)}>
                     +
                     Add Project
                 </button>
-               
-               {addProjectForm && <AddProjectForm onSave={handleAddProject} onCancel={()=>setAddProjectForm(false)} currentUser={currentUser}/>}
-                
+
+                {
+                  showAddProjectForm && (
+                    <AddProjectForm 
+                    onSave={handleAddProject}
+                    onCancel={()=>setShowAddProjectForm(false)}
+                    />
+                  )
+                }
             </div>
           </div>
         </div>

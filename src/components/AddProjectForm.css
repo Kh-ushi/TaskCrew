@@ -1,3 +1,4 @@
+
 .add-project-modal {
     position: fixed;
     top: 0;
@@ -11,6 +12,7 @@
     z-index: 1000;
   }
   
+
   .add-project-content {
     background-color: #fff;
     padding: 2rem;
@@ -56,7 +58,7 @@
   
   .form-section h3 {
     font-size: 1.2rem;
-    color: #1958f9; /* Your theme blue */
+    color: #1958f9; 
     margin-bottom: 1rem;
     border-bottom: 1px solid #ddd;
     padding-bottom: 0.5rem;
@@ -82,7 +84,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 0.9rem;
-    background-color: #f8f9fa; /* Light input background */
+    background-color: #f8f9fa; 
   }
   
   .form-group textarea {
@@ -100,7 +102,7 @@
     margin-top: 0.3rem;
   }
   
-
+  /* Role Assignment */
   .role-assignment {
     display: flex;
     justify-content: space-between;
@@ -117,7 +119,7 @@
     width: 150px;
   }
   
-
+ 
   .file-upload {
     display: flex;
     align-items: center;
@@ -125,14 +127,16 @@
   }
   
   .upload-btn {
-    width: 100px !important;
+    background-color: #1958f9;
+    color: #fff !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 0.5rem !important;
-    color: #fff !important;
+    width:100px !important;
+    gap: 0.5rem;
   }
-
   
   .upload-btn:hover {
     background-color: #1347d1;
@@ -166,7 +170,7 @@
     cursor: pointer;
   }
   
-  /* Form Actions */
+  
   .form-actions {
     display: flex;
     gap: 1rem;

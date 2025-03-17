@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import './AddProjectForm.css';
 import { 
@@ -25,7 +24,6 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
     files: [],
   });
 
-  
   const [availableMembers, setAvailableMembers] = useState([
     { id: 1, name: 'John Smith' },
     { id: 2, name: 'Alice Johnson' },
@@ -86,7 +84,7 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
           <button className="close-btn" onClick={onCancel}><X size={20} /></button>
         </div>
         <form onSubmit={handleSubmit}>
-          {/* 1. Basic Details */}
+          
           <div className="form-section">
             <h3>Basic Details</h3>
             <div className="form-group">
@@ -135,7 +133,7 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
             </div>
           </div>
 
-          {/* 2. Team Management */}
+          
           <div className="form-section">
             <h3>Team Management</h3>
             <div className="form-group">
@@ -187,7 +185,7 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
             )}
           </div>
 
-        
+           
           <div className="form-section">
             <h3>Project Settings</h3>
             <div className="form-group">
@@ -233,7 +231,7 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
             </div>
           </div>
 
-          {/* 4. Attachments */}
+          
           <div className="form-section">
             <h3>Attachments (Optional)</h3>
             <div className="form-group">
@@ -248,7 +246,7 @@ const AddProjectForm = ({ onSave, onCancel, currentUser }) => {
                   style={{ display: 'none' }}
                 />
                 <label htmlFor="files" className="upload-btn">
-                  <Upload size={16} className='upload-icon'/> <div className='upload-text'>Choose files</div>
+                  <Upload size={16} /> Choose Files
                 </label>
               </div>
               {formData.files.length > 0 && (

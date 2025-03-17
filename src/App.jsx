@@ -8,6 +8,10 @@ import Dashboard from './components/Dashboard';
 import LandingPage from "./components/LandingPage";
 import SignUp from './components/SignUp';
 
+
+
+
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
   const [activeSection, setActiveSection] = useState('Dashboard');
@@ -41,6 +45,7 @@ function App() {
         } />
       </Routes>
     </Router>
+   
   );
 }
 
