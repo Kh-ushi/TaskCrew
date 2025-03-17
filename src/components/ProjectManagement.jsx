@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import './ProjectManagement.css';
 import {Search,Plus} from 'lucide-react';
+import AddProjectForm from './AddProjectForm';
 
 const ProjectManagement = () => {
+
+  const [addProjectForm,setAddProjectForm]=useState(false);
+  const currentUser={name:'John Doe',email:'john@example.com'};
+
+  const handleAddProject=()=>{
+    console.log("New Project Added");
+    setAddProjectForm(false);   
+  }
+
   const projects = [
     { id: 1, name: 'Project Alpha', status: 'Ongoing', tasksInProgress: 8, deadline: '7 days' },
     { id: 2, name: 'Project Bravo', status: 'Completed', tasksCompleted: 15, deadline: 'Today' },
@@ -100,10 +110,13 @@ const ProjectManagement = () => {
             </div>
 
             <div className="add-project-btn">
-                <button className="add-btn">
+                <button className="add-btn" onClick={()=>setAddProjectForm(true)}>
                     +
                     Add Project
                 </button>
+               
+               {addProjectForm && <AddProjectForm onSave={handleAddProject} onCancel={()=>setAddProjectForm(false)} currentUser={currentUser}/>}
+                
             </div>
           </div>
         </div>
