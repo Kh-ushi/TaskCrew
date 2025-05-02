@@ -1,5 +1,9 @@
 import './ProjectPage.css';
 import CommonNav from '../CommonNav/CommonNav';
+import NewProjectForm from '../Forms/NewProjectForm';
+
+import {Plus} from "lucide-react";
+import { useState } from 'react';
 
 const demoProjects = [
     {
@@ -75,6 +79,9 @@ const demoProjects = [
 ];
 
 const ProjectPage = () => {
+
+    const [isOpenForm,setIsOpenForm]=useState(false);
+
     const calculateDays = (startDate, deadline) => {
         const timeDiff = new Date(deadline).getTime() - new Date(startDate).getTime();
         const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -105,7 +112,17 @@ const ProjectPage = () => {
 
                     </div>
                 })}
+                <div className='add-proj' onClick={()=>setIsOpenForm(true)}>
+                  <div className='add-task-sign'>
+                    <Plus size={40}></Plus>
+                  </div>
+                  <h2>Add Task</h2>
+                </div>
             </div>
+
+            {isOpenForm && (
+                <NewProjectForm onClose={()=>setIsOpenForm(false)}></NewProjectForm>
+            )}
         </div>
     )
 }
