@@ -1,7 +1,6 @@
 import './LandingPage.css';
 import overviewImg from '../../assets/TaskCrewOverview.jpeg';
 import { Navigate, useNavigate } from 'react-router-dom';
-
 import { CircleCheckBig } from "lucide-react";
 
 const featuresData = [
@@ -21,62 +20,56 @@ const featuresData = [
       feature: "File Attachments",
       description: "Upload and manage files directly within projects to centralize resources and reduce communication gaps."
     },
-  ];
-  
-  
+];
+
 const LandingPage = () => {
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     return (
         <div className='landing-page'>
             <div className='landing-page-nav'>
-
-                <div>
-                    <CircleCheckBig color='#f3d69a' size={40}></CircleCheckBig>
+                <div className="nav-logo">
+                    <CircleCheckBig color='#f3d69a' size={40} />
                     <h2>TaskCrew</h2>
                 </div>
-
-                <div>
+                <div className="nav-links">
                     <h3>Login</h3>
                     <h3>Services</h3>
                     <h3>About Us</h3>
-                    <button onClick={()=>navigate('/login')}>Log In</button>
-                    <button className='landing-page-signIn' onClick={()=>navigate('/signUp')}>Sign In</button>
+                    <button onClick={() => navigate('/login')}>Log In</button>
+                    <button className='landing-page-signIn' onClick={() => navigate('/signUp')}>Sign Up</button>
                 </div>
-
             </div>
             <div className='landing-page-desc'>
-                <div><p>Take you productivity to a new level</p></div>
-                <div className='landing-page-quote'>
-                    <h1>Where Chaos Ends Crew Begins</h1>
-                    <h1>TaskCrew make work feels like progress and not pressure</h1>
+                <div className="intro-text">
+                    <p>Take your productivity to a new level</p>
                 </div>
-                <div>
+                <div className='landing-page-quote'>
+                    <h1>Where Chaos Ends, Crew Begins</h1>
+                    <h1>TaskCrew makes work feel like progress, not pressure</h1>
+                </div>
+                <div className="sub-text">
                     <p>Streamline Your Workflow</p>
                     <p>Empower Your Team with TaskCrew’s Intuitive Management Platform</p>
                 </div>
-
-                <button>Get Started</button>
+                <button className="get-started-btn">Get Started</button>
             </div>
-
             <div className='overview-container'>
-               <div className='overview'>
-               <img src={overviewImg}></img>
-               </div>
-            </div>
-
-
-            <h1 style={{paddingLeft:"1rem", color:"#f3d69a"}}>KEY FEATURES</h1>
-            <div className='key-features-container'>
-               {featuresData.map((el,idx)=>(
-                <div className='key-feature-card'>
-                <h2>{el.feature}</h2>
-                 <p>{el.description}</p>
+                <div className='overview'>
+                    <img src={overviewImg} alt="TaskCrew Overview" />
                 </div>
-               ))}
             </div>
-            <br></br>
+            <h1 className="features-heading">Key Features</h1>
+            <div className='key-features-container'>
+                {featuresData.map((el, idx) => (
+                    <div key={idx} className='key-feature-card'>
+                        <h2>{el.feature}</h2>
+                        <p>{el.description}</p>
+                    </div>
+                ))}
+            </div>
+            <div className="footer-space"></div>
         </div>
-    )
-}
+    );
+};
 
 export default LandingPage;
