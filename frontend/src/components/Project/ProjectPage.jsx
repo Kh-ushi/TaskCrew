@@ -1,8 +1,7 @@
 import './ProjectPage.css';
 import CommonNav from '../CommonNav/CommonNav';
 import NewProjectForm from '../Forms/NewProjectForm';
-
-import {Plus} from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from 'react';
 
 const demoProjects = [
@@ -79,8 +78,7 @@ const demoProjects = [
 ];
 
 const ProjectPage = () => {
-
-    const [isOpenForm,setIsOpenForm]=useState(false);
+    const [isOpenForm, setIsOpenForm] = useState(false);
 
     const calculateDays = (startDate, deadline) => {
         const timeDiff = new Date(deadline).getTime() - new Date(startDate).getTime();
@@ -90,41 +88,56 @@ const ProjectPage = () => {
 
     return (
         <div className="project-page">
-            <div className='project-page-header'>
+            <div className="project-page-header">
                 <CommonNav afterLogin={true}></CommonNav>
             </div>
-            <div className='projects-container'>
+            <div className="projects-container">
                 {demoProjects.map((ele, idx) => {
                     const leftDays = calculateDays(ele.startDate, ele.deadline);
-                    return <div key={idx} className='project-card'>
-                        <div className='proj-img'>
-                            <img src="https://image.lexica.art/full_webp/19682eab-189f-41b8-8975-e91ae4fddc78"></img>
-                        </div>
-                        <div className='proj-desc'>
-                            <h2>{ele.title}</h2>
-                            <p>{ele.description}</p>
-                        </div>
-                        <div className='proj-status'>{ele.status}</div>
-                        <div>
-                            <div>{leftDays} days left</div>
-                            <div></div>
-                        </div>
+                    const statusColorClass =
+                        ele.status === "Active"
+                            ? "status-active"
+                            : ele.status === "On Hold"
+                            ? "status-on-hold"
+                            : "status-completed";
 
-                    </div>
+                    return (
+                        <div key={idx} className="project-card">
+                            <div className="proj-header">
+                                <div className="proj-img">
+                                    <img src="https://image.lexica.art/full_webp/19682eab-189f-41b8-8975-e91ae4fddc78" alt={ele.title} />
+                                </div>
+                                <div className={`proj-status ${statusColorClass}`}>
+                                    {ele.status}
+                                </div>
+                            </div>
+                            <div className="proj-desc">
+                                <h2>{ele.title}</h2>
+                                <p>{ele.description}</p>
+                            </div>
+                            <div className="proj-footer">
+                                <span className="days-left">
+                                    {leftDays > 0 ? `${leftDays} days left` : "Deadline passed"}
+                                </span>
+                                <span className="priority-tag">{ele.priority}</span>
+                            </div>
+                        </div>
+                    );
                 })}
-                <div className='add-proj' onClick={()=>setIsOpenForm(true)}>
-                  <div className='add-task-sign'>
-                    <Plus size={40}></Plus>
-                  </div>
-                  <h2>Add Task</h2>
+                <div className="add-proj" onClick={() => setIsOpenForm(true)}>
+                    <div className="add-task-sign">
+                        <Plus size={40} />
+                    </div>
+                    <h2>Add New Project</h2>
                 </div>
+                
             </div>
 
             {isOpenForm && (
-                <NewProjectForm onClose={()=>setIsOpenForm(false)}></NewProjectForm>
+                <NewProjectForm onClose={() => setIsOpenForm(false)} />
             )}
         </div>
-    )
-}
+    );
+};
 
 export default ProjectPage;
