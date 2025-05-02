@@ -1,0 +1,51 @@
+
+.overall-progress{
+  background-color: #101010;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.progress-header{
+    color: #b2b2b2;
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+    padding-top: 1rem;
+    gap: 1rem;
+}
+
+.progress-header select{
+    background-color: #101010;
+    color: #b2b2b2;
+    padding: 0.2rem;
+}
+
+.overall-progress-container{
+    /* border: 2px solid white; */
+    color: #b2b2b2;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    height: 80%;
+}
+
+.progress-stats{
+    height: 100%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.progress-stats div{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.responsive-container{
+    width: 70%;
+    height: 100%;
+
+}

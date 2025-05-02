@@ -1,0 +1,24 @@
+require('dotenv').config();
+
+const jwt=require("jsonwebtoken");
+
+const authenticate=(req,res,next)=>{
+
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  console.log(token);
+
+    if(!token)return res.status(500).json({error:"Unauthorized"});
+
+    try{
+      const decoded=jwt.verify(token,process.env.JWT_SECRET);
+      req.user=decoded;
+      next();  
+    }
+    catch(error){
+        res.status(500).json({error:"Authentication failed"});
+    }
+    
+}
+
+
+module.exports=authenticate;

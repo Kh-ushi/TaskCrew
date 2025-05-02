@@ -1,0 +1,115 @@
+.login-wrapper {
+    background-color: #101010;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .login-container {
+    background-color: #1a1a1a;
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .login-heading {
+    color: #f3d6a9;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  
+  .login-subtext {
+    color: #b2b2b2;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group label {
+    color: #b2b2b2;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  
+  .form-group input {
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #b2b2b2;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .form-group input:focus {
+    border-color: #f3d6a9;
+    box-shadow: 0 0 8px rgba(243, 214, 169, 0.2);
+  }
+  
+  .login-button {
+    background-color: #f3d6a9;
+    color: #101010;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  
+  .login-button:hover {
+    background-color: #e0c392;
+  }
+  
+  .login-button:active {
+    transform: scale(0.98);
+  }
+  
+  .login-footer {
+    color: #b2b2b2;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .login-footer a {
+    color: #f3d6a9;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .login-footer a:hover {
+    text-decoration: underline;
+  }

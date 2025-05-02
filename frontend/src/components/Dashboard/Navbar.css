@@ -1,0 +1,67 @@
+.navbar{
+    height: 60px;
+    margin-left: 15.8%;
+    background-color: #101010;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.search-bar{
+   display: flex;
+   align-items: center;
+   height: 100%;
+   width: 40%;
+   gap: 0.5rem;
+   color:#565555;
+}
+
+
+.search-bar input{
+    height: 70%;
+    width: 60%;
+    background-color: #181818;
+    border: none;
+    padding-left: 0.5rem;
+}
+
+.admin-details{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color:#565555;
+    gap: 1rem;
+    width: 30%;
+    height: 100%;
+}
+
+.bell-icon{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+   justify-content: flex-end;
+}
+
+.user-profile{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    width: 80%;
+    height: 100%;
+}
+
+.user-profile>img{
+    width: 15%;
+    height: 75%;
+    border-radius: 100%;
+}
+
+
+.user-profile>div{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
