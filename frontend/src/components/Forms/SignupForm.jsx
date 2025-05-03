@@ -53,7 +53,7 @@ const SignupForm = () => {
                 const {token,user}=response.data;
                 localStorage.setItem("token",token);
                 localStorage.setItem("user",JSON.stringify(user));
-                navigate("/dashboard");
+                navigate("/projects");
             }
             else{
                 setError('Signup Failed');

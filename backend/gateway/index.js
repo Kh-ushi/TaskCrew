@@ -5,6 +5,7 @@ const axios = require("axios");
 const cors = require("cors");
 const connectDB = require("./src/config/db");
 const authenticate = require("./src/middleware/auth.middleware");
+const upload=require("./src/middleware/upload");
 
 const app = express();
 
@@ -46,11 +47,27 @@ app.post("/api/users/login", async (req, res) => {
 
 });
 
-app.post("/api/users/addNew", authenticate, async (req, res) => {
+app.post("/api/users/addNew", authenticate,upload.single("projectImage"), async (req, res) => {
   try {
     console.log("I am being called");
-    console.log(req.body);
     console.log(req.user);
+
+    const {
+      title,
+      description,
+      startDate,
+      deadline,
+      priority,
+      teamMembers,
+    } = req.body;
+
+    const image = req.file ? req.file.filename : null;
+
+    console.log(req.body);
+    
+    const parsedMembers=JSON.parse(teamMembers);
+    console.log(parsedMembers);
+    
 
     res.status(201).json({ message: "User added successfully!" });
   } catch (error) {
