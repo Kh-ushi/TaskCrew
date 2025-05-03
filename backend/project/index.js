@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 const express=require("express");
@@ -6,11 +5,15 @@ const mongoose=require("mongoose");
 const cors = require("cors");
 const connectDB=require("./src/config/db");
 
+const projectRoutes=require("./src/controllers/proj.controller");
+
 const app=express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
+app.use("/project",projectRoutes);
 
 connectDB()
 .then(()=>{

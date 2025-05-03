@@ -5,7 +5,9 @@ const axios = require("axios");
 const cors = require("cors");
 const connectDB = require("./src/config/db");
 const authenticate = require("./src/middleware/auth.middleware");
-const upload=require("./src/middleware/upload");
+const multer=require("multer");
+const {storage}=require("./src/config/cloud");
+const upload=multer({storage});
 
 const app = express();
 
@@ -14,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL;
+const PROJECT_SERVICE_URL=process.env.PROJECT_SERVICE_URL;
 
 app.post("/api/users/signUp", async (req, res) => {
 
@@ -61,15 +64,30 @@ app.post("/api/users/addNew", authenticate,upload.single("projectImage"), async 
       teamMembers,
     } = req.body;
 
-    const image = req.file ? req.file.filename : null;
-
-    console.log(req.body);
+    const image = req.file ? req.file.path:process.env.DEFAULT_IMG
     
     const parsedMembers=JSON.parse(teamMembers);
     console.log(parsedMembers);
-    
 
-    res.status(201).json({ message: "User added successfully!" });
+    const forwardData={
+      title,
+      description,
+      startDate,
+      deadline,
+      priority,
+      teamMembers:parsedMembers,
+      image
+    };
+    const token=req.headers.authorization?.split(" ")[1];
+
+    const response=await axios.post(`${PROJECT_SERVICE_URL}/project/addNew`,forwardData,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    });
+
+    console.log(response);
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Something went wrong on server!" });
