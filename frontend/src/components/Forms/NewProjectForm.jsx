@@ -1,5 +1,14 @@
 import { useState } from "react";
 import "./NewProjectForm.css";
+import Select from 'react-select';
+
+const teamOptions = [
+  { value: 'john', label: 'John Doe' },
+  { value: 'jane', label: 'Jane Smith' },
+  { value: 'alice', label: 'Alice Brown' },
+  { value: 'bob', label: 'Bob Johnson' }
+];
+
 
 const NewProjectForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
@@ -7,10 +16,14 @@ const NewProjectForm = ({ onClose }) => {
     description: "",
     startDate: "",
     deadline: "",
+    priority: "low",
+    teamMembers: []
   });
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  const [projectImage, setProjectImage] = useState(null);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -19,17 +32,29 @@ const NewProjectForm = ({ onClose }) => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    setProjectImage(e.target.files[0]);
+  };
+
+  const handleTeamChange = (selectedOptions) => {
+    setFormData(prev => ({
+      ...prev,
+      teamMembers: selectedOptions
+    }))
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    // Simulating a successful submission since axios won't work in this environment
     setTimeout(() => {
       setSuccess("Project created successfully!");
       setFormData({ title: "", description: "", startDate: "", deadline: "" });
     }, 500);
   };
+
+
 
   return (
     <div className="popup-wrapper">
@@ -37,6 +62,7 @@ const NewProjectForm = ({ onClose }) => {
         <h2 className="new-project-heading">Create New Project</h2>
         <p className="new-project-subtext">Add a new project to your TaskCrew dashboard</p>
         <div className="new-project-form">
+
           <div className="form-group">
             <label htmlFor="title">Project Title</label>
             <input
@@ -48,6 +74,18 @@ const NewProjectForm = ({ onClose }) => {
               required
             />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="projectImage">Upload Project Image</label>
+            <input
+              type="file"
+              id="projectImage"
+              name="projectImage"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -80,7 +118,31 @@ const NewProjectForm = ({ onClose }) => {
                 required
               />
             </div>
+
           </div>
+          <div className="form-group">
+            <label htmlFor="priority">Priority</label>
+            <select className="project-priority" id="priority" name="priority" value={formData.priority} onChange={handleChange} children>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+
+          </div>
+
+          <div className="form-group">
+            <label>Team Members</label>
+            <Select
+              isMulti
+              name="teamMembers"
+              options={teamOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              value={formData.teamMembers}
+              onChange={handleTeamChange}
+            />
+          </div>
+
           <button className="submit-button" onClick={handleSubmit}>
             Create Project
           </button>
