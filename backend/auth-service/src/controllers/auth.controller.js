@@ -104,6 +104,9 @@ router.post("/updateMembers", async (req, res) => {
 
     try {
         const projectManager= await User.findById(manager);
+        if (!projectManager) {
+            return res.status(404).json({ error: `User with ID ${projectManager} not found.` });
+        }
         projectManager.joinedProjects.push(projectId);
         await projectManager.save();
 
