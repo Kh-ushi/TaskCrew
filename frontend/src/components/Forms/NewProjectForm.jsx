@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./NewProjectForm.css";
 import Select from 'react-select';
 import axios from 'axios';
 
-const teamOptions = [
-  { value: 'john', label: 'John Doe' },
-  { value: 'jane', label: 'Jane Smith' },
-  { value: 'alice', label: 'Alice Brown' },
-  { value: 'bob', label: 'Bob Johnson' }
-];
 
-const token=localStorage.getItem("token");
-const backendURL=import.meta.env.VITE_BACKEND_URL;
 
-const NewProjectForm = ({ onClose }) => {
+const token = localStorage.getItem("token");
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+
+const NewProjectForm = ({ onClose, isOpenForm }) => {
+
 
   const [formData, setFormData] = useState({
     title: "",
@@ -26,6 +23,39 @@ const NewProjectForm = ({ onClose }) => {
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [teamOptions, setTeamOptions] = useState([]);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${backendURL}/api/users/getUsers`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.status == 201) {
+          setTeamOptions(response.data.map(member => ({
+            value: member._id,
+            label: member.name
+          })))
+        }
+        else {
+          setError("Network Error");
+        }
+      }
+      catch (error) {
+        console.log(error);
+        setError("Network Error");
+      }
+    };
+
+    fetchData();
+
+  }, [isOpenForm]);
+
+
+
 
   const [projectImage, setProjectImage] = useState(null);
 
@@ -43,44 +73,44 @@ const NewProjectForm = ({ onClose }) => {
   const handleTeamChange = (selectedOptions) => {
     setFormData(prev => ({
       ...prev,
-      teamMembers:selectedOptions
+      teamMembers: selectedOptions
     }))
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    const data=new FormData();
-    for(const key in formData){
-      if(key=='teamMembers'){
-        data.append(key,JSON.stringify(formData[key]))
+    const data = new FormData();
+    for (const key in formData) {
+      if (key == 'teamMembers') {
+        data.append(key, JSON.stringify(formData[key]))
       }
-      else{
-        data.append(key,formData[key]);
+      else {
+        data.append(key, formData[key]);
       }
     }
-    if(projectImage){
-      data.append('projectImage',projectImage);
+    if (projectImage) {
+      data.append('projectImage', projectImage);
     }
 
     for (let [key, value] of data.entries()) {
       console.log(`${key}:`, value);
     }
 
-    try{
-      const response=await axios.post(`${backendURL}/api/users/addNew`,data,{
-        headers:{
-          Authorization:`Bearer ${token}`
+    try {
+      const response = await axios.post(`${backendURL}/api/users/addNew`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
       });
 
     }
-    catch(error){
+    catch (error) {
 
     }
-    
+
     // setTimeout(() => {
     //   setSuccess("Project created successfully!");
     //   setFormData({ title: "", description: "", startDate: "", deadline: "" });
@@ -92,6 +122,7 @@ const NewProjectForm = ({ onClose }) => {
   return (
     <div className="popup-wrapper">
       <div className="new-project-container">
+        <p style={{ color: "red" }}>{error}</p>
         <h2 className="new-project-heading">Create New Project</h2>
         <p className="new-project-subtext">Add a new project to your TaskCrew dashboard</p>
         <div className="new-project-form">

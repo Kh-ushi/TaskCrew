@@ -134,7 +134,7 @@ const ProjectPage = () => {
             </div>
 
             {isOpenForm && (
-                <NewProjectForm onClose={() => setIsOpenForm(false)} />
+                <NewProjectForm onClose={() => setIsOpenForm(false)}  isOpenForm={isOpenForm} />
             )}
         </div>
     );

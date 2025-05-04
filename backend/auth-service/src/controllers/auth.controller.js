@@ -1,83 +1,102 @@
-const express=require("express");
-const {generateToken,generateTeamCode}=require("../../helperFunction");
+const express = require("express");
+const { generateToken, generateTeamCode } = require("../../helperFunction");
+const authenticate = require("../middleware/auth.middleware");
 
-const User=require("../models/User");
-const Team=require("../models/Team");
+const User = require("../models/User");
+const Team = require("../models/Team");
 
 
-const router=express.Router();
+const router = express.Router();
 
-router.post("/signUp",async(req,res)=>{
+router.post("/signUp", async (req, res) => {
 
-   try{
-    const{fullName,email,password,confirmPassword}=req.body;
-   
-   if(!fullName||!email||!password||!confirmPassword){
-    return res.status(500).json({error:"All fields are required"});
-   }
+    try {
+        const { fullName, email, password, confirmPassword } = req.body;
 
-   if(password!=confirmPassword){
-    return res.status(500).json({error:"Passwords do not match"});
-   }
+        if (!fullName || !email || !password || !confirmPassword) {
+            return res.status(500).json({ error: "All fields are required" });
+        }
 
-   let existingUser=await User.findOne({email});
+        if (password != confirmPassword) {
+            return res.status(500).json({ error: "Passwords do not match" });
+        }
 
-   if(existingUser){
-    return res.status(500).json({error:"User already exists"});
-   }
+        let existingUser = await User.findOne({ email });
 
-   const newUser=new User({name:fullName,email,password});
-   await newUser.save();
+        if (existingUser) {
+            return res.status(500).json({ error: "User already exists" });
+        }
 
-   const token=generateToken(newUser);
+        const newUser = new User({ name: fullName, email, password });
+        await newUser.save();
 
-   res.status(201).json({
-    message:"User registered successfully",
-    user:{
-        id:newUser._id,
-        name:newUser.name,
-        email:newUser.email
-    },
-    token
-   });
-   }
-   catch(error){
-    res.status(500).json({error:"Internal Server Error"});
-   }
+        const token = generateToken(newUser);
+
+        res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: newUser._id,
+                name: newUser.name,
+                email: newUser.email
+            },
+            token
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 
 });
 
 
-router.post("/login",async(req,res)=>{
-    
-    try{
-        const{email,password}=req.body;
-        const user=await User.findOne({email});
+router.post("/login", async (req, res) => {
 
-        if(!user || !(await user.comparePassword(password))){
-            return res.status(500).json({error:"Invalid Credentials"});
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(500).json({ error: "Invalid Credentials" });
         }
 
-        const token=generateToken(user);
+        const token = generateToken(user);
 
         res.status(201).json({
-            message:"User has loggedIn Successfully",
-            user:{
-                id:user._id,
-                name:user.name,
-                email:user.email
+            message: "User has loggedIn Successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email
             },
             token
         });
 
     }
-    catch(error){
-           console.log(error);
-           console.error("Login Error",error);
-           res.status(500).json({error:"Login Failed"});
+    catch (error) {
+        console.log(error);
+        console.error("Login Error", error);
+        res.status(500).json({ error: "Login Failed" });
     }
 
 });
 
 
-module.exports=router;
+router.get("/getUsers", authenticate, async (req, res) => {
+   try{
+    console.log("I am being called");
+    // console.log(req.user);
+    const allUsers = await User.find({ _id: { $ne: req.user.id } });
+    // console.log(allUsers);
+    res.status(201).json({
+        data:allUsers
+    })
+   }catch(error){
+    console.log(error);
+    console.error("Login Error", error);
+    res.status(500).json({ error: "Login Failed" });
+   }
+
+});
+
+
+module.exports = router;
