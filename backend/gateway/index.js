@@ -97,6 +97,8 @@ app.post("/api/users/addNew", authenticate, upload.single("projectImage"), async
       teamMembers: parsedMembers,
       image
     };
+
+    console.log(forwardData);
     const token = req.headers.authorization?.split(" ")[1];
 
     const response = await axios.post(`${PROJECT_SERVICE_URL}/project/addNew`, forwardData, {
@@ -105,7 +107,7 @@ app.post("/api/users/addNew", authenticate, upload.single("projectImage"), async
       }
     });
 
-    console.log(response);
+      res.status(response.status).json({message:response.data.message});
 
   } catch (error) {
     console.log(error);

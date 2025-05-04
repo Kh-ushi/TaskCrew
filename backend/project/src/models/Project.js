@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose=require("mongoose");
 
 const projectSchema = new mongoose.Schema(
   {
@@ -10,6 +10,9 @@ const projectSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
+    },
+    image:{
+      type:String
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +45,7 @@ const projectSchema = new mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["Low", "Medium", "High"],
+      enum: ["low","Low","medium", "Medium", "high","High"],
       default: "Medium",
     },
     chatRoomId: {
@@ -63,5 +66,5 @@ const projectSchema = new mongoose.Schema(
 );
 
 const Project = mongoose.model("Project", projectSchema);
-export default Project;
+module.exports=Project;
 

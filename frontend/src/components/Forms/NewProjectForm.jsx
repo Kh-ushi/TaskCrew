@@ -4,7 +4,6 @@ import Select from 'react-select';
 import axios from 'axios';
 
 
-
 const token = localStorage.getItem("token");
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -106,15 +105,18 @@ const NewProjectForm = ({ onClose, isOpenForm }) => {
         }
       });
 
+      if(response.status==201){
+        alert(response.data.message);
+      }
+      else{
+        setError("Some Error has Occured");
+      }
+
     }
     catch (error) {
-
-    }
-
-    // setTimeout(() => {
-    //   setSuccess("Project created successfully!");
-    //   setFormData({ title: "", description: "", startDate: "", deadline: "" });
-    // }, 500);
+      console.log(error);
+      setError("Some Error Has Occured");
+    }  
   };
 
 
@@ -122,7 +124,6 @@ const NewProjectForm = ({ onClose, isOpenForm }) => {
   return (
     <div className="popup-wrapper">
       <div className="new-project-container">
-        <p style={{ color: "red" }}>{error}</p>
         <h2 className="new-project-heading">Create New Project</h2>
         <p className="new-project-subtext">Add a new project to your TaskCrew dashboard</p>
         <div className="new-project-form">

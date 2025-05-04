@@ -32,7 +32,7 @@ const CalendarView = ({ tasks }) => {
 
   const renderDays = () => {
     const days = [];
-    const weekStart = startOfWeek(currentMonth, { weekStartsOn: 1 }); // Monday start
+    const weekStart = startOfWeek(currentMonth, { weekStartsOn: 1 }); 
 
     for (let i = 0; i < 7; i++) {
       days.push(

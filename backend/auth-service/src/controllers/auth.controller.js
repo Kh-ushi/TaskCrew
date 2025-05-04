@@ -99,4 +99,28 @@ router.get("/getUsers", authenticate, async (req, res) => {
 });
 
 
+router.post("/updateMembers", async (req, res) => {
+    const { projectId, members } = req.body;
+  
+    try {
+      for (let emp of members) {
+        const member = await User.findById(emp);
+        if (!member) {
+          return res.status(404).json({ error: `User with ID ${emp} not found.` });
+        }
+        member.joinedProjects.push(projectId);
+        await member.save();
+      }
+  
+      res.status(201).json({ message: "Members updated successfully." });
+      
+    } catch (error) {
+      console.error("Error updating members:", error);
+      res.status(500).json({ error: "An error occurred while updating members." });
+    }
+
+  });
+  
+
+
 module.exports = router;

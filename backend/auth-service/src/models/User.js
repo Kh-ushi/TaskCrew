@@ -22,22 +22,21 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    avatar:{
-      type:String,
-      default: '/avatars/default.png',
+    avatar: {
+        type: String,
+        default: '/avatars/default.png',
     },
-    role:{
-        type:String,
-        enum:['admin','member'],
-        default:'member'
+    role: {
+        type: String,
+        enum: ['admin', 'member'],
+        default: 'member'
     },
 
     joinedProjects: [
         {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Project',
+            type:String
         }
-      ],
+    ],
 
     memberOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }]
 },
