@@ -15,14 +15,11 @@ const projectSchema = new mongoose.Schema(
       type:String
     },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      type:String
     },
     teamMembers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: String
       }
     ],
     status: {

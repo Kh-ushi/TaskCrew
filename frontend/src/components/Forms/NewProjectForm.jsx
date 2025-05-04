@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import "./NewProjectForm.css";
+import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import axios from 'axios';
 
@@ -10,6 +11,7 @@ const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 const NewProjectForm = ({ onClose, isOpenForm }) => {
 
+  const navigate=useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -105,10 +107,20 @@ const NewProjectForm = ({ onClose, isOpenForm }) => {
         }
       });
 
-      if(response.status==201){
+      if (response.status == 201) {
+        onclose();
         alert(response.data.message);
+        setFormData({
+          title: "",
+          description: "",
+          startDate: "",
+          deadline: "",
+          priority: "low",
+          teamMembers: []
+        });
+        navigate("/projects");
       }
-      else{
+      else {
         setError("Some Error has Occured");
       }
 
@@ -116,7 +128,7 @@ const NewProjectForm = ({ onClose, isOpenForm }) => {
     catch (error) {
       console.log(error);
       setError("Some Error Has Occured");
-    }  
+    }
   };
 
 

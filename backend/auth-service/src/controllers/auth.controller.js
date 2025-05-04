@@ -82,45 +82,49 @@ router.post("/login", async (req, res) => {
 
 
 router.get("/getUsers", authenticate, async (req, res) => {
-   try{
-    console.log("I am being called");
-    // console.log(req.user);
-    const allUsers = await User.find({ _id: { $ne: req.user.id } });
-    // console.log(allUsers);
-    res.status(201).json({
-        data:allUsers
-    })
-   }catch(error){
-    console.log(error);
-    console.error("Login Error", error);
-    res.status(500).json({ error: "Login Failed" });
-   }
+    try {
+        console.log("I am being called");
+        // console.log(req.user);
+        const allUsers = await User.find({ _id: { $ne: req.user.id } });
+        // console.log(allUsers);
+        res.status(201).json({
+            data: allUsers
+        })
+    } catch (error) {
+        console.log(error);
+        console.error("Login Error", error);
+        res.status(500).json({ error: "Login Failed" });
+    }
 
 });
 
 
 router.post("/updateMembers", async (req, res) => {
-    const { projectId, members } = req.body;
-  
+    const { projectId, members, manager } = req.body;
+
     try {
-      for (let emp of members) {
-        const member = await User.findById(emp);
-        if (!member) {
-          return res.status(404).json({ error: `User with ID ${emp} not found.` });
+        const projectManager= await User.findById(manager);
+        projectManager.joinedProjects.push(projectId);
+        await projectManager.save();
+
+        for (let emp of members) {
+            const member = await User.findById(emp);
+            if (!member) {
+                return res.status(404).json({ error: `User with ID ${emp} not found.` });
+            }
+            member.joinedProjects.push(projectId);
+            await member.save();
         }
-        member.joinedProjects.push(projectId);
-        await member.save();
-      }
-  
-      res.status(201).json({ message: "Members updated successfully." });
-      
+
+        res.status(201).json({ message: "Members updated successfully." });
+
     } catch (error) {
-      console.error("Error updating members:", error);
-      res.status(500).json({ error: "An error occurred while updating members." });
+        console.error("Error updating members:", error);
+        res.status(500).json({ error: "An error occurred while updating members." });
     }
 
-  });
-  
+});
+
 
 
 module.exports = router;

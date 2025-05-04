@@ -39,7 +39,7 @@ router.post("/addNew", authenticate, async (req, res) => {
 
         const savedProject = await newProject.save({ session });
 
-        const response = await axios.post(`${USER_SERVICE_URL}/auth/updateMembers`, { projectId: savedProject._id, members });
+        const response = await axios.post(`${USER_SERVICE_URL}/auth/updateMembers`, { projectId: savedProject._id, members,manager:req.user.id });
         if (response.status != 201) {
             throw new Error('Failed to update members');
         }
