@@ -74,7 +74,7 @@
 }
 
 
-.add-task-sign {
+.add-proj-sign {
     border: 2px solid #f3d6a9;
     border-radius: 50%;
     padding: 1rem;
@@ -85,7 +85,7 @@
 }
 
 
-.add-proj:hover .add-task-sign {
+.add-proj:hover .add-proj-sign {
     background: rgba(243, 214, 169, 0.1);
     transform: rotate(360deg);
 }

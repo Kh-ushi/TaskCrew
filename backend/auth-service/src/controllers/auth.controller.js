@@ -103,7 +103,7 @@ router.post("/updateMembers", async (req, res) => {
     const { projectId, members, manager } = req.body;
 
     try {
-        const projectManager= await User.findById(manager);
+        const projectManager = await User.findById(manager);
         if (!projectManager) {
             return res.status(404).json({ error: `User with ID ${projectManager} not found.` });
         }
@@ -126,6 +126,23 @@ router.post("/updateMembers", async (req, res) => {
         res.status(500).json({ error: "An error occurred while updating members." });
     }
 
+});
+
+
+
+router.get('/getProjectIds', authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const joinedProjects = user.joinedProjects;
+        console.log(joinedProjects);
+        res.status(201).json({ joinedProjects });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 

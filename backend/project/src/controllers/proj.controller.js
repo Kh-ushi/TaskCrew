@@ -39,7 +39,7 @@ router.post("/addNew", authenticate, async (req, res) => {
 
         const savedProject = await newProject.save({ session });
 
-        const response = await axios.post(`${USER_SERVICE_URL}/auth/updateMembers`, { projectId: savedProject._id, members,manager:req.user.id });
+        const response = await axios.post(`${USER_SERVICE_URL}/auth/updateMembers`, { projectId: savedProject._id, members, manager: req.user.id });
         if (response.status != 201) {
             throw new Error('Failed to update members');
         }
@@ -47,7 +47,7 @@ router.post("/addNew", authenticate, async (req, res) => {
         await session.commitTransaction();
         session.endSession();
 
-        res.status(201).json({message:"Project Added and Members updated"});
+        res.status(201).json({ message: "Project Added and Members updated" });
 
     } catch (error) {
 
@@ -57,6 +57,22 @@ router.post("/addNew", authenticate, async (req, res) => {
         console.error("❌ Error creating project:", error);
         res.status(500).json({ error: "Server error while creating project." });
     }
+});
+
+
+router.post("/getProjects", authenticate, async (req, res) => {
+    try {
+        const projectIds = req.body;
+        const allProjects = await Project.find({
+            _id: { $in: projectIds }
+        });
+        res.status(201).json({ allProjects });
+    }
+    catch (error) {
+        console.error("❌ Errors:", error);
+        res.status(500).json({ error: "Server error." });
+    }
+
 });
 
 module.exports = router;

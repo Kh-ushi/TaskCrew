@@ -107,7 +107,7 @@ app.post("/api/users/addNew", authenticate, upload.single("projectImage"), async
       }
     });
 
-      res.status(response.status).json({message:response.data.message});
+    res.status(response.status).json({ message: response.data.message });
 
   } catch (error) {
     console.log(error);
@@ -115,6 +115,46 @@ app.post("/api/users/addNew", authenticate, upload.single("projectImage"), async
   }
 });
 
+
+app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    const projectIds = await axios.get(`${USER_SERVICE_URL}/auth/getProjectIds`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const joinedProjects = projectIds.data.joinedProjects;
+    console.log(joinedProjects);
+
+    if (!joinedProjects?.length) {
+      return res.status(201).json({ projects: [] });
+    }
+
+    const projects=await axios.post(`${PROJECT_SERVICE_URL}/project/getProjects`,joinedProjects,{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const allProjects=projects.data.allProjects
+    res.status(201).json({allProjects});
+    
+  }
+  catch (err) {
+    if (err.response) {
+      return res.status(err.response.status).json({
+        message: err.response.data.message || 'Error from user service'
+      });
+    }
+    res.status(500).json({ message: 'Internal Server Error' });
+
+  }
+
+});
 
 
 

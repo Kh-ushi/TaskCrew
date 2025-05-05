@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import "./NewProjectForm.css";
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
@@ -11,7 +11,7 @@ const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 const NewProjectForm = ({ onClose, isOpenForm }) => {
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -108,7 +108,7 @@ const NewProjectForm = ({ onClose, isOpenForm }) => {
       });
 
       if (response.status == 201) {
-        onclose();
+        onClose();
         alert(response.data.message);
         setFormData({
           title: "",

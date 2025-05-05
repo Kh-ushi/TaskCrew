@@ -48,3 +48,51 @@
 .selected-option{
     color: #f3d69a !important;
 }
+
+
+.add-task-div{
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-task-div>div {
+    border: 1px solid #939090;
+    border-radius: 8px;
+    width: 85%;
+    height: 85%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, #1a1a1a, #141414);
+    transition: all 0.4s ease; 
+}
+
+.add-task-sign {
+    border: 1px solid #b2b2b2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+}
+
+.add-task-div>div:hover {
+    cursor: pointer;
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 10px 30px rgba(243, 214, 169, 0.3);
+    border-color: rgba(243, 214, 169, 0.3);
+}
+
+.add-task-div>div:hover .add-task-sign {
+    border-color: #f3d6a9;
+    background: rgba(243, 214, 169, 0.1);
+    transform: rotate(360deg);
+}

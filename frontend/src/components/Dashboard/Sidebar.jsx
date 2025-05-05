@@ -1,5 +1,6 @@
 import "./Sidebar.css";
 import { CircleCheckBig, LayoutDashboard, UsersRound, Mails, ChartSpline, CalendarDays } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const sideBarOptions = [
     { option: "Dashboard", icon: LayoutDashboard },
@@ -19,7 +20,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
                 {sideBarOptions.map((el, index) => {
                     const Icon = el.icon;
                     return (
-                        <div 
+                        <div
                             key={index}
                             className={`sidebar-option ${selectedOption === el.option ? "selected-option" : ""}`}
                             onClick={() => setSelectedOption(el.option)}
@@ -29,6 +30,15 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
                         </div>
                     );
                 })}
+            </div>
+
+            <div className="add-task-div">
+                <div>
+                    <h2>Add Task</h2>
+                    <div className="add-task-sign">
+                        <Plus size={30} color="#b2b2b2"></Plus>
+                    </div>
+                </div>
             </div>
         </div>
     );
