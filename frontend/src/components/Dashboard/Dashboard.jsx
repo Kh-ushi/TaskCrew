@@ -190,6 +190,9 @@ const priorityColorsbg = {
     Low: "#192d12"
 }
 
+
+const user=localStorage.getItem("user");
+
 const Dashboard = () => {
 
 

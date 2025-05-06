@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Dashboard from './Dashboard';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import CommonNav from '../CommonNav/CommonNav';
 
 const AdminDashboard=()=>{
 
@@ -16,7 +17,7 @@ const AdminDashboard=()=>{
     return(
         <div className='admin-dashboard'>
          <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption}></Sidebar>
-         <Navbar></Navbar>
+         <div className='admin-navbar-container'><CommonNav afterLogin={false}></CommonNav></div>
          <div className='main-dashboard-content'>
          <Dashboard></Dashboard>
          </div>

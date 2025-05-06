@@ -10,3 +10,11 @@
     margin-left: 15.8%;
     overflow-y: auto;
 }
+
+.admin-navbar-container{
+    height: 60px;
+    margin-left: 15.8%;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+    /* border: 2px solid white; */
+}
