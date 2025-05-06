@@ -3,8 +3,13 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Dashboard from './Dashboard';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const AdminDashboard=()=>{
+
+    const location=useLocation();
+    const projectDetails = location.state?.projectDetails;
+    console.log(projectDetails);
 
     const[selectedOption,setSelectedOption]=new useState("Dashboard");
 

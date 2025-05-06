@@ -34,11 +34,37 @@ const userSchema = new mongoose.Schema({
 
     joinedProjects: [
         {
-            type:String
+            type: String
         }
     ],
 
-    memberOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }]
+    memberOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
+
+    performanceStats: {
+        totalTasksAssigned: { type: Number, default: 0 },
+        tasksCompleted: { type: Number, default: 0 },
+        averageCompletionTime: { type: Number, default: 0 }, // in hours or days
+        overdueTasks: { type: Number, default: 0 },
+        punctualityScore: { type: Number, default: 0 }, // 0–100, computed based on deadlines met
+    },
+
+    skills: [
+        {
+            name: { type: String },
+            level: { type: String, enum: ["beginner", "intermediate", "expert"] },
+            confidence: { type: Number, min: 0, max: 100 } // from system learning or manual rating
+        }
+    ],
+
+    recommendedForProjects: [
+        {
+            projectId: { type: String },
+            reason: { type: String }
+        }
+    ]
+
+
+
 },
     { timestamps: true });
 

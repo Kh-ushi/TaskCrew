@@ -3,6 +3,7 @@ import CommonNav from '../CommonNav/CommonNav';
 import NewProjectForm from '../Forms/NewProjectForm';
 import { Plus } from "lucide-react";
 import { useState, useEffect } from 'react';
+import { useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 // const demoProjects = [
@@ -82,9 +83,13 @@ import axios from 'axios';
 const backendURL=import.meta.env.VITE_BACKEND_URL;
 const token=localStorage.getItem("token");
 
+
 const ProjectPage = () => {
 
+    const navigate=useNavigate();
+
     const [demoProjects,setDemoProjects]=useState([]);
+    const [projectDetails,setProjectDetails]=useState({});
 
     useEffect(() => {
 
@@ -97,7 +102,7 @@ const ProjectPage = () => {
                 });
                 console.log(response);
                 if(response.status==201){
-                    setDemoProjects(response.data.allProjects);s
+                    setDemoProjects(response.data.allProjects);
                 }
             }
             catch (error) {
@@ -117,6 +122,25 @@ const ProjectPage = () => {
         return daysLeft;
     };
 
+
+    const handleProjectClick=async(id)=>{
+  
+        try{
+           const response=await axios.get(`${backendURL}/api/gateway/getProjectDetails/${id}`,{
+             headers:{
+                Authorization:`Bearer ${token}`
+             }
+           });
+
+           navigate("/dashboard",{
+            state:{projectDetails:response.data.details}});
+        }
+        catch(error){
+           console.log(error);
+        }
+    
+    };
+
     return (
         <div className="project-page">
             <div className="project-page-header">
@@ -133,7 +157,7 @@ const ProjectPage = () => {
                                 : "status-completed";
 
                     return (
-                        <div key={idx} className="project-card">
+                        <div key={idx} className="project-card" onClick={()=>handleProjectClick(ele._id)}>
                             <div className="proj-header">
                                 <div className="proj-img">
                                     <img src={ele.image?ele.image:"https://image.lexica.art/full_webp/19682eab-189f-41b8-8975-e91ae4fddc78"} alt={ele.title} />

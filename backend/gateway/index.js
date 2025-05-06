@@ -134,20 +134,20 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
       return res.status(201).json({ projects: [] });
     }
 
-    const projects=await axios.post(`${PROJECT_SERVICE_URL}/project/getProjects`,joinedProjects,{
+    const projects = await axios.post(`${PROJECT_SERVICE_URL}/project/getProjects`, joinedProjects, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    const allProjects=projects.data.allProjects
-    res.status(201).json({allProjects});
-    
+    const allProjects = projects.data.allProjects
+    res.status(201).json({ allProjects });
+
   }
   catch (err) {
     if (err.response) {
       return res.status(err.response.status).json({
-        message: err.response.data.message || 'Error from user service'
+        message: err.response.data|| 'Error from user service'
       });
     }
     res.status(500).json({ message: 'Internal Server Error' });
@@ -157,6 +157,33 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
 });
 
 
+app.get('/api/gateway/getProjectDetails/:id', authenticate, async(req, res) => {
+
+  try {
+    const{id}=req.params;
+    const token=req.headers.authorization?.split(" ")[1];
+    
+    const response=await axios.get(`${PROJECT_SERVICE_URL}/project/getProjectDetail/${id}`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    });
+
+  res.status(201).json({details:response.data.details});
+    
+  }
+  catch (err) {
+    if(err.response) {
+      return res.status(err.response.status).json({
+        message: err.response.data|| 'Error from user service'
+      });
+    }
+    res.status(500).json({ message: 'Internal Server Error' });
+
+  
+  }
+
+});
 
 connectDB()
   .then(() => {

@@ -75,4 +75,23 @@ router.post("/getProjects", authenticate, async (req, res) => {
 
 });
 
+
+router.get("/getProjectDetail/:id", authenticate, async (req, res) => {
+    try {
+      
+        const {id}=req.params;
+        const details=await Project.findById(id);
+        if(!details){
+            throw new Error("Project ID not found");
+        }
+        res.status(201).json({details});
+
+    }
+    catch (error) {
+        console.error("❌ Errors:", error);
+        res.status(500).json({ error: "Server error." });
+    }
+
+});
+
 module.exports = router;
