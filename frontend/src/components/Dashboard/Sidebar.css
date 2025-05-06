@@ -1,5 +1,4 @@
-
-.sidebar{
+.sidebar {
     width: 15%;
     height: 100vh;
     background-color: #101010;
@@ -11,16 +10,16 @@
     display: flex;
     flex-direction: column;
     color: #f3d69a;
-    
+
 }
 
 .sidebar-header {
-  display: flex;
-  align-items: center;
-  height:10%;
+    display: flex;
+    align-items: center;
+    height: 10%;
 }
 
-.sidebar-option-container{
+.sidebar-option-container {
     height: 60%;
     display: flex;
     flex-direction: column;
@@ -29,8 +28,8 @@
     /* border: 2px solid #f3d69a; */
 }
 
-.sidebar-option-container div{
-    color:#565656;
+.sidebar-option-container div {
+    color: #565656;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -39,18 +38,18 @@
 
 }
 
-.sidebar-option-container div:hover{
-    color:#fde8c0;
+.sidebar-option-container div:hover {
+    color: #fde8c0;
 }
 
 
 
-.selected-option{
+.selected-option {
     color: #f3d69a !important;
 }
 
 
-.add-task-div{
+.add-task-div {
     height: 20%;
     display: flex;
     flex-direction: column;
@@ -70,7 +69,7 @@
     gap: 0.5rem;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     background: linear-gradient(145deg, #1a1a1a, #141414);
-    transition: all 0.4s ease; 
+    transition: all 0.4s ease;
 }
 
 .add-task-sign {

@@ -147,7 +147,7 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
   catch (err) {
     if (err.response) {
       return res.status(err.response.status).json({
-        message: err.response.data|| 'Error from user service'
+        message: err.response.data || 'Error from user service'
       });
     }
     res.status(500).json({ message: 'Internal Server Error' });
@@ -157,33 +157,64 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
 });
 
 
-app.get('/api/gateway/getProjectDetails/:id', authenticate, async(req, res) => {
+app.get('/api/gateway/getProjectDetails/:id', authenticate, async (req, res) => {
 
   try {
-    const{id}=req.params;
-    const token=req.headers.authorization?.split(" ")[1];
-    
-    const response=await axios.get(`${PROJECT_SERVICE_URL}/project/getProjectDetail/${id}`,{
-      headers:{
-        Authorization:`Bearer ${token}`
+    const { id } = req.params;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    const response = await axios.get(`${PROJECT_SERVICE_URL}/project/getProjectDetail/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
 
-  res.status(201).json({details:response.data.details});
-    
+    res.status(201).json({ details: response.data.details });
+
   }
   catch (err) {
-    if(err.response) {
+    if (err.response) {
       return res.status(err.response.status).json({
-        message: err.response.data|| 'Error from user service'
+        message: err.response.data || 'Error from user service'
       });
     }
     res.status(500).json({ message: 'Internal Server Error' });
 
-  
+
   }
 
 });
+
+
+app.get('/gateway/getProjectMembers/:id', authenticate, async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    const { id } = req.params;
+
+    const membersResponse = await axios.get(`${PROJECT_SERVICE_URL}/project/getMemberIds/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const members = membersResponse.data;
+    console.log(members);
+
+
+    const memberInfo = await axios.post(`${USER_SERVICE_URL}/auth/getMembersInfo`, { members }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    res.status(201).json(memberInfo.data.users);
+    
+  } catch (error) {
+    console.error(error?.response?.data?.error || error.message || error);
+    res.status(500).json({ error: "Unable to fetch project members" });
+  }
+});
+
 
 connectDB()
   .then(() => {

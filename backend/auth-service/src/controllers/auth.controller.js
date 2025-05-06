@@ -146,5 +146,19 @@ router.get('/getProjectIds', authenticate, async (req, res) => {
 });
 
 
+router.post('/getMembersInfo',authenticate,async(req,res)=>{
+    try{
+        const memberIds=req.body.members;
+        const users=await User.find({_id:{$in:memberIds}});
+        console.log(users);
+        res.status(201).json({users});
+    }
+    catch(error){
+       console.log(error);
+       res.status(500).json({ error: 'Server error' });
+    }
+})
+
+
 
 module.exports = router;

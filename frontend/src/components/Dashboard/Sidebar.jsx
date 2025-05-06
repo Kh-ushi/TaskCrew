@@ -10,7 +10,7 @@ const sideBarOptions = [
     { option: "Calendar", icon: CalendarDays }
 ];
 
-const Sidebar = ({ selectedOption, setSelectedOption }) => {
+const Sidebar = ({ selectedOption, setSelectedOption,setIsOpenTaskForm }) => {
     return (
         <div className="sidebar">
             <div className="sidebar-header">
@@ -33,7 +33,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
             </div>
 
             <div className="add-task-div">
-                <div>
+                <div onClick={()=>setIsOpenTaskForm(true)}>
                     <h2>Add Task</h2>
                     <div className="add-task-sign">
                         <Plus size={30} color="#b2b2b2"></Plus>

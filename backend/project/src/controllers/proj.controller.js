@@ -94,4 +94,25 @@ router.get("/getProjectDetail/:id", authenticate, async (req, res) => {
 
 });
 
+
+router.get("/getMemberIds/:id",authenticate,async(req,res)=>{
+
+    try{
+       
+        const {id}=req.params;
+        const currentProject=await Project.findById(id);
+        if(!currentProject){
+            res.status(500).json({ error: "Project not found" });
+        }
+        const members=currentProject.teamMembers;
+
+        res.status(201).json(members);
+        
+    }
+    catch(error){
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+
+});
+
 module.exports = router;
