@@ -35,7 +35,7 @@ const taskSchema = new mongoose.Schema({
     type: Date
   },
 
-  assignedTo: [{type:String}],
+  assignee: [{type:String}],
 
   // createdBy: {type:String},
   

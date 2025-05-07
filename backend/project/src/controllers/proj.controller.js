@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const Project = require("../models/Project");
+const Task = require("../models/Task");
 const authenticate = require('../middleware/auth.middleware');
 const axios = require("axios");
 const mongoose = require("mongoose");
@@ -78,13 +79,13 @@ router.post("/getProjects", authenticate, async (req, res) => {
 
 router.get("/getProjectDetail/:id", authenticate, async (req, res) => {
     try {
-      
-        const {id}=req.params;
-        const details=await Project.findById(id);
-        if(!details){
+
+        const { id } = req.params;
+        const details = await Project.findById(id);
+        if (!details) {
             throw new Error("Project ID not found");
         }
-        res.status(201).json({details});
+        res.status(201).json({ details });
 
     }
     catch (error) {
@@ -95,24 +96,55 @@ router.get("/getProjectDetail/:id", authenticate, async (req, res) => {
 });
 
 
-router.get("/getMemberIds/:id",authenticate,async(req,res)=>{
+router.get("/getMemberIds/:id", authenticate, async (req, res) => {
 
-    try{
-       
-        const {id}=req.params;
-        const currentProject=await Project.findById(id);
-        if(!currentProject){
+    try {
+
+        const { id } = req.params;
+        const currentProject = await Project.findById(id);
+        if (!currentProject) {
             res.status(500).json({ error: "Project not found" });
         }
-        const members=currentProject.teamMembers;
+        const members = currentProject.teamMembers;
 
         res.status(201).json(members);
-        
+
     }
-    catch(error){
+    catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 
+});
+
+router.post('/addTask/:id', authenticate, async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const { title, description, priority, startDate, dueDate, assignee } = req.body;
+        const currentTask = await Task.findOne({ title });
+        if (currentTask) {
+            res.status(500).json({ message: "Task with same title already exist" });
+        }
+        const currentProject = await Project.findById(id);
+        const task = new Task({
+            title,
+            description,
+            priority,
+            startDate,
+            dueDate,
+            assignee,
+            projectId: id
+        });
+
+        const newTask = await task.save();
+        currentProject.tasks.push(newTask._id);
+        await currentProject.save();
+
+        res.status(201).json({ message: "Task Has Been Added Succesfully" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 module.exports = router;

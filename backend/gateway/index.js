@@ -208,10 +208,34 @@ app.get('/gateway/getProjectMembers/:id', authenticate, async (req, res) => {
     });
 
     res.status(201).json(memberInfo.data.users);
-    
+
   } catch (error) {
     console.error(error?.response?.data?.error || error.message || error);
     res.status(500).json({ error: "Unable to fetch project members" });
+  }
+});
+
+
+app.post('/gateway/addTask/:id', authenticate, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const token = req.headers.authorization?.split(" ")[1];
+    const taskInfo = req.body;
+
+    const response = await axios.post(`${PROJECT_SERVICE_URL}/project/addTask/${id}`, taskInfo, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(response);
+
+  } catch (error) {
+    if (error.response) {
+      res.status(500).json({error:error.response.data.message || "Something went wrong"});
+    } else {
+      res.status(500).json({error:"Internal server error"});
+    }
   }
 });
 

@@ -1,53 +1,66 @@
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import Select from 'react-select';
 import "./TaskAddForm.css";
 import axios from 'axios';
 
 
-const backendURL=import.meta.env.VITE_BACKEND_URL;
-const token=localStorage.getItem("token");
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+const token = localStorage.getItem("token");
 
-const TaskAddForm = ({ onClose,isOpenTaskForm,projectId}) => {
+const TaskAddForm = ({ onClose, isOpenTaskForm, projectId }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     startDate: "",
     dueDate: "",
     priority: "medium",
-    assignee: "",
+    assignee: [],
   });
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
 
+  const [projectMembers, setProjectMembers] = useState([]);
 
-  useEffect(()=>{
 
-    const fetchData=async()=>{
-      try{
-        const response=await axios.get(`${backendURL}/gateway/getProjectMembers/${projectId}`,{
-          headers:{
-            Authorization:`Bearer ${token}`
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${backendURL}/gateway/getProjectMembers/${projectId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         });
-
-        console.log(response.data);
+        if (response.status == 201) {
+          setProjectMembers(response.data.map(el => ({
+            label: el.name,
+            value: el._id
+          })));
+        }
+        else {
+          setError("Internal Server Error");
+        }
       }
-      catch(error){
+      catch (error) {
+        setError("Internal Server Error")
         console.log(error);
       }
     }
-   
+
     fetchData();
 
-  },[isOpenTaskForm]);
+  }, [isOpenTaskForm]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    setError("");
+    setSuccess("");
   };
 
   const handlePriorityChange = (selectedOption) => {
@@ -55,17 +68,36 @@ const TaskAddForm = ({ onClose,isOpenTaskForm,projectId}) => {
       ...prev,
       priority: selectedOption.value,
     }));
+    setError("");
+    setSuccess("");
   };
 
-  const handleSubmit = (e) => {
+  const handleMembersChange = (selectedOptions) => {
+    setFormData((prev) => ({
+      ...prev,
+      assignee: selectedOptions
+    }));
+    setError("");
+    setSuccess("");
+  };
+  
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    
+    try{
+      const response=await axios.post(`${backendURL}/gateway/addTask/${projectId}`,formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
+      console.log(response);
+    }
+    catch(error){
 
-    setTimeout(() => {
-      setSuccess("Task created successfully!");
-      setFormData({ title: "", description: "", dueDate: "", priority: "medium", assignee: "" });
-    }, 500);
+    }
   };
 
   const priorityOptions = [
@@ -134,10 +166,14 @@ const TaskAddForm = ({ onClose,isOpenTaskForm,projectId}) => {
             />
           </div>
           <Select
-           isMulti
+            isMulti
+            options={projectMembers}
             className="basic-multi-select"
             classNamePrefix="select"
-            name="priority"></Select>
+            name="priority"
+            value={formData.assignee}
+            onChange={handleMembersChange}
+          ></Select>
 
           <button className="submit-button" onClick={handleSubmit}>
             Add Task
