@@ -5,90 +5,90 @@ import CalendarView from "../Calendar/CalendarView";
 import OverallProgress from "./OverallProgress";
 
 
-const demoTasks = [
-    {
-        _id: "task1",
-        title: "Design Meeting",
-        description: "Development Task Assign for the product Page project, collaboration with the designer.",
-        priority: "High",
-        status: "In Progress",
-        startDate: "2025-04-28",
-        deadline: "2025-05-02",
-        projectId: "project123",
-        assignedUsers: [
-            { _id: "u1", name: "Alice", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
-            { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
-            { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
-            { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
-            { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" }
-        ],
-        createdAt: "2025-04-25",
-        updatedAt: "2025-04-28"
-    },
-    {
-        _id: "task2",
-        title: "Client Meeting",
-        description: "Updating the current User Interface of header in the Picko Design project.",
-        priority: "Medium",
-        status: "Todo",
-        startDate: "2025-04-30",
-        deadline: "2025-05-03",
-        projectId: "project123",
-        assignedUsers: [
-            { _id: "u3", name: "Charlie", avatar: "https://randomuser.me/api/portraits/men/1.jpg" },
-            { _id: "u4", name: "Diana", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
-            { _id: "u5", name: "Evan", avatar: "https://randomuser.me/api/portraits/men/5.jpg" }
-        ],
-        createdAt: "2025-04-27",
-        updatedAt: "2025-04-29"
-    },
-    {
-        _id: "task3",
-        title: "Dribble Shot",
-        description: "Creating the main UI assets and illustrations for the upcoming landing page screens.",
-        priority: "Low",
-        status: "In Progress",
-        startDate: "2025-04-26",
-        deadline: "2025-05-01",
-        projectId: "project456",
-        assignedUsers: [
-            { _id: "u6", name: "Fiona", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
-            { _id: "u1", name: "Alice", avatar: "https://randomuser.me/api/portraits/women/2.jpg" }
-        ],
-        createdAt: "2025-04-24",
-        updatedAt: "2025-04-27"
-    },
-    {
-        _id: "task4",
-        title: "Code Refactor",
-        description: "Improve project structure and refactor backend routes for task module.",
-        priority: "Medium",
-        status: "Completed",
-        startDate: "2025-04-22",
-        deadline: "2025-04-28",
-        projectId: "project456",
-        assignedUsers: [
-            { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" }
-        ],
-        createdAt: "2025-04-20",
-        updatedAt: "2025-04-28"
-    },
-    {
-        _id: "task5",
-        title: "API Integration",
-        description: "Integrate OpenAI API for task recommendations and assistance.",
-        priority: "High",
-        status: "Todo",
-        startDate: "2025-05-01",
-        deadline: "2025-05-05",
-        projectId: "project789",
-        assignedUsers: [
-            { _id: "u3", name: "Charlie", avatar: "https://randomuser.me/api/portraits/men/5.jpg" }
-        ],
-        createdAt: "2025-04-29",
-        updatedAt: "2025-04-30"
-    }
-];
+// const demoTasks = [
+//     {
+//         _id: "task1",
+//         title: "Design Meeting",
+//         description: "Development Task Assign for the product Page project, collaboration with the designer.",
+//         priority: "High",
+//         status: "In Progress",
+//         startDate: "2025-04-28",
+//         deadline: "2025-05-02",
+//         projectId: "project123",
+//         assignedUsers: [
+//             { _id: "u1", name: "Alice", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
+//             { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
+//             { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
+//             { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
+//             { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" }
+//         ],
+//         createdAt: "2025-04-25",
+//         updatedAt: "2025-04-28"
+//     },
+//     {
+//         _id: "task2",
+//         title: "Client Meeting",
+//         description: "Updating the current User Interface of header in the Picko Design project.",
+//         priority: "Medium",
+//         status: "Todo",
+//         startDate: "2025-04-30",
+//         deadline: "2025-05-03",
+//         projectId: "project123",
+//         assignedUsers: [
+//             { _id: "u3", name: "Charlie", avatar: "https://randomuser.me/api/portraits/men/1.jpg" },
+//             { _id: "u4", name: "Diana", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
+//             { _id: "u5", name: "Evan", avatar: "https://randomuser.me/api/portraits/men/5.jpg" }
+//         ],
+//         createdAt: "2025-04-27",
+//         updatedAt: "2025-04-29"
+//     },
+//     {
+//         _id: "task3",
+//         title: "Dribble Shot",
+//         description: "Creating the main UI assets and illustrations for the upcoming landing page screens.",
+//         priority: "Low",
+//         status: "In Progress",
+//         startDate: "2025-04-26",
+//         deadline: "2025-05-01",
+//         projectId: "project456",
+//         assignedUsers: [
+//             { _id: "u6", name: "Fiona", avatar: "https://randomuser.me/api/portraits/women/2.jpg" },
+//             { _id: "u1", name: "Alice", avatar: "https://randomuser.me/api/portraits/women/2.jpg" }
+//         ],
+//         createdAt: "2025-04-24",
+//         updatedAt: "2025-04-27"
+//     },
+//     {
+//         _id: "task4",
+//         title: "Code Refactor",
+//         description: "Improve project structure and refactor backend routes for task module.",
+//         priority: "Medium",
+//         status: "Completed",
+//         startDate: "2025-04-22",
+//         deadline: "2025-04-28",
+//         projectId: "project456",
+//         assignedUsers: [
+//             { _id: "u2", name: "Bob", avatar: "https://randomuser.me/api/portraits/men/3.jpg" }
+//         ],
+//         createdAt: "2025-04-20",
+//         updatedAt: "2025-04-28"
+//     },
+//     {
+//         _id: "task5",
+//         title: "API Integration",
+//         description: "Integrate OpenAI API for task recommendations and assistance.",
+//         priority: "High",
+//         status: "Todo",
+//         startDate: "2025-05-01",
+//         deadline: "2025-05-05",
+//         projectId: "project789",
+//         assignedUsers: [
+//             { _id: "u3", name: "Charlie", avatar: "https://randomuser.me/api/portraits/men/5.jpg" }
+//         ],
+//         createdAt: "2025-04-29",
+//         updatedAt: "2025-04-30"
+//     }
+// ];
 
 
 const peopleInChat = [
@@ -179,21 +179,21 @@ const teamActivityData = [
 
 
 const priorityColors = {
-    High: "#b14444",
-    Medium: "#ac9656",
-    Low: "#499138"
+    high: "#b14444",
+    medium: "#ac9656",
+    low: "#499138"
 }
 
 const priorityColorsbg = {
-    High: "#2E1619",
-    Medium: "#2C1F05",
-    Low: "#192d12"
+    high: "#2E1619",
+    medium: "#2C1F05",
+    low: "#192d12"
 }
 
 
 const user=localStorage.getItem("user");
 
-const Dashboard = () => {
+const Dashboard = ({demoTasks,setIsViewAll}) => {
 
 
     const scrollRef = useRef(null);
@@ -214,8 +214,8 @@ const Dashboard = () => {
             <div className="left-dash">
                 <div className="task-grid">
                     {limitedTasks.map((el, index) => {
-                        const members = el.assignedUsers.slice(0, 3);
-                        const remaining = el.assignedUsers.length - members.length;
+                        const members = el.assignee.slice(0, 3);
+                        const remaining = el.assignee.length - members.length;
 
                         return <div className="task-card" key={index}>
                             <div className="task-card-header">
@@ -226,7 +226,7 @@ const Dashboard = () => {
                             <div className="task-members">
                                 <div className="members-pics">
                                     {members.map((mem, idx) => {
-                                        return <img className="avatar-img" src={mem.avatar} key={idx} alt={`Avatar ${idx}`}></img>
+                                        return <img className="avatar-img" src={mem?.avatar || `https://randomuser.me/api/portraits/women/2.jpg`} key={idx} alt={`Avatar ${idx}`}></img>
                                     })}
                                     {remaining > 0 && (<div className="avatar-more"><p>+{remaining}</p></div>)}
 
@@ -238,7 +238,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     })}
-                    <div className="view-all card">
+                    <div className="view-all card" onClick={()=>setIsViewAll(true)}>
                         <div>
                             <div><Fullscreen></Fullscreen></div>
                             <p>View All</p>
