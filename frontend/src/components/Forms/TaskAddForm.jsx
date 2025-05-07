@@ -93,6 +93,21 @@ const TaskAddForm = ({ onClose, isOpenTaskForm, projectId }) => {
           Authorization:`Bearer ${token}`
         }
       });
+
+      if(response.status==201){
+
+        setFormData({
+          title: "",
+          description: "",
+          startDate: "",
+          dueDate: "",
+          priority: "medium",
+          assignee: [],
+        });
+
+         alert("Task Has been added succesfully");
+         onClose();
+      }
       console.log(response);
     }
     catch(error){

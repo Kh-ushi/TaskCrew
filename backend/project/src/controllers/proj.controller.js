@@ -132,17 +132,19 @@ router.post('/addTask/:id', authenticate, async (req, res) => {
             priority,
             startDate,
             dueDate,
-            assignee,
+            assignee:assignee.map((el)=>el.value),
             projectId: id
         });
 
         const newTask = await task.save();
+        console.log(newTask);
         currentProject.tasks.push(newTask._id);
         await currentProject.save();
 
-        res.status(201).json({ message: "Task Has Been Added Succesfully" });
+        res.status(201).json({task:newTask});
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

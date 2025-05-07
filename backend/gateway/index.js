@@ -230,7 +230,10 @@ app.post('/gateway/addTask/:id', authenticate, async (req, res) => {
 
     console.log(response);
 
+     res.status(response.status).json(response.data);
+
   } catch (error) {
+    console.log(error);
     if (error.response) {
       res.status(500).json({error:error.response.data.message || "Something went wrong"});
     } else {
