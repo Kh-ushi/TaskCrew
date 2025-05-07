@@ -173,6 +173,7 @@ app.get('/api/gateway/getProjectDetails/:id', authenticate, async (req, res) => 
 
   }
   catch (err) {
+    console.log(err);
     if (err.response) {
       return res.status(err.response.status).json({
         message: err.response.data || 'Error from user service'

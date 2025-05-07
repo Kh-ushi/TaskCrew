@@ -111,7 +111,12 @@ const TaskAddForm = ({ onClose, isOpenTaskForm, projectId }) => {
       console.log(response);
     }
     catch(error){
-
+      if(error?.response?.data?.error){
+           setError(error.response.data.error);
+      }
+      else{
+        setError("Internal Server Error");
+      }
     }
   };
 

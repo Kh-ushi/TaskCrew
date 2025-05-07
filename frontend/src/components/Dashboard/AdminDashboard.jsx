@@ -6,15 +6,37 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import CommonNav from '../CommonNav/CommonNav';
 import TaskAddForm from '../Forms/TaskAddForm';
+import axios from "axios";
 
 const AdminDashboard = () => {
 
     const location = useLocation();
-    const projectDetails = location.state?.projectDetails;
-    console.log(projectDetails);
+    const token=localStorage.getItem("token");
+    const backendURL=import.meta.env.VITE_BACKEND_URL;
+
+    const[projectDetails,setProjectDetails]=useState(location.state?.projectDetails);
 
     const [selectedOption, setSelectedOption] = new useState("Dashboard");
     const [isOpenTaskForm, setIsOpenTaskForm] = useState(false);
+
+
+    const fetchProjectDetails=async()=>{
+        try{
+            const response=await axios.get(`${backendURL}/api/gateway/getProjectDetails/${projectDetails._id}`,{
+              headers:{
+                 Authorization:`Bearer ${token}`
+              }
+            });
+           if(response.status==201){
+            setProjectDetails(response.data.details);
+           }
+            
+         }
+         catch(error){
+            console.log(error.response);
+         }
+    };
+    
 
     return (
         <div className='admin-dashboard'>
@@ -24,7 +46,8 @@ const AdminDashboard = () => {
                 <Dashboard></Dashboard>
                 {isOpenTaskForm && (
                     <TaskAddForm
-                        onClose={() => setIsOpenTaskForm(false)}
+                        onClose={() =>{ setIsOpenTaskForm(false);
+                                        fetchProjectDetails();}}
                         isOpenTaskForm={isOpenTaskForm}
                         projectId={projectDetails._id}
                     />

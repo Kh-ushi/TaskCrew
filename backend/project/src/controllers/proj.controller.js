@@ -48,7 +48,7 @@ router.post("/addNew", authenticate, async (req, res) => {
         await session.commitTransaction();
         session.endSession();
 
-        res.status(201).json({ message: "Project Added and Members updated" });
+        return res.status(201).json({ message: "Project Added and Members updated" });
 
     } catch (error) {
 
@@ -56,7 +56,7 @@ router.post("/addNew", authenticate, async (req, res) => {
         session.endSession();
 
         console.error("❌ Error creating project:", error);
-        res.status(500).json({ error: "Server error while creating project." });
+        return res.status(500).json({ error: "Server error while creating project." });
     }
 });
 
@@ -67,11 +67,11 @@ router.post("/getProjects", authenticate, async (req, res) => {
         const allProjects = await Project.find({
             _id: { $in: projectIds }
         });
-        res.status(201).json({ allProjects });
+        return res.status(201).json({ allProjects });
     }
     catch (error) {
         console.error("❌ Errors:", error);
-        res.status(500).json({ error: "Server error." });
+        return res.status(500).json({ error: "Server error." });
     }
 
 });
@@ -81,16 +81,16 @@ router.get("/getProjectDetail/:id", authenticate, async (req, res) => {
     try {
 
         const { id } = req.params;
-        const details = await Project.findById(id);
+        const details = await Project.findById(id).populate("tasks");
         if (!details) {
             throw new Error("Project ID not found");
         }
-        res.status(201).json({ details });
+        return res.status(201).json({ details });
 
     }
     catch (error) {
         console.error("❌ Errors:", error);
-        res.status(500).json({ error: "Server error." });
+        return res.status(500).json({ error: "Server error." });
     }
 
 });
@@ -107,11 +107,11 @@ router.get("/getMemberIds/:id", authenticate, async (req, res) => {
         }
         const members = currentProject.teamMembers;
 
-        res.status(201).json(members);
+        return res.status(201).json(members);
 
     }
     catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 
 });
@@ -141,11 +141,11 @@ router.post('/addTask/:id', authenticate, async (req, res) => {
         currentProject.tasks.push(newTask._id);
         await currentProject.save();
 
-        res.status(201).json({task:newTask});
+        return res.status(201).json({task:newTask});
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
