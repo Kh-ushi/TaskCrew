@@ -41,11 +41,11 @@ app.post("/api/users/login", async (req, res) => {
     console.log(userData);
     const response = await axios.post(`${USER_SERVICE_URL}/auth/login`, userData);
     console.log(response.data);
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   }
   catch (error) {
     console.log(error);
-    res.status(error.response.status).json(error.response.data);
+    return res.status(error.response.status).json(error.response.data);
   }
 
 });
@@ -60,11 +60,11 @@ app.get("/api/users/getUsers", authenticate, async (req, res) => {
         Authorization: `Bearer ${token}`
       }
     });
-    res.status(response.status).json(response.data.data);
+    return res.status(response.status).json(response.data.data);
   }
   catch (error) {
     console.log(error);
-    res.status(error.response.status).json(error.response.data);
+    return res.status(error.response.status).json(error.response.data);
   }
 });
 
@@ -107,11 +107,11 @@ app.post("/api/users/addNew", authenticate, upload.single("projectImage"), async
       }
     });
 
-    res.status(response.status).json({ message: response.data.message });
+    return res.status(response.status).json({ message: response.data.message });
 
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Something went wrong on server!" });
+    return res.status(500).json({ error: "Something went wrong on server!" });
   }
 });
 
@@ -141,7 +141,7 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
     });
 
     const allProjects = projects.data.allProjects
-    res.status(201).json({ allProjects });
+    return res.status(201).json({ allProjects });
 
   }
   catch (err) {
@@ -150,7 +150,7 @@ app.get('/api/gateway/getProjectInfo', authenticate, async (req, res) => {
         message: err.response.data || 'Error from user service'
       });
     }
-    res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: 'Internal Server Error' });
 
   }
 
@@ -169,7 +169,7 @@ app.get('/api/gateway/getProjectDetails/:id', authenticate, async (req, res) => 
       }
     });
 
-    res.status(201).json({ details: response.data.details });
+    return res.status(201).json({ details: response.data.details });
 
   }
   catch (err) {
@@ -179,7 +179,7 @@ app.get('/api/gateway/getProjectDetails/:id', authenticate, async (req, res) => 
         message: err.response.data || 'Error from user service'
       });
     }
-    res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: 'Internal Server Error' });
 
 
   }
@@ -208,11 +208,11 @@ app.get('/gateway/getProjectMembers/:id', authenticate, async (req, res) => {
       }
     });
 
-    res.status(201).json(memberInfo.data.users);
+    return res.status(201).json(memberInfo.data.users);
 
   } catch (error) {
     console.error(error?.response?.data?.error || error.message || error);
-    res.status(500).json({ error: "Unable to fetch project members" });
+    return res.status(500).json({ error: "Unable to fetch project members" });
   }
 });
 
@@ -231,14 +231,14 @@ app.post('/gateway/addTask/:id', authenticate, async (req, res) => {
 
     console.log(response);
 
-     res.status(response.status).json(response.data);
+     return res.status(response.status).json(response.data);
 
   } catch (error) {
     console.log(error);
     if (error.response) {
-      res.status(500).json({error:error.response.data.message || "Something went wrong"});
+      return res.status(500).json({error:error.response.data.message || "Something went wrong"});
     } else {
-      res.status(500).json({error:"Internal server error"});
+      return res.status(500).json({error:"Internal server error"});
     }
   }
 });

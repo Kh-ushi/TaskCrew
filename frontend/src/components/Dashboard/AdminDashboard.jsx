@@ -37,6 +37,7 @@ const AdminDashboard = () => {
          }
     };
     
+    console.log(projectDetails.tasks);
 
     return (
         <div className='admin-dashboard'>

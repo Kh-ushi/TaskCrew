@@ -32,7 +32,7 @@ router.post("/signUp", async (req, res) => {
 
         const token = generateToken(newUser);
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "User registered successfully",
             user: {
                 id: newUser._id,
@@ -43,7 +43,7 @@ router.post("/signUp", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 
 });
@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
 
         const token = generateToken(user);
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "User has loggedIn Successfully",
             user: {
                 id: user._id,
@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
     catch (error) {
         console.log(error);
         console.error("Login Error", error);
-        res.status(500).json({ error: "Login Failed" });
+        return res.status(500).json({ error: "Login Failed" });
     }
 
 });
@@ -84,16 +84,14 @@ router.post("/login", async (req, res) => {
 router.get("/getUsers", authenticate, async (req, res) => {
     try {
         console.log("I am being called");
-        // console.log(req.user);
         const allUsers = await User.find({ _id: { $ne: req.user.id } });
-        // console.log(allUsers);
-        res.status(201).json({
+        return res.status(201).json({
             data: allUsers
         })
     } catch (error) {
         console.log(error);
         console.error("Login Error", error);
-        res.status(500).json({ error: "Login Failed" });
+        return res.status(500).json({ error: "Login Failed" });
     }
 
 });
@@ -119,11 +117,11 @@ router.post("/updateMembers", async (req, res) => {
             await member.save();
         }
 
-        res.status(201).json({ message: "Members updated successfully." });
+        return res.status(201).json({ message: "Members updated successfully." });
 
     } catch (error) {
         console.error("Error updating members:", error);
-        res.status(500).json({ error: "An error occurred while updating members." });
+        return res.status(500).json({ error: "An error occurred while updating members." });
     }
 
 });
@@ -138,10 +136,10 @@ router.get('/getProjectIds', authenticate, async (req, res) => {
         }
         const joinedProjects = user.joinedProjects;
         console.log(joinedProjects);
-        res.status(201).json({ joinedProjects });
+        return res.status(201).json({ joinedProjects });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Server error' });
     }
 });
 
@@ -151,11 +149,11 @@ router.post('/getMembersInfo',authenticate,async(req,res)=>{
         const memberIds=req.body.members;
         const users=await User.find({_id:{$in:memberIds}});
         console.log(users);
-        res.status(201).json({users});
+        return res.status(201).json({users});
     }
     catch(error){
        console.log(error);
-       res.status(500).json({ error: 'Server error' });
+       return res.status(500).json({ error: 'Server error' });
     }
 })
 

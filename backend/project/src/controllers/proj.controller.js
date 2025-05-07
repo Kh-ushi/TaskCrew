@@ -123,7 +123,7 @@ router.post('/addTask/:id', authenticate, async (req, res) => {
         const { title, description, priority, startDate, dueDate, assignee } = req.body;
         const currentTask = await Task.findOne({ title });
         if (currentTask) {
-            res.status(500).json({ message: "Task with same title already exist" });
+            return res.status(500).json({ message: "Task with same title already exist" });
         }
         const currentProject = await Project.findById(id);
         const task = new Task({
