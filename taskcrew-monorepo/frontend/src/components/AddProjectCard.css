@@ -1,0 +1,31 @@
+.add-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.add-card:hover {
+  border-color: #7a4eff;
+  background: rgba(122, 78, 255, 0.1);
+}
+
+.add-icon {
+  font-size: 2.5rem;
+  color: #7a4eff;
+  line-height: 1;
+}
+
+.add-text {
+  margin-top: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #7a4eff;
+}

@@ -1,0 +1,37 @@
+
+:root {
+  --gradient-start: #7a4eff;
+  --gradient-end:   #c263ff;
+  --bg-light:       #f3e7fe;
+  --bg-dark:        #e3eeff;
+
+  --font-primary:   'Poppins', sans-serif;
+  --radius:         16px;
+  --gap:            1.5rem;
+}
+
+.projects-container {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+  background: linear-gradient(135deg, var(--bg-light), var(--bg-dark));
+  font-family: var(--font-primary);
+}
+
+.projects-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+
+  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--gap);
+}

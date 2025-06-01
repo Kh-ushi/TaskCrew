@@ -1,0 +1,119 @@
+:root {
+  --sidebar-width: 100%;
+  --sidebar-collapsed: 30%;
+  --bg: #ffffff;
+  --border: #e5e7eb;
+  --text: #4b5563;
+  --text-muted: #9ca3af;
+  --accent: #7a4eff;
+  --accent-hover: #6f3fe0;
+  --font: 'Poppins', sans-serif;
+  --transition: 0.3s ease;
+  --radius: 1rem;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition);
+  overflow: hidden;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.logo .logo-text,
+.logo .logo-icon {
+  background: linear-gradient(90deg, var(--accent), #c263ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo-icon {
+  font-size: 1.7rem;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  transition: color var(--transition);
+}
+
+.collapse-btn:hover {
+  color: var(--accent);
+}
+
+.sidebar-nav {
+  margin-top: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  border-left: 4px solid transparent;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.nav-item:hover {
+  background: #f9f9ff;
+  color: var(--accent-hover);
+  border-left: 4px solid var(--accent);
+}
+
+.nav-item.active {
+  background: #f4f2ff;
+  color: var(--accent);
+  border-left: 4px solid var(--accent);
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-label {
+  margin-left: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
