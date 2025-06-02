@@ -70,6 +70,15 @@ app.use(
   })
 );
 
+app.use(
+  '/api/tasks',
+  createProxyMiddleware({
+    target: process.env.TASKS_URL,
+    changeOrigin: true,
+    pathRewrite: { '^': '/tasks' },
+  })
+);
+
 
 
 
