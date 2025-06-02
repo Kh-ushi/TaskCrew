@@ -6,29 +6,31 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
-const TaskPage = ({activeTab}) => {
+const TaskPage = ({activeTab,projectId}) => {
     
     const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleManualAddition=(taskData)=>{
-        console.log("Manual Task Data:", taskData);
-        setIsAddTaskModalOpen(false);
+    const handleManualAddition=async(taskData)=>{
+        // console.log("Manual Task Data:", taskData);
         let token = localStorage.getItem('token');
         
         try{
+
           if(!token){
             navigate('/login');
             return;
           }
-          const response = axios.post(`${backendURL}/api/tasks`, taskData, {
+          const response = await axios.post(`${backendURL}/api/tasks/${projectId}`, taskData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
           });
+
           console.log("Manual Task Added:", response.data);
-          
+          alert(response.data.message || 'Manual task added successfully');
+          setIsAddTaskModalOpen(false);
         }
         catch(error){
             setError(error.response?.data?.message || 'Error adding manual task');
@@ -54,7 +56,7 @@ const TaskPage = ({activeTab}) => {
             {isAddTaskModalOpen && (
                 <AddTaskModal 
                     isOpen={isAddTaskModalOpen} 
-                    onClose={() => setIsAddTaskModalOpen(false)}
+                    onClose={() => {setIsAddTaskModalOpen(false);setError("")}}
                     handleManualAddition={handleManualAddition}
                     error={error}
                     setError={setError}

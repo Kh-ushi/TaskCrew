@@ -5,8 +5,11 @@ import Navbar from "./Navbar";
 import AdminDashboard from "./AdminDashboard";
 import TaskPage from "./TaskPage";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
+    const { id } = useParams(); 
+    // console.log("Dashboard ID:", id); 
     const [collapsed, setCollapsed] = useState(false);
 
     const [activePage, setActivePage] = useState('dashboard');
@@ -17,7 +20,7 @@ const Dashboard = () => {
             case 'dashboard':
                 return <AdminDashboard />;
             case 'tasks':
-                return <TaskPage activeTab={activeTab}/>;
+                return <TaskPage activeTab={activeTab} projectId={id}/>;
             default:
                 return <div>Select a page</div>;
         }

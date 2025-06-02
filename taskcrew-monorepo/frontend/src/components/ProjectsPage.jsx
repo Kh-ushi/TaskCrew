@@ -139,7 +139,7 @@ const ProjectsPage = () => {
                     <ProjectCard
                         key={proj._id}
                         project={proj}
-                        onClick={() => navigate(`/dashboard`)}
+                        onClick={() => navigate(`/dashboard/${proj._id}`)}
                         onEdit={onEdit}
                     />
                 ))}
