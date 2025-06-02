@@ -13,15 +13,15 @@ import {CircleCheckBig} from "lucide-react";
 import './Sidebar.css';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: FiHome, to: '/dashboard' },
+  { id: 'dashboard', label: 'Dashboard', icon: FiHome },
   // { id: 'projects',  label: 'Projects',  icon: FiFolder, to: '/projects' },
-  { id: 'tasks',     label: 'Tasks',     icon: FiCheckSquare, to: '/tasks' },
-  { id: 'team',      label: 'Team',      icon: FiUsers, to: '/team' },
-  { id: 'analysis',  label: 'Analysis',  icon: FiBarChart2, to: '/analysis' },
-  { id: 'absence',   label: 'Absence',   icon: FiUserX, to: '/absence' },
+  { id: 'tasks',     label: 'Tasks',     icon: FiCheckSquare},
+  { id: 'team',      label: 'Team',      icon: FiUsers},
+  { id: 'analysis',  label: 'Analysis',  icon: FiBarChart2},
+  { id: 'absence',   label: 'Absence',   icon: FiUserX},
 ];
 
-export default function Sidebar({ collapsed,setCollapsed,active}) {
+export default function Sidebar({ collapsed,setCollapsed,setActivePage }) {
   
   const toggle = () => setCollapsed((c) => !c);
 
@@ -37,11 +37,12 @@ export default function Sidebar({ collapsed,setCollapsed,active}) {
         </button>
       </div>
       <nav className="sidebar-nav">
-        {navItems.map(({ id, label, icon: Icon, to }) => (
+        {navItems.map(({ id, label, icon: Icon}) => (
           <a
             key={id}
-            href={to}
-            className={`nav-item ${active === id ? 'active' : ''}`}
+            // href={to}
+            className={`nav-item`}
+            onClick={()=>setActivePage(id)}
           >
             <Icon className="nav-icon" />
             {!collapsed && <span className="nav-label">{label}</span>}

@@ -91,3 +91,25 @@
 .user-avatar:hover {
   transform: scale(1.05);
 }
+
+.navbar-left-tabs{
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navbar-left-tabs div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-left-tabs div:hover{
+  cursor: pointer;
+  color: #7a4eff;
+}
+
+.list-active,.board-active , .calendar-active {
+  font-weight: 600;
+  color: #7a4eff;
+}
