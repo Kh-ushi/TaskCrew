@@ -26,6 +26,23 @@ services:
       - ./project-service:/app
     depends_on:
       - redis
+  
+  task-service:
+    build:
+      constext: ./task-service
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./task-service/.env
+    volumes:
+     - ./task-service/:app
+    depends_on:
+     - redis
+      
+
+     
+
 
   redis:
     image: redis:latest
