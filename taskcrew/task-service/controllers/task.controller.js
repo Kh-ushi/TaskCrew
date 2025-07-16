@@ -35,6 +35,33 @@ const createTask = async (req, res) => {
         res.status(500).json({ msg: "Failed to create task" });
     }
 
+
 };
 
-export {createTask};
+
+const getTasksByProject = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const tasks = await Task.find({ projectId }).sort({ dueDate: 1, updatedAt: -1 });
+        res.status(201).json(tasks);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to fetch tasks", error: error.message });
+    }
+};
+
+const getMyTasks = async (req, res) => {
+
+    try {
+        const userId = req.user.id;
+        const tasks = await Task.find({ assignedTo: userId }).sort({ dueDate: 1 });
+        res.status(201).json(tasks);
+    }
+    catch (error) {
+        console.error("Failed to fetch your tasks", error.message);
+        res.status(500).json({ message: "Failed to fetch your tasks", error: error.message });
+    }
+
+};
+
+export { createTask, getTasksByProject,getMyTasks};
