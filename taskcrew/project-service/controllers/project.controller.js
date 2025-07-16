@@ -26,6 +26,8 @@ const createProject = async (req, res) => {
             endDate: project.endDate,
         }));
 
+        return res.status(201).json(project);
+
     }
     catch (error) {
         console.error("Error creating project:", error);
@@ -37,10 +39,37 @@ const createProject = async (req, res) => {
 const listMyProjects = async (req, res) => {
     try {
         const userId = req.user.id;
-        const projects = await Project.find({
-            $or: [{ ownerId: userId }, { members: userId }],
-            status:"active"
-        });
+        const projects = await Project.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { ownerId: req.user.id },
+                        { memebers: req.user.id }
+                    ],
+                    status: "active"
+                }
+            },
+            {
+                $addFields: {
+                    sortEndDate: {
+                        $cond: [
+                            { $ifNull: ["$endDate", false] },
+                            "$endDate",
+                            new Date("2999-12-31")
+                        ]
+
+                    }
+                }
+            },
+
+             {
+                $sort: {
+                    sortEndDate: 1,
+                    updatedAt: -1
+                }
+            }
+        ]);
+
         res.status(201).json(projects);
     } catch (error) {
         console.error(error.message);
@@ -145,4 +174,4 @@ const archiveProject = async (req, res) => {
 };
 
 
-export { createProject, listMyProjects, getProject, updateProject, modifyMembers,archiveProject};
+export { createProject, listMyProjects, getProject, updateProject, modifyMembers, archiveProject };
