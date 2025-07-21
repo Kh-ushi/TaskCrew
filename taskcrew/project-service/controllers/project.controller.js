@@ -43,8 +43,8 @@ const listMyProjects = async (req, res) => {
             {
                 $match: {
                     $or: [
-                        { ownerId: req.user.id },
-                        { memebers: req.user.id }
+                        { ownerId: userId },
+                        { members: userId }
                     ],
                     status: "active"
                 }
@@ -62,7 +62,7 @@ const listMyProjects = async (req, res) => {
                 }
             },
 
-             {
+            {
                 $sort: {
                     sortEndDate: 1,
                     updatedAt: -1
@@ -173,5 +173,33 @@ const archiveProject = async (req, res) => {
 
 };
 
+const deleteProject = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
 
-export { createProject, listMyProjects, getProject, updateProject, modifyMembers, archiveProject };
+        const project = Project.findById(projectId);
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+
+        if (project.ownerId !== userId) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        await Project.findByIdAndDelete(projectId);
+        await redisClient.publish("project:deleted", JSON.stringify({
+            projectId,
+            deletedBy: userId
+        }));
+
+        res.status(201).json({ message: "Project deleted successfully" });
+    }
+    catch (error) {
+      console.error("Error deleting project:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+export { createProject, listMyProjects, getProject, updateProject, modifyMembers, archiveProject,deleteProject};

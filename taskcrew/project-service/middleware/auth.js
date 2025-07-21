@@ -1,21 +1,37 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import redisClient from "../redis/redisClient";
 
-const verifyToken = (req, res, next) => {
+dotenv.config();
 
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.stats(401).json({ message: "Missing Token" });
 
-    try {
-        const decoded = jwt.verify(token, dotenv);
-        req.user = decoded;
-        next();
-    }
-    catch (error) {
-        console.error("Error in verifying token:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+const verifyToken = async (req, res, next) => {
+  try {
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ msg: "No token provided" });
     }
 
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
+    if (isBlacklisted) {
+      return res.status(403).json({ msg: "Token is blacklisted" });
+    }
+
+    req.user = {
+      userId: decoded.userId,
+      jti: decoded.jti,
+    };
+
+    next();
+
+  } catch (error) {
+    console.error("Token verification failed:", error.message);
+    throw new Error('Invalid or expired token');
+  }
 };
 
 
