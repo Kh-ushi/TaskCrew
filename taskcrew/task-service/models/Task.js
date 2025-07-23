@@ -12,7 +12,7 @@ const taskSchema = new mongoose.Schema({
   description: String,
 
   projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project", required: true },
-  assignedTo: [String], // list of userIds
+  assignedTo: [String],
   createdBy: { type: String, required: true },
 
   status: {

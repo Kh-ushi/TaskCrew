@@ -38,7 +38,7 @@ const createProject = async (req, res) => {
 
 const listMyProjects = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const projects = await Project.aggregate([
             {
                 $match: {
@@ -82,7 +82,7 @@ const getProject = async (req, res) => {
         const { id } = req.params;
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: "Not found" });
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (project.ownerId !== userId && !project.members.includes(userId)) {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -100,7 +100,7 @@ const updateProject = async (req, res) => {
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: "Not found" });
 
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (project.ownerId !== userId && !project.members.includes(userId)) {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -128,7 +128,7 @@ const modifyMembers = async (req, res) => {
         const project = Project.findById(id);
         if (!project) return res.status(404).json({ message: "Not found" });
 
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (project.ownerId !== userId && !project.members.includes(userId)) {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -159,7 +159,7 @@ const archiveProject = async (req, res) => {
         const project = Project.findById(id);
         if (!project) return res.status(404).json({ message: "Not found" });
 
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (project.ownerId !== userId && !project.members.includes(userId)) {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -176,7 +176,7 @@ const archiveProject = async (req, res) => {
 const deleteProject = async (req, res) => {
     try {
         const projectId = req.params.id;
-        const userId = req.user.id;
+        const userId = req.user.userId;
 
         const project = Project.findById(projectId);
         if (!project) {

@@ -21,12 +21,12 @@ const createTask = async (req, res) => {
             createdBy: req.user.userId,
         });
 
-        await redisClient.publish("task:created", JSON.stringify({
-            taskId: task._id,
-            projectId: task.projectId,
-            assignedTo,
-            title: task.title,
-        }));
+        // await redisClient.publish("task:created", JSON.stringify({
+        //     taskId: task._id,
+        //     projectId: task.projectId,
+        //     assignedTo,
+        //     title: task.title,
+        // }));
 
         res.status(201).json(task);
     }
@@ -35,6 +35,20 @@ const createTask = async (req, res) => {
         res.status(500).json({ msg: "Failed to create task" });
     }
 
+
+};
+
+
+const getTaskById = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const task = await Task.findById(taskId);
+        if (!task) return res.status(404).json({ message: "Task not found" });
+        res.status(201).json(task);
+
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch task", error: error.message });
+    }
 
 };
 
@@ -53,8 +67,8 @@ const getTasksByProject = async (req, res) => {
 const getMyTasks = async (req, res) => {
 
     try {
-        const userId = req.user.id;
-        const tasks = await Task.find({ assignedTo: userId }).sort({ dueDate: 1 });
+        const userId = req.user.userId;
+        const tasks = await Task.find({ $or: [{ createdBy: userId }, { assignedTo: userId }] }).sort({ dueDate: 1 });
         res.status(201).json(tasks);
     }
     catch (error) {
@@ -64,4 +78,47 @@ const getMyTasks = async (req, res) => {
 
 };
 
-export { createTask, getTasksByProject,getMyTasks};
+const updateTask = async (req, res) => {
+    try {
+        const updates = req.body;
+        const { taskId } = req.params;
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        // if (task.createdBy !== req.user.userId) {
+        //     return res.status(403).json({ msg: "Not authorized" });
+        // }
+
+        Object.assign(task, updates);
+        await task.save();
+        res.status(201).json(task);
+
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update task", error: error.message });
+    }
+};
+
+const deleteTask = async (req, res) => {
+    try {
+
+        const { taskId } = req.params;
+        const task = await Task.findById(taskId);
+        if (!task) return res.status(404).json({ msg: "Task not found" });
+
+        // if (task.createdBy !== req.user.userId) {
+        //     return res.status(403).json({ msg: "Not authorized" });
+        // }
+
+        await Task.findByIdAndDelete(req.params.id);
+        res.status(201).json({ task, message: "Task has been successfully deleted" });
+
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to delete task", error: error.message });
+    }
+};
+
+export { createTask, getTasksByProject, getMyTasks, getTaskById, updateTask,deleteTask};
