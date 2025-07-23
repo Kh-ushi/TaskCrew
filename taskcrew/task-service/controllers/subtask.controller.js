@@ -73,9 +73,39 @@ const deleteSubTask = async (req, res) => {
         await task.save();
 
         res.json({ message: "Subtask deleted", task });
-    } catch (err) {
-        res.status(500).json({ msg: "Failed to delete subtask", error: err.message });
+    } catch (error) {
+        res.status(500).json({ msg: "Failed to delete subtask", error: error.message });
     }
-}
+};
 
-export { getSubtasks, addSubTask, updateSubTask, deleteSubTask };
+const reorderSubTasks = async (req, res) => {
+    try {
+
+        const { taskId } = req.params;
+        const { order } = req.body;
+
+        if (!Array.isArray(order)) {
+            return res.status(400).json({ message: "Order must be an array of subtask IDs" });
+        }
+
+        const task = await Task.findById(taskId);
+        if (!task) { return res.status(404).json({ message: "Task not found" }) };
+
+        const newOrder = order.map((id) => {
+            const sub = task.subtasks.id(id);
+            if (!sub) throw new Error(`Invalid subtask ID: ${id}`);
+            return sub;
+        });
+
+        task.subtasks = newOrder;
+        await task.save();
+
+        res.status(201).json(task.subtasks);
+
+    } catch (error) {
+        console.error("Failed to reorder subtasks:", error.message);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks };
