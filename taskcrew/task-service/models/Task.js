@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 const subtaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   isCompleted: { type: Boolean, default: false },
+  dueDate: Date,                     
+  assignedTo: [String],             
+  tags: [String],                   
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: Date
 }, { _id: true });
 
 
