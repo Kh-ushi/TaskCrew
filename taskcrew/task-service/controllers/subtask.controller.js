@@ -14,17 +14,15 @@ const getSubtasks = async (req, res) => {
 };
 
 const addSubTask = async (req, res) => {
-
     try {
-
         const { taskId } = req.params;
-        const { title } = req.body;
+        const { title, dueDate, assignedTo = [], tags = [] } = req.body;
         if (!title) return res.status(400).json({ msg: "Subtask title is required" });
 
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ msg: "Task not found" });
 
-        task.subtasks.push({ title });
+        task.subtasks.push({ title, dueDate, assignedTo, tags });
         await task.save();
 
         res.status(201).json(task.subtasks);
@@ -37,8 +35,10 @@ const addSubTask = async (req, res) => {
 const updateSubTask = async (req, res) => {
 
     try {
-        const { taskId, subtaskId } = req.params;
-        const { title, isCompleted } = req.body;
+        const { taskId, subTaskId } = req.params;
+
+        const { title, isCompleted, dueDate, assignedTo, tags } = req.body;
+        const updates = { title, isCompleted, dueDate, assignedTo, tags };
 
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ msg: "Task not found" });
@@ -46,8 +46,9 @@ const updateSubTask = async (req, res) => {
         const subtask = task.subtasks.id(subtaskId);
         if (!subtask) return res.status(404).json({ msg: "Subtask not found" });
 
-        if (title !== undefined) subtask.title = title;
-        if (isCompleted !== undefined) subtask.isCompleted = isCompleted;
+        Object.entries(updates).forEach(([k, v]) => {
+            if (v !== undefined) subtask[k] = v;
+        });
 
         await task.save();
         res.status(201).json(task.subtasks);
@@ -108,4 +109,56 @@ const reorderSubTasks = async (req, res) => {
     }
 };
 
-export { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks };
+
+const addComment = async (req, res) => {
+    try {
+        const { taskId, subTaskId } = req.params;
+        const { content } = req.body;
+        const { userId } = req.user;
+
+        if (!content) return res.status(400).json({ message: "Content required" });
+        const task = await Task.findById(taskId);
+        if (!task) return res.status(404).json({ message: "Task not found" });
+
+        const subtask = task.subtasks.id(subTaskId);
+        if (!subtask) return res.status(404).json({ message: "Subtask not found" });
+
+        subtask.comments.push({ userId, content });
+        await task.save();
+        res.status(201).json(sub.comments);
+    }
+    catch (error) {
+        console.error("Failed to add comment:", error.message);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+const deleteComment= async (req, res) => {
+
+    try {
+        const { taskId, subTaskId, commentId } = req.params;
+        const task = await Task.findById(taskId);
+        if (!task) return res.status(404).json({ message: "Task not found" });
+
+        const subtask = task.subtasks.id(subTaskId);
+        if (!subtask) return res.status(404).json({ message: "SubTask not found" });
+
+        const comment = subtask.comments.id(commentId);
+        if (!comment) return res.status(404).json({ msg: "Comment not found" });
+
+        comment.remove();
+        await task.save();
+
+        res.status(201).json(sub.comments);
+
+    }
+    catch (error) {
+        console.error("Failed to delete comment:", error.message);
+        res.status(400).json({ message: error.message });
+    }
+
+};
+
+
+
+export { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks, addComment,deleteComment};
