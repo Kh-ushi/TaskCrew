@@ -29,7 +29,7 @@ services:
   
   task-service:
     build:
-      constext: ./task-service
+      context: ./task-service
       dockerfile: Dockerfile
     ports:
       - "3003:3003"
@@ -39,7 +39,20 @@ services:
      - ./task-service/:app
     depends_on:
      - redis
-      
+
+  notification-service:
+    build: 
+       context: ./notification-service
+       dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - MONGO_URI=${MONGO_URI}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - redis    
 
      
 
