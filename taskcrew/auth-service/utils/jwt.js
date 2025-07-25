@@ -21,10 +21,11 @@ const verifyToken = async (req, res, next) => {
       return res.status(403).json({ msg: "Token is blacklisted" });
     }
 
-     req.user = {
+    req.user = {
       userId: decoded.userId,
       jti: decoded.jti,
     };
+
     next();
 
   } catch (error) {

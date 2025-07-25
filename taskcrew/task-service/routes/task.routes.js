@@ -3,7 +3,7 @@ import { verifyToken } from "../middleware/auth.js";
 
 import { createTask,getTasksByProject,getMyTasks,getTaskById,updateTask,deleteTask} from "../controllers/task.controller.js";
 
-const router=express.Router();
+const router=express.Router({mergeParams:true});
 
 router.use(verifyToken);
 

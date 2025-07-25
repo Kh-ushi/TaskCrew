@@ -8,8 +8,8 @@ const uploadAttachment = async (req, res) => {
         const { taskId } = req.params;
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ message: "Task not found" });
-        const { id: filedId, filename, contentType, size, uploadDate } = req.file;
-        task.attachments.push({ filedId, filename, contentType, size, uploadDate });
+        const { id: fileId, filename, contentType, size, uploadDate } = req.file;
+        task.attachments.push({ fileId, filename, contentType, size, uploadDate });
         await task.save();
 
         res.status(201).json(task.attachments);
@@ -61,11 +61,11 @@ const deleteAttachment = async (req, res) => {
         if (!att) return res.status(404).json({ msg: "Attachment not found" });
         await gridfsBucket.delete(att.fileId);
         att.remove();
-    await task.save();
+        await task.save();
     } catch (error) {
 
     }
 };
 
 
-export { uploadAttachment, listAttatchments, downloadAttachment };
+export { uploadAttachment, listAttatchments, downloadAttachment,deleteAttachment};

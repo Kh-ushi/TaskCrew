@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 
 const attachmentSchema = new mongoose.Schema({
-  filedId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  fileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   filename: { type: String, required: true },
   contentType: String,
   size: Number,

@@ -3,7 +3,7 @@ import { verifyToken } from "../middleware/auth.js";
 
 import { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks, addComment,deleteComment} from "../controllers/subtask.controller.js";
 
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 router.use(verifyToken);
 
 router.get("/", getSubtasks);
