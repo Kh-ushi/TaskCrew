@@ -22,7 +22,12 @@ const startSubscriber =async() => {
         "task:updated",
         "task:deleted",
         "subtask:created",
-        "comment:added"
+        "subtask:updated",
+        "subtask:deleted",
+        "comment:added",
+        "comment:removed",
+        "attachment:added",
+        "attachment:removed"
     ];
 
     for (ch of channels) {

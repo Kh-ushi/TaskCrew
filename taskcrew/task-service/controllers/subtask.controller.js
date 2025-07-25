@@ -1,5 +1,5 @@
 import Task from '../models/Task';
-
+import redisClient from '../redis/redisClient';
 
 const getSubtasks = async (req, res) => {
     try {
@@ -16,6 +16,7 @@ const getSubtasks = async (req, res) => {
 const addSubTask = async (req, res) => {
     try {
         const { taskId } = req.params;
+        const { userId } = req.user;
         const { title, dueDate, assignedTo = [], tags = [] } = req.body;
         if (!title) return res.status(400).json({ msg: "Subtask title is required" });
 
@@ -24,6 +25,17 @@ const addSubTask = async (req, res) => {
 
         task.subtasks.push({ title, dueDate, assignedTo, tags });
         await task.save();
+
+        const newSubtask = task.subtasks.findOne(title);
+
+        await redisClient.publish("subtask:created", JSON.stringify({
+            userId,
+            taskId,
+            subtaskId: newSubtask._id,
+            title: `New subtask: ${newSubtask.title}`,
+            watchers: task.assignedTo,
+            data: { taskId, subtaskId: newSubtask._id }
+        }));
 
         res.status(201).json(task.subtasks);
     }
@@ -36,6 +48,7 @@ const updateSubTask = async (req, res) => {
 
     try {
         const { taskId, subTaskId } = req.params;
+        const { userId } = req.user;
 
         const { title, isCompleted, dueDate, assignedTo, tags } = req.body;
         const updates = { title, isCompleted, dueDate, assignedTo, tags };
@@ -43,7 +56,7 @@ const updateSubTask = async (req, res) => {
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ msg: "Task not found" });
 
-        const subtask = task.subtasks.id(subtaskId);
+        const subtask = task.subtasks.id(subTaskId);
         if (!subtask) return res.status(404).json({ msg: "Subtask not found" });
 
         Object.entries(updates).forEach(([k, v]) => {
@@ -51,6 +64,15 @@ const updateSubTask = async (req, res) => {
         });
 
         await task.save();
+
+        await redisClient.publish("subtask:updated", JSON.stringify({
+            userId,
+            taskId,
+            subtaskId: subTaskId,
+            title: `Subtask Updated:${subtask.title}`,
+            watchers: task.assignedTo,
+            data: { taskId, subTaskId }
+        }));
         res.status(201).json(task.subtasks);
     }
     catch (error) {
@@ -62,16 +84,26 @@ const updateSubTask = async (req, res) => {
 
 const deleteSubTask = async (req, res) => {
     try {
-        const { taskId, subtaskId } = req.params;
+        const { taskId, subTaskId } = req.params;
+        const { userId } = req.user;
 
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ msg: "Task not found" });
 
-        const subtask = task.subtasks.id(subtaskId);
+        const subtask = task.subtasks.id(subTaskId);
         if (!subtask) return res.status(404).json({ msg: "Subtask not found" });
 
         subtask.remove();
         await task.save();
+
+        await redisClient.publish("subtask:deleted", JSON.stringify({
+            userId,
+            taskId,
+            subtaskId: subTaskId,
+            title: `Subtask deleted:${subtask.title}`,
+            watchers: task.assignedTo,
+            data: { taskId, subTaskId }
+        }));
 
         res.json({ message: "Subtask deleted", task });
     } catch (error) {
@@ -125,6 +157,15 @@ const addComment = async (req, res) => {
 
         subtask.comments.push({ userId, content });
         await task.save();
+
+        await redisClient.publish(`comment:added`, JSON.stringify({
+            userId,
+            taskId,
+            subtaskId: subTaskId,
+            title: `Comment added`,
+            watchers: task.assignedTo,
+            data: { taskId, subTaskId }
+        }));
         res.status(201).json(sub.comments);
     }
     catch (error) {
@@ -133,10 +174,11 @@ const addComment = async (req, res) => {
     }
 };
 
-const deleteComment= async (req, res) => {
+const deleteComment = async (req, res) => {
 
     try {
         const { taskId, subTaskId, commentId } = req.params;
+        const { userId } = req.user;
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
@@ -149,7 +191,18 @@ const deleteComment= async (req, res) => {
         comment.remove();
         await task.save();
 
+        await redisClient.publish(`comment:removed`, JSON.stringify({
+            userId,
+            taskId,
+            subtaskId: subTaskId,
+            title: `Comment removed`,
+            watchers: task.assignedTo,
+            data: { taskId, subTaskId }
+        }));
+
         res.status(201).json(sub.comments);
+
+
 
     }
     catch (error) {
@@ -161,4 +214,4 @@ const deleteComment= async (req, res) => {
 
 
 
-export { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks, addComment,deleteComment};
+export { getSubtasks, addSubTask, updateSubTask, deleteSubTask, reorderSubTasks, addComment, deleteComment };

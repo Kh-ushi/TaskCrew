@@ -1,16 +1,26 @@
 
 import Task from "../models/Task";
 import { gridfsBucket } from "../config/gridfs";
+import redisClient from "../redis/redisClient";
 
 const uploadAttachment = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "File required" });
         const { taskId } = req.params;
+        const { userId } = req.user;
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ message: "Task not found" });
         const { id: fileId, filename, contentType, size, uploadDate } = req.file;
         task.attachments.push({ fileId, filename, contentType, size, uploadDate });
         await task.save();
+
+        redisClient.publish("attachment:added", JSON.stringify({
+            userId,
+            taskId,
+            attachmentId: fileId,
+            title: `File attached: ${filename}`,
+            data: { taskId, attachmentId: fileId }
+        }));
 
         res.status(201).json(task.attachments);
     }
@@ -23,9 +33,11 @@ const uploadAttachment = async (req, res) => {
 const listAttatchments = async (req, res) => {
     try {
         const { taskId } = req.params;
+        const { userId } = req.user;
         const task = await Task.findById(taskId).select("attachments");
         if (!task) return res.status(404).json({ message: "Task not found" });
         res.status(201).json(task.attachments);
+
     }
     catch (error) {
         console.error(error);
@@ -62,10 +74,21 @@ const deleteAttachment = async (req, res) => {
         await gridfsBucket.delete(att.fileId);
         att.remove();
         await task.save();
-    } catch (error) {
 
+        redisClient.publish("attachment:removed", JSON.stringify({
+            userId,
+            taskId,
+            attachmentId: attId,
+            title: `File Has Been Removed:${attId}`,
+            data: { taskId, attachmentId: attId }
+        }));
+
+        res.status(201).json({ msg: "Attachment deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Deletion Failed" });
     }
 };
 
 
-export { uploadAttachment, listAttatchments, downloadAttachment,deleteAttachment};
+export { uploadAttachment, listAttatchments, downloadAttachment, deleteAttachment };

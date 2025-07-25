@@ -27,7 +27,7 @@ const createTask = async (req, res) => {
             userId,
             taskId:task._id,
             title: `New task: ${task.title}`,
-            watchers:projectId.assignedTo,
+            watchers:task.assignedTo,
             data: { taskId: task._id, projectId: task.projectId }
         }));
 
@@ -102,7 +102,7 @@ const updateTask = async (req, res) => {
               userId,
               taskId,
               title:`${task.title} has been updated,pls check`,
-              watchers:assignedTo,
+              watchers:task.assignedTo,
               data: { taskId: task._id}
         }));
 
@@ -129,7 +129,8 @@ const deleteTask = async (req, res) => {
         await redisClient.publish("task:deleted",JSON.stringify)({
             userId,
             taskId,
-            title:`${task.title} has been deleted`
+            title:`${task.title} has been deleted`,
+            watchers:task.assignedTo
         });
         res.status(201).json({ task, message: "Task has been successfully deleted" });
 
