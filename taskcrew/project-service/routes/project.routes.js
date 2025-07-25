@@ -4,7 +4,7 @@ import { createProject, listMyProjects, getProject, updateProject, modifyMembers
 import { verifyToken } from '../middleware/auth.js';
 
 dotenv.config();
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 
 router.use(verifyToken);
 

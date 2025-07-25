@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+
+const attachmentSchema = new mongoose.Schema({
+  filedId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  filename: { type: String, required: true },
+  contentType: String,
+  size: Number,
+  uploadDate: Date
+}, {
+  _id: true
+});
+
 const commentSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   content: { type: String, required: true },
@@ -16,7 +27,7 @@ const subtaskSchema = new mongoose.Schema({
   dueDate: Date,
   assignedTo: [String],
   tags: [String],
-  comments:[commentSchema],
+  comments: [commentSchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date
 }, { _id: true });
@@ -39,7 +50,8 @@ const taskSchema = new mongoose.Schema({
 
   dueDate: Date,
 
-  subtasks: [subtaskSchema]
+  subtasks: [subtaskSchema],
+  attachments:[attachmentSchema]
 }, { timestamps: true });
 
 const Task = mongoose.model("Task", taskSchema)
