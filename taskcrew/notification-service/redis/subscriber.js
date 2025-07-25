@@ -16,8 +16,11 @@ const startSubscriber =async() => {
 
     const channels = [
         "project:created",
+        "project:membersAdded",
+        "project:membersRemoved",
         "task:assigned",
-        "task:statusUpdated",
+        "task:updated",
+        "task:deleted",
         "subtask:created",
         "comment:added"
     ];
@@ -28,7 +31,7 @@ const startSubscriber =async() => {
 
             try {
                 const evt = JSON.parse(msg);
-                const recepients = evt.userId ? [evt.userId] : evt.watchers || [];
+                const recepients = evt.watchers || [];
 
                 for (const userId of recepients) {
                     await Notification.create({

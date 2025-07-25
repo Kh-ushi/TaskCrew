@@ -21,12 +21,15 @@ const createTask = async (req, res) => {
             createdBy: req.user.userId,
         });
 
-        // await redisClient.publish("task:created", JSON.stringify({
-        //     taskId: task._id,
-        //     projectId: task.projectId,
-        //     assignedTo,
-        //     title: task.title,
-        // }));
+        const {userId}=req.user;
+
+        await redisClient.publish("task:assigned",JSON.stringify({
+            userId,
+            taskId:task._id,
+            title: `New task: ${task.title}`,
+            watchers:projectId.assignedTo,
+            data: { taskId: task._id, projectId: task.projectId }
+        }));
 
         res.status(201).json(task);
     }
@@ -82,7 +85,7 @@ const updateTask = async (req, res) => {
     try {
         const updates = req.body;
         const { taskId } = req.params;
-
+        const {userId}=req.user;
         const task = await Task.findById(taskId);
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
@@ -94,6 +97,15 @@ const updateTask = async (req, res) => {
 
         Object.assign(task, updates);
         await task.save();
+         
+        await redisClient.publish("task:updated",JSON.stringify({
+              userId,
+              taskId,
+              title:`${task.title} has been updated,pls check`,
+              watchers:assignedTo,
+              data: { taskId: task._id}
+        }));
+
         res.status(201).json(task);
 
     } catch (error) {
@@ -105,6 +117,7 @@ const deleteTask = async (req, res) => {
     try {
 
         const { taskId } = req.params;
+        const {userId}=req.user;
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ msg: "Task not found" });
 
@@ -113,6 +126,11 @@ const deleteTask = async (req, res) => {
         // }
 
         await Task.findByIdAndDelete(req.params.id);
+        await redisClient.publish("task:deleted",JSON.stringify)({
+            userId,
+            taskId,
+            title:`${task.title} has been deleted`
+        });
         res.status(201).json({ task, message: "Task has been successfully deleted" });
 
     }
