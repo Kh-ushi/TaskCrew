@@ -64,6 +64,11 @@
     background-color: #f6f1e7;
 }
 
+.btn:hover{
+    background-color: #333;
+    color:#f6f1e7;
+}
+
 
 .navbar__toggle {
     display: none;

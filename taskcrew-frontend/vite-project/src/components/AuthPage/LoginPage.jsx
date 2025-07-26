@@ -40,7 +40,7 @@ export default function LoginPage() {
             required
           />
 
-          <button type="submit" className="btn btn--primary">
+          <button type="submit" className="login_btn login_btn--primary">
             Log In
           </button>
         </form>
