@@ -3,10 +3,13 @@ import './NavBar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck,faBars,faTimes } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function NavBar() {
+function NavBar({isCreateSpace=false}) {
  const [isOpen,setIsOpen]=useState(false);
-  const navOptions = ['Home', 'Features', 'Pricing', 'Testimonials']
+  const navOptions = isCreateSpace==false?['Home', 'Features', 'Pricing', 'Testimonials']:[];
+
+  const navigate=useNavigate();
 
   return (
     <nav className="navbar">
@@ -40,8 +43,9 @@ function NavBar() {
       </ul>
 
       <div className="navbar__auth">
-        <button className="btn btn--outline">Log In</button>
-        <button className="btn btn--primary">Sign Up</button>
+        {!isCreateSpace && <button className="btn btn--outline" onClick={()=>navigate('/login')} >Log In</button>}
+        {!isCreateSpace && <button className="btn btn--primary"  onClick={()=>navigate('/signin')}>Sign Up</button>}
+        {isCreateSpace && <button className='btn btn--outline'>Create Space +</button>}
       </div>
     </nav>
   )

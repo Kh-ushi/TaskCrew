@@ -39,6 +39,7 @@
     color: #555;
     font-size: 1rem;
     transition: color 0.2s ease;
+    cursor: pointer;
 }
 
 .navbar__link:hover {
