@@ -6,6 +6,7 @@ import redisClient from '../redis/redisClient';
 import jwt from 'jsonwebtoken';
 
 
+
 const register = async (req, res) => {
 
     try {
@@ -24,18 +25,23 @@ const register = async (req, res) => {
 
         const { accessToken, refreshToken } = await generateTokens(user._id);
 
-        return res.status(201).json({
-
-            message: "User registered successfully",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-            },
-            accessToken,
-            refreshToken
-
-        });
+        return res.
+            cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                // secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            }).
+            status(201).
+            json({
+                message: "User registered successfully",
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                },
+                accessToken,
+            });
     }
     catch (error) {
         console.error("Registration error:", error.message);
@@ -55,16 +61,24 @@ const login = async (req, res) => {
 
         const { accessToken, refreshToken } = await generateTokens(user._id);
 
-        return res.status(201).json({
-            message: "User logged in successfully",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-            },
-            accessToken,
-            refreshToken
-        });
+        return res.
+            cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                // secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            }).
+            status(201).
+            json({
+                message: "User logged in successfully",
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                },
+                accessToken,
+                refreshToken
+            });
     }
     catch (error) {
         console.error("Login error:", error.message);
@@ -78,14 +92,14 @@ const logout = async (req, res) => {
     try {
 
         const authHeader = req.headers.authorization;
-        const refreshToken = req.body.refreshToken;
+        const refreshToken =req.cookies;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ msg: "Access token missing" });
         }
 
         if (!refreshToken) {
-            return res.status(400).json({ msg: "Refresh token required in body" });
+            return res.status(400).json({ msg: "Refresh token is missing" });
         }
 
         const accessToken = authHeader.split(" ")[1];
@@ -152,4 +166,4 @@ const refreshToken = async (req, res) => {
 };
 
 
-export { register, login, logout,refreshToken};
+export { register, login, logout, refreshToken };

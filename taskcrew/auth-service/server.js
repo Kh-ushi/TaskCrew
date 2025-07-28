@@ -3,10 +3,12 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import connectDb from "./config/db.js";
+import cookieParser from "cookie-parser";
 
 
 dotenv.config();
 const app = express();
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
