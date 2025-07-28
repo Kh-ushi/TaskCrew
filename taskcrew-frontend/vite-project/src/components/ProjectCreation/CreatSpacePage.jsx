@@ -4,13 +4,23 @@ import NavBar from "../LandingPage/NavBar";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import CreateSpaceModal from "./CreateSpaceModal";
 
 function CreateSpacePage() {
   const [spaces, setSpaces] = useState([]);
+  const [isOpen,setIsOpen]=useState(false);
+
+  const onClose=()=>{
+    setIsOpen(false);
+  };
+
+  const onCreate=(payload)=>{
+    console.log(payload);
+  };
 
   return (
     <div className="create-space-container">
-      <NavBar isCreateSpace={true} />
+      <NavBar isCreateSpace={true} setOpen={setIsOpen}/>
 
       <div className="create-space-layer">
         <div className="projects-container">
@@ -27,6 +37,7 @@ function CreateSpacePage() {
             </p>
             <button
               className="empty-btn"
+              onClick={()=>setIsOpen(true)}
             >
               + Create Your First Space
             </button>
@@ -34,6 +45,8 @@ function CreateSpacePage() {
         )}
       </div>
       </div>
+
+      {isOpen && <CreateSpaceModal isOpen={isOpen} onClose={onClose} onCreate={onCreate} ></CreateSpaceModal> }
     </div>
   );
 }

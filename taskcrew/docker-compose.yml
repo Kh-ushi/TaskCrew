@@ -1,6 +1,17 @@
-version: "3.9"
-
 services:
+
+  api-gateway:
+    build:
+     context: ./api-gateway
+     dockerfile: Dockerfile
+    ports:
+     - "3000:3000"
+    env_file:
+     - ./api-gateway/.env
+    volumes :
+     - ./api-gateway/:app   
+
+
   auth-service:
     build:
       context: ./auth-service
@@ -14,51 +25,46 @@ services:
     depends_on:
       - redis
 
-  project-service:
-    build:
-      context: ./project-service
-      dockerfile: Dockerfile
-    ports:
-      - "3002:3002"
-    env_file:
-      - ./project-service/.env
-    volumes:
-      - ./project-service:/app
-    depends_on:
-      - redis
-  
-  task-service:
-    build:
-      context: ./task-service
-      dockerfile: Dockerfile
-    ports:
-      - "3003:3003"
-    env_file:
-      - ./task-service/.env
-    volumes:
-     - ./task-service/:app
-    depends_on:
-     - redis
+  # project-service:
+  #   build:
+  #     context: ./project-service
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3002:3002"
+  #   env_file:
+  #     - ./project-service/.env
+  #   volumes:
+  #     - ./project-service:/app
+  #   depends_on:
+  #     - redis
 
-  notification-service:
-    build: 
-       context: ./notification-service
-       dockerfile: Dockerfile
-    ports:
-      - "3004:3004"
-    environment:
-      - PORT=3004
-      - MONGO_URI=${MONGO_URI}
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=${JWT_SECRET}
-    depends_on:
-      - redis    
+  # task-service:
+  #   build:
+  #     context: ./task-service
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3003:3003"
+  #   env_file:
+  #     - ./task-service/.env
+  #   volumes:
+  #     - ./task-service:/app
+  #   depends_on:
+  #     - redis
 
-     
-
+  # notification-service:
+  #   build:
+  #     context: ./notification-service
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3004:3004"
+  #   env_file:
+  #     - ./notification-service/.env
+  #   depends_on:
+  #     - redis
 
   redis:
     image: redis:latest
-    container_name: redis 
+    container_name: redis
     ports:
       - "6379:6379"
+

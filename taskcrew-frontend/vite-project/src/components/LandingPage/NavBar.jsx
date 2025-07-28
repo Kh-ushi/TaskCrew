@@ -5,7 +5,7 @@ import { faCircleCheck,faBars,faTimes } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function NavBar({isCreateSpace=false}) {
+function NavBar({isCreateSpace=false,setOpen={}}) {
  const [isOpen,setIsOpen]=useState(false);
   const navOptions = isCreateSpace==false?['Home', 'Features', 'Pricing', 'Testimonials']:[];
 
@@ -45,7 +45,7 @@ function NavBar({isCreateSpace=false}) {
       <div className="navbar__auth">
         {!isCreateSpace && <button className="btn btn--outline" onClick={()=>navigate('/login')} >Log In</button>}
         {!isCreateSpace && <button className="btn btn--primary"  onClick={()=>navigate('/signin')}>Sign Up</button>}
-        {isCreateSpace && <button className='btn btn--outline'>Create Space +</button>}
+        {isCreateSpace && <button className='btn btn--outline' onClick={()=>setOpen(true)}>Create Space +</button>}
       </div>
     </nav>
   )

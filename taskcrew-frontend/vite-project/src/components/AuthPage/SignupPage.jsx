@@ -1,24 +1,31 @@
 import React, { useState } from 'react'
 import './SignupPage.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus,faCircleCheck} from '@fortawesome/free-solid-svg-icons'
+
 
 export default function SignupPage() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const[error,setError]=useState('');
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log({ name, email, password, confirmPassword })
+    if(password!=confirmPassword){
+      setError("Passwords don't match");
+      return;
+    }
+    console.log({ name, email, password, confirmPassword });
   }
 
   return (
     <div className="signup-page">
       <div className="signup-card">
+       <div className='signup-error'><p>{error}</p></div>
         <div className="signup-card__header">
-          <FontAwesomeIcon icon={faUserPlus} size="2x" />
+          <FontAwesomeIcon icon={faCircleCheck} size="2x" />
           <h2>TaskCrew</h2>
         </div>
 

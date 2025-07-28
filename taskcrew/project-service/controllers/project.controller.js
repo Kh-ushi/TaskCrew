@@ -222,7 +222,7 @@ const deleteProject = async (req, res) => {
         await redisClient.publish("project:deleted", JSON.stringify({
             projectId,
             deletedBy: userId,
-            title:`${project.name} has been deleted`,
+            title: `${project.name} has been deleted`,
             watchers: project.members
         }));
 
