@@ -59,15 +59,12 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.find({ email });
-        if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+        const user = await User.findOne({ email });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ msg: "Invalid credentials" });
         }
-
+        
         const { accessToken, refreshToken } = await generateTokens(user._id);
-
-    
-
         return res.
             cookie("refreshToken", refreshToken, {
                 httpOnly: true,
@@ -84,7 +81,6 @@ const login = async (req, res) => {
                     email: user.email,
                 },
                 accessToken,
-                refreshToken
             });
     }
     catch (error) {
