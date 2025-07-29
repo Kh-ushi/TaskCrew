@@ -1,8 +1,8 @@
 
 import bcrypt from 'bcrypt';
-import User from '../models/User';
-import { generateTokens } from '../utils/generateToken';
-import redisClient from '../redis/redisClient';
+import User from "../models/User.js"
+import { generateTokens } from '../utils/generateToken.js';
+import redisClient from '../redis/redisClient.js';
 import jwt from 'jsonwebtoken';
 
 
@@ -10,40 +10,42 @@ import jwt from 'jsonwebtoken';
 const register = async (req, res) => {
 
     try {
-        const { name, email, password } = req.body;
-        const existing = await User.findOne({ email });
-        if (existing) {
-            return res.status(40).json({ message: "Email already in use" });
-        }
+        console.log("I am in register");
+    //     const { name, email, password } = req.body;
+    //     const existing = await User.findOne({ email });
+    //     if (existing) {
+    //         return res.status(40).json({ message: "Email already in use" });
+    //     }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({
-            name,
-            email,
-            password: hashedPassword,
-        });
+    //     const hashedPassword = await bcrypt.hash(password, 10);
+    //     const user = new User({
+    //         name,
+    //         email,
+    //         password: hashedPassword,
+    //     });
 
-        const { accessToken, refreshToken } = await generateTokens(user._id);
+    //     const { accessToken, refreshToken } = await generateTokens(user._id);
 
-        return res.
-            cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                // secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            }).
-            status(201).
-            json({
-                message: "User registered successfully",
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                },
-                accessToken,
-            });
+    //     return res.
+    //         cookie("refreshToken", refreshToken, {
+    //             httpOnly: true,
+    //             // secure: process.env.NODE_ENV === "production",
+    //             sameSite: "strict",
+    //             maxAge: 7 * 24 * 60 * 60 * 1000
+    //         }).
+    //         status(201).
+    //         json({
+    //             message: "User registered successfully",
+    //             user: {
+    //                 id: user._id,
+    //                 name: user.name,
+    //                 email: user.email,
+    //             },
+    //             accessToken,
+    //         });
     }
     catch (error) {
+        console.log(error);
         console.error("Registration error:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
@@ -99,7 +101,7 @@ const logout = async (req, res) => {
         }
 
         if (!refreshToken) {
-            return res.status(400).json({ msg: "Refresh token is missing" });
+            return res.status(400).json({ msg: "Refresh token is missing"});
         }
 
         const accessToken = authHeader.split(" ")[1];
@@ -127,7 +129,7 @@ const logout = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        const refreshToken = req.body;
+        const refreshToken = req.cookies;
         if (!refreshToken) {
             return res.status(400).json({ message: "Refresh token required" })
         }

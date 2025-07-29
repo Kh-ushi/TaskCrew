@@ -1,29 +1,40 @@
 import React, { useState } from 'react'
 import './SignupPage.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserPlus,faCircleCheck} from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 
+import api from '../../utils/axiosInstance'
+import { setAccessToken } from '../../utils/auth'
 
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const[error,setError]=useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(password!=confirmPassword){
+    if (password != confirmPassword) {
       setError("Passwords don't match");
       return;
     }
-    console.log({ name, email, password, confirmPassword });
+
+    try {
+      console.log(name, email, password, confirmPassword);
+      const { data } = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`);
+      // console.log(data);
+    }
+    catch (error) {
+      console.log(error);
+    }
+
   }
 
   return (
     <div className="signup-page">
       <div className="signup-card">
-       <div className='signup-error'><p>{error}</p></div>
+        <div className='signup-error'><p>{error}</p></div>
         <div className="signup-card__header">
           <FontAwesomeIcon icon={faCircleCheck} size="2x" />
           <h2>TaskCrew</h2>
@@ -77,5 +88,5 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
-)
+  )
 }

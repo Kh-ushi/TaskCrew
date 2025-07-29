@@ -9,7 +9,7 @@ services:
     env_file:
      - ./api-gateway/.env
     volumes :
-     - ./api-gateway/:app   
+     - ./api-gateway:/app   
 
 
   auth-service:
@@ -67,4 +67,4 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-
+  

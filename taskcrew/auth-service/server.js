@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import connectDb from "./config/db.js";
 import cookieParser from "cookie-parser";
+import authRoutes from "./routes/auth.routes.js";
 
 
 dotenv.config();
@@ -12,6 +13,8 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/auth",authRoutes);
 
 
 const startServer = async () => {

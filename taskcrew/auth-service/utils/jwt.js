@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import redisClient from '../redis/redisClient';
+import redisClient from '../redis/redisClient.js';
 
 dotenv.config();
 
