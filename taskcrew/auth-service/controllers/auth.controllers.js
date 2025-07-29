@@ -11,38 +11,41 @@ const register = async (req, res) => {
 
     try {
         console.log("I am in register");
-    //     const { name, email, password } = req.body;
-    //     const existing = await User.findOne({ email });
-    //     if (existing) {
-    //         return res.status(40).json({ message: "Email already in use" });
-    //     }
+        const { name, email, password } = req.body;
+        console.log(req.body);
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ message: "Email already in use" });
+        }
 
-    //     const hashedPassword = await bcrypt.hash(password, 10);
-    //     const user = new User({
-    //         name,
-    //         email,
-    //         password: hashedPassword,
-    //     });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({
+            name,
+            email,
+            password: hashedPassword,
+        });
 
-    //     const { accessToken, refreshToken } = await generateTokens(user._id);
+        const newUser=await user.save();
 
-    //     return res.
-    //         cookie("refreshToken", refreshToken, {
-    //             httpOnly: true,
-    //             // secure: process.env.NODE_ENV === "production",
-    //             sameSite: "strict",
-    //             maxAge: 7 * 24 * 60 * 60 * 1000
-    //         }).
-    //         status(201).
-    //         json({
-    //             message: "User registered successfully",
-    //             user: {
-    //                 id: user._id,
-    //                 name: user.name,
-    //                 email: user.email,
-    //             },
-    //             accessToken,
-    //         });
+        const { accessToken, refreshToken } = await generateTokens(newUser._id);
+
+        return res.
+            cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                // secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            }).
+            status(201).
+            json({
+                message: "User registered successfully",
+                user: {
+                    id: newUser._id,
+                    name:newUser.name,
+                    email:newUser.email,
+                },
+                accessToken,
+            });
     }
     catch (error) {
         console.log(error);
@@ -62,6 +65,8 @@ const login = async (req, res) => {
         }
 
         const { accessToken, refreshToken } = await generateTokens(user._id);
+
+    
 
         return res.
             cookie("refreshToken", refreshToken, {

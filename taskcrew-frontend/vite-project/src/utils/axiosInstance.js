@@ -36,16 +36,16 @@ api.interceptors.response.use(
             }
             catch (refreshErr) {
                 console.log("refreshErr",refreshErr);
-                clearAuth();
-                window.location.href = "/login";
-                return Promise.reject(refreshErr);
+                // clearAuth();
+                // window.location.href = "/login";
+                // return Promise.reject(refreshErr);
             }
         }
 
         if (error.response?.status === 401) {
             console.log("error",error.response.data);
-            clearAuth();
-            window.location.href = "/login";
+            // clearAuth();
+            // window.location.href = "/login";
         }
 
         return Promise.reject(error);

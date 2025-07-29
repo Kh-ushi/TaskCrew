@@ -16,12 +16,14 @@ const app = express();
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+// app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const verifyJWT = (req, res, next) => {
-    console.log(req.path);
+    console.log(req.originalUrl);
+    console.log(AUTH_URL);
+
     if (req.path.startsWith("/auth")) {
         console.log("Hi I am inside jwt");
         return next();
@@ -54,13 +56,14 @@ app.use("/api", verifyJWT);
 app.use(
   "/api/auth",
   createProxyMiddleware({
-    target:          AUTH_URL,
-    changeOrigin:    true,
-    pathRewrite:     { "": "/auth" },
+    target:AUTH_URL,
+    changeOrigin: true,
+     pathRewrite: { "": "/auth" }, 
     cookieDomainRewrite: { "*": "" },
-    logLevel:        "warn"
+    logLevel: "debug",
   })
 );
+
 
 
 app.listen(PORT, () =>

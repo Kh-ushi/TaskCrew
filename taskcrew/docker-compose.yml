@@ -11,7 +11,6 @@ services:
     volumes :
      - ./api-gateway:/app   
 
-
   auth-service:
     build:
       context: ./auth-service
@@ -24,6 +23,7 @@ services:
       - ./auth-service:/app
     depends_on:
       - redis
+
 
   # project-service:
   #   build:

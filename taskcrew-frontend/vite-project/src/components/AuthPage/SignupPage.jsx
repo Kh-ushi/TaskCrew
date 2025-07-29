@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import './SignupPage.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
-
 import api from '../../utils/axiosInstance'
 import { setAccessToken } from '../../utils/auth'
+import {useNavigate} from "react-router-dom";
+
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -12,6 +13,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+
+  const navigate=useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,10 +25,15 @@ export default function SignupPage() {
 
     try {
       console.log(name, email, password, confirmPassword);
-      const { data } = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`);
-      // console.log(data);
+      const { data } = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,{name,email,password});
+      console.log(data);
+      setAccessToken(data.accessToken);
+      navigate("/createSpace");
     }
     catch (error) {
+      if(error?.response?.data?.message){
+        setError(error.response.data.message);
+      }
       console.log(error);
     }
 
