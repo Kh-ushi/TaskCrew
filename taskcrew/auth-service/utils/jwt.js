@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
     };
 
     next();
-
+    
   } catch (error) {
     console.error("Token verification failed:", error.message);
     throw new Error('Invalid or expired token');

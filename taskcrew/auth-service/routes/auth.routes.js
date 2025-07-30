@@ -1,11 +1,11 @@
 import express from 'express';
-import {register,login,logout,refreshToken} from '../controllers/auth.controllers.js';
+import { register, login, logout, refreshToken, tokenVerification } from '../controllers/auth.controllers.js';
 
-const router = express.Router({mergeParams:true});
+const router = express.Router({ mergeParams: true });
 router.post("/register", register);
 router.post("/login", login);
-router.post("/logout",logout);
-router.get("/refresh-token",refreshToken);
-
+router.post("/logout", logout);
+router.get("/refresh-token", refreshToken);
+router.get("/verify-token", tokenVerification);
 
 export default router;

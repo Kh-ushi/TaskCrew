@@ -25,7 +25,7 @@ const register = async (req, res) => {
             password: hashedPassword,
         });
 
-        const newUser=await user.save();
+        const newUser = await user.save();
 
         const { accessToken, refreshToken } = await generateTokens(newUser._id);
 
@@ -41,8 +41,8 @@ const register = async (req, res) => {
                 message: "User registered successfully",
                 user: {
                     id: newUser._id,
-                    name:newUser.name,
-                    email:newUser.email,
+                    name: newUser.name,
+                    email: newUser.email,
                 },
                 accessToken,
             });
@@ -63,7 +63,7 @@ const login = async (req, res) => {
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ msg: "Invalid credentials" });
         }
-        
+
         const { accessToken, refreshToken } = await generateTokens(user._id);
         return res.
             cookie("refreshToken", refreshToken, {
@@ -95,14 +95,14 @@ const logout = async (req, res) => {
     try {
 
         const authHeader = req.headers.authorization;
-        const refreshToken =req.cookies;
+        const refreshToken = req.cookies;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ msg: "Access token missing" });
         }
 
         if (!refreshToken) {
-            return res.status(400).json({ msg: "Refresh token is missing"});
+            return res.status(400).json({ msg: "Refresh token is missing" });
         }
 
         const accessToken = authHeader.split(" ")[1];
@@ -169,4 +169,33 @@ const refreshToken = async (req, res) => {
 };
 
 
-export { register, login, logout, refreshToken };
+const tokenVerification = async (req, res) => {
+
+    console.log("I am in tokenVerification");
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Access token missing" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    console.log("token", token);
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
+        if (isBlacklisted) {
+            return res.status(403).json({ message: "Token is blacklisted" });
+        }
+        return res.status(200).json({ message: "Token is valid", user: decoded });
+    } catch (err) {
+        console.error("Token verification failed:", err.message);
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ message: "Access token expired" });
+        }
+        return res.status(401).json({ message: "Invalid token" });
+    }
+}
+
+
+export { register, login, logout, refreshToken, tokenVerification };
