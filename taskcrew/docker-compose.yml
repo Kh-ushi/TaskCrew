@@ -25,18 +25,18 @@ services:
       - redis
 
 
-  # project-service:
-  #   build:
-  #     context: ./project-service
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3002:3002"
-  #   env_file:
-  #     - ./project-service/.env
-  #   volumes:
-  #     - ./project-service:/app
-  #   depends_on:
-  #     - redis
+  project-service:
+    build:
+      context: ./project-service
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./project-service/.env
+    volumes:
+      - ./project-service:/app
+    depends_on:
+      - redis
 
   # task-service:
   #   build:

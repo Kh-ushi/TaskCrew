@@ -1,5 +1,5 @@
-import Project from "../models/Project";
-import { redisClient } from "../redis/redisClient";
+import Project from "../models/Project.js";
+import redisClient from "../redis/redisClient.js";
 
 const createProject = async (req, res) => {
     try {

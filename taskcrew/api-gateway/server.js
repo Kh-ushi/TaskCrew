@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const { JWT_SECRET, AUTH_URL, PORT } = process.env;
+const { JWT_SECRET, AUTH_URL, PROJECT_URL, PORT } = process.env;
 
 const app = express();
 
@@ -63,6 +63,18 @@ app.use(
     logLevel: "debug",
   })
 );
+
+
+app.use(
+    "/api/projects",
+    createProxyMiddleware({
+        target:PROJECT_URL,
+        changeOrigin: true,
+        pathRewrite: { "": "/projects" },
+        cookieDomainRewrite: { "*": "" },
+        logLevel: "debug",
+    })
+)
 
 
 

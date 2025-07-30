@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { createProject, listMyProjects, getProject, updateProject, modifyMembers,archiveProject,deleteProject} from "./controllers/project.controller.js";
+import { createProject, listMyProjects, getProject, updateProject, modifyMembers,archiveProject,deleteProject} from "../controllers/project.controller.js";
 import { verifyToken } from '../middleware/auth.js';
 
 dotenv.config();
