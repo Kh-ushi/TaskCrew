@@ -29,9 +29,11 @@ const verifyToken = async (req, res, next) => {
     next();
     
   } catch (error) {
-    console.log("I am in auth-middleware-verify token");
-    console.log(error.name);
+
+    // console.log("I am in auth-middleware-verify token");
+    // console.log(error.name);
     console.error("Token verification failed:", error.message);
+
     if(error.name=== "TokenExpiredError") {
       return res.status(401).json({ msg: "Access token expired" });
     }

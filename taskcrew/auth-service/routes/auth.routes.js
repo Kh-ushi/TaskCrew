@@ -8,4 +8,6 @@ router.post("/logout", logout);
 router.get("/refresh-token", refreshToken);
 router.get("/verify-token", tokenVerification);
 
+// router.post("/auth")
+
 export default router;

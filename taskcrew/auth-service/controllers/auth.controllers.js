@@ -10,9 +10,9 @@ import jwt from 'jsonwebtoken';
 const register = async (req, res) => {
 
     try {
-        console.log("I am in register");
+        // console.log("I am in register");
         const { name, email, password } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         const existing = await User.findOne({ email });
         if (existing) {
             return res.status(400).json({ message: "Email already in use" });
@@ -51,7 +51,7 @@ const register = async (req, res) => {
             });
     }
     catch (error) {
-        console.log(error);
+        // console.log(error);
         console.error("Registration error:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
@@ -72,6 +72,8 @@ const login = async (req, res) => {
         await redisClient.set(`refresh:${user._id}`, refreshToken, {
             EX: 7 * 24 * 60 * 60,
         });
+
+        // console.log("Stored refresh token:", await redisClient.get(`refresh:${user._id}`));
 
         return res.
             cookie("refreshToken", refreshToken, {
@@ -137,7 +139,7 @@ const logout = async (req, res) => {
 
 
 const refreshToken = async (req, res) => {
-    console.log("I am in refreshToken");
+    // console.log("I am in refreshToken");
 
 
     try {
@@ -154,14 +156,24 @@ const refreshToken = async (req, res) => {
         }
 
         const userId = decoded.userId;
-        console.log("userId", userId);
+        // console.log("userId", userId);
 
         const storedToken = await redisClient.get(`refresh:${userId}`);
+
         if (storedToken !== refreshToken) {
-            return res.status(403).json({ msg: "Refresh token no longer valid (rotated or reused)" });
+            // console.log("Stored token:", storedToken);
+            // console.log("Refresh token:", refreshToken);
+            return res.status(403).json({ msg: "Refresh token no longer valid (rotated or reused)" ,storedToken,refreshToken});
         }
 
         const { accessToken, refreshToken: newRefreshToken } = await generateTokens(userId);
+
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            sameSite: "strict",
+            // secure: process.env.NODE_ENV === "production",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         await redisClient.set(`refresh:${userId}`, newRefreshToken, {
             EX: 7 * 24 * 60 * 60,
@@ -183,7 +195,8 @@ const refreshToken = async (req, res) => {
 
 const tokenVerification = async (req, res) => {
 
-    console.log("I am in tokenVerification code");
+
+    // console.log("I am in tokenVerification code");
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -191,19 +204,23 @@ const tokenVerification = async (req, res) => {
     }
 
     const token = authHeader.split(" ")[1];
-    console.log("token", token);
+    // console.log("token", token);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // console.log("----------------------");
+        // console.log("Redis stored token:", await redisClient.get(`refresh:${decoded.userId}`));
+        // console.log("Cookie refresh token:", req.cookies.refreshToken);
+        // console.log("----------------------");
         const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
         if (isBlacklisted) {
             return res.status(403).json({ message: "Token is blacklisted" });
         }
         return res.status(200).json({ message: "Token is valid", user: decoded });
     } catch (err) {
-        console.log("I am in auth-verify token");
-        console.log(err.name);
-        console.error("Token verification failed:", err.message);
+        // console.log("I am in auth-verify token");
+        // console.log(err.name);
+        // console.error("Token verification failed:", err.message);
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ message: "Access token expired" });
         }

@@ -1,5 +1,7 @@
 import Project from "../models/Project.js";
 import redisClient from "../redis/redisClient.js";
+import {partitionRedisKeys} from "../helperFunctions/partitionRedisKeys.js";
+import axios from "axios";
 
 const createProject = async (req, res) => {
     try {
@@ -9,6 +11,20 @@ const createProject = async (req, res) => {
             return res.status(400).json({ message: "Name and StartDate are required" });
         }
 
+        const { present, missing } = partitionRedisKeys(members);
+
+        if (missing.length > 0) {
+           try{
+            const userIds= await axios.get(`${process.env.AUTH_URL}/auth/users`,{missing});
+            console.log(userIds.data);
+           }
+           catch(error) {
+            console.error("Error fetching user details:", error.message);
+            return res.status(500).json({ message: "Failed to fetch user details" });
+           }
+        }
+
+        
         const project = await Project.create({
             name,
             description,
