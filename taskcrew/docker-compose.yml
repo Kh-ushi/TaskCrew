@@ -9,7 +9,9 @@ services:
     env_file:
      - ./api-gateway/.env
     volumes :
-     - ./api-gateway:/app   
+     - ./api-gateway:/app  
+     - /app/node_modules 
+    command: npx nodemon server.js
 
   auth-service:
     build:
@@ -21,6 +23,8 @@ services:
       - ./auth-service/.env
     volumes:
       - ./auth-service:/app
+      - /app/node_modules
+    command: npx nodemon server.js 
     depends_on:
       - redis
 
@@ -35,6 +39,8 @@ services:
       - ./project-service/.env
     volumes:
       - ./project-service:/app
+      - /app/node_modules
+    command: npx nodemon server.js  
     depends_on:
       - redis
 

@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
 
     const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
     if (isBlacklisted) {
-      return res.status(403).json({ msg: "Token is blacklisted" });
+      return res.status(401).json({ msg: "Token is blacklisted" });
     }
 
     req.user = {
@@ -29,8 +29,12 @@ const verifyToken = async (req, res, next) => {
     next();
     
   } catch (error) {
+    console.log("I am in auth-middleware-verify token");
+    console.log(error.name);
     console.error("Token verification failed:", error.message);
-    throw new Error('Invalid or expired token');
+    if(error.name=== "TokenExpiredError") {
+      return res.status(401).json({ msg: "Access token expired" });
+    }
   }
 };
 

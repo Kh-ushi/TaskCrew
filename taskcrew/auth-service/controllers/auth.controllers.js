@@ -28,6 +28,9 @@ const register = async (req, res) => {
         const newUser = await user.save();
 
         const { accessToken, refreshToken } = await generateTokens(newUser._id);
+        await redisClient.set(`refresh:${newUser._id}`, refreshToken, {
+            EX: 7 * 24 * 60 * 60,
+        });
 
         return res.
             cookie("refreshToken", refreshToken, {
@@ -65,6 +68,11 @@ const login = async (req, res) => {
         }
 
         const { accessToken, refreshToken } = await generateTokens(user._id);
+
+        await redisClient.set(`refresh:${user._id}`, refreshToken, {
+            EX: 7 * 24 * 60 * 60,
+        });
+
         return res.
             cookie("refreshToken", refreshToken, {
                 httpOnly: true,
@@ -129,8 +137,11 @@ const logout = async (req, res) => {
 
 
 const refreshToken = async (req, res) => {
+    console.log("I am in refreshToken");
+
+
     try {
-        const refreshToken = req.cookies;
+        const { refreshToken } = req.cookies;
         if (!refreshToken) {
             return res.status(400).json({ message: "Refresh token required" })
         }
@@ -143,6 +154,7 @@ const refreshToken = async (req, res) => {
         }
 
         const userId = decoded.userId;
+        console.log("userId", userId);
 
         const storedToken = await redisClient.get(`refresh:${userId}`);
         if (storedToken !== refreshToken) {
@@ -171,7 +183,7 @@ const refreshToken = async (req, res) => {
 
 const tokenVerification = async (req, res) => {
 
-    console.log("I am in tokenVerification");
+    console.log("I am in tokenVerification code");
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -189,6 +201,8 @@ const tokenVerification = async (req, res) => {
         }
         return res.status(200).json({ message: "Token is valid", user: decoded });
     } catch (err) {
+        console.log("I am in auth-verify token");
+        console.log(err.name);
         console.error("Token verification failed:", err.message);
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ message: "Access token expired" });

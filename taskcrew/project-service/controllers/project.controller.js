@@ -4,15 +4,15 @@ import redisClient from "../redis/redisClient.js";
 const createProject = async (req, res) => {
     try {
 
-        const { name, description, ownerId, members, startDate, endDate } = req.body;
-        if (!name || !ownerId || !startDate) {
-            return res.status(400).json({ message: "Name, OwnerId and StartDate are required" });
+        const { name, description, members, startDate, endDate } = req.body;
+        if (!name || !startDate) {
+            return res.status(400).json({ message: "Name and StartDate are required" });
         }
 
         const project = await Project.create({
             name,
             description,
-            ownerId,
+            ownerId:req.user.userId,
             members,
             startDate,
             endDate: endDate ? endDate : null,

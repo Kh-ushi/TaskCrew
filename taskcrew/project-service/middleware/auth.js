@@ -18,9 +18,8 @@ const verifyToken = async (req, res, next) => {
 
     const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
     if (isBlacklisted) {
-      return res.status(403).json({ msg: "Token is blacklisted" });
+      return res.status(401).json({ msg: "Token is blacklisted" });
     }
-
     req.user = {
       userId: decoded.userId,
       jti: decoded.jti,
