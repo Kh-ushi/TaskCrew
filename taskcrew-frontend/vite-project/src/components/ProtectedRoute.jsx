@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }) => {
 
 
             try {
-                await api.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/verify-token`);
+                await api.get(`/api/auth/verify-token`);
                 setIsAuthenticated(true);
 
             } catch (error) {

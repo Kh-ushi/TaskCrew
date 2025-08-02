@@ -17,12 +17,14 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       console.log({ email, password })
-      const { data } = await api.post(`/api/auth/login`,{email, password });
+      const { data } = await api.post("/api/auth/login",{email, password });
+      console.log("Login successful:", data);
       setAccessToken(data.accessToken);
       console.log(data);
       navigate("/createSpace");
     }
     catch (error) {
+      console.log(error);
       if (error?.response?.data?.message) {
         setError(error.response.data.message);
       }
