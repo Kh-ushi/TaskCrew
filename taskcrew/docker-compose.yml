@@ -83,8 +83,6 @@
 #   redis-data: {}
 
 
-version: "3.9"
-
 services:
   redis:
     image: redis:latest

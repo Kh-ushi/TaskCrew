@@ -1,21 +1,27 @@
 import redisClient from "../redis/redisClient.js";
 
 
-const partitionRedisKeys = async(keys) => {
-    const present=[];
-    const missing=[];
+const partitionRedisKeys = async (keys) => {
+    const present = {};
+    const missing = [];
 
-    for(const key of keys) {
-
-        const exists = await redisClient.exists(key);
-        if (exists) {
-            present.push(await redisClient.get(key));
-        } else {
-            missing.push(key);
-        }
+    if (!Array.isArray(keys) || keys.length === 0) {
+        return { present, missing };
     }
-    return { present, missing };
+
+     const values = await redisClient.mGet(keys);
+
+   keys.forEach((key, idx) => {
+    const val = values[idx];
+    if (val !== null) {
+      present[key] = val;
+    } else {
+      missing.push(key);
+    }
+  });
+
+  return { present, missing };
 
 }
 
-export {partitionRedisKeys};
+export { partitionRedisKeys };

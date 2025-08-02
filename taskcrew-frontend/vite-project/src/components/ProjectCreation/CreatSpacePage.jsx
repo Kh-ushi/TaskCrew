@@ -19,7 +19,7 @@ function CreateSpacePage() {
   const onCreate = (payload) => {
     try {
       console.log("Creating space with payload:", payload);
-      // const { data } = api.post(`${import.meta.env.VITE_BACKEND_URL}/api/projects`, payload);
+      const { data } = api.post(`${import.meta.env.VITE_BACKEND_URL}/api/projects`, payload);
       // console.log("Space created successfully:", data);
       // setSpaces([...spaces,data]);
     } catch (error) {

@@ -1,49 +1,49 @@
 import Project from "../models/Project.js";
 import redisClient from "../redis/redisClient.js";
 import {partitionRedisKeys} from "../helperFunctions/partitionRedisKeys.js";
-import axios from "axios";
+import crypto from "crypto";
+
+const publishInvite= async({projectId,inviteId,email})=>{
+   const message={
+          projectId,
+          inviteId,
+          email,
+          timeStamp:Date.now(),
+          correlationId: crypto.randomUUID(),
+   }
+   console.log("Publishing invite message to Redis:", message);
+   await redisClient.publish("project:invite", JSON.stringify(message));
+};
 
 const createProject = async (req, res) => {
     try {
+
+        console.log("Creating project...");
+        console.log(req.user);
+        console.log(req.body);
 
         const { name, description, members, startDate, endDate } = req.body;
         if (!name || !startDate) {
             return res.status(400).json({ message: "Name and StartDate are required" });
         }
 
-        const { present, missing } = partitionRedisKeys(members);
+        const { present, missing } = await partitionRedisKeys(members);
 
-        if (missing.length > 0) {
-           try{
-            const userIds= await axios.get(`${process.env.AUTH_URL}/auth/users`,{missing});
-            console.log(userIds.data);
-           }
-           catch(error) {
-            console.error("Error fetching user details:", error.message);
-            return res.status(500).json({ message: "Failed to fetch user details" });
-           }
-        }
-
-        
+ 
         const project = await Project.create({
             name,
             description,
             ownerId:req.user.userId,
-            members,
             startDate,
             endDate: endDate ? endDate : null,
         });
 
-        await redisClient.publish("project:created", JSON.stringify({
-            userId: project.ownerId,
-            watchers: project.members,
-            projectId: project._id,
-            title: `Project "${project.name}" created`,
-            startDate: project.startDate,
-            endDate: project.endDate,
-        }));
-
-        return res.status(201).json(project);
+          for(const email of missing){
+            await publishInvite({projectId:project._id.toString(), inviteId: crypto.randomUUID(), email});
+        }
+        
+        res.status(201).json({
+            message: "Project created successfully",project});
 
     }
     catch (error) {

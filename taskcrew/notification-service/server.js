@@ -3,9 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-import notificationRoutes from "./routes/notification.routes";
-import { startSubscriber } from "./redis/subscriber";
-import connectDb from "./config/db";
+import notificationRoutes from "./routes/notification.routes.js";
+import { startSubscriber } from "./redis/subscriber.js";
+import connectDb from "./config/db.js";
 
 dotenv.config();
 const app = express();

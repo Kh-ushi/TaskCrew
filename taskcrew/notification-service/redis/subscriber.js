@@ -1,12 +1,13 @@
 import dotenv from "dotenv";
-import { createClient } from "redis";
-import Notification from "../models/Notification";
+// import { createClient } from "redis";
+import Notification from "../models/Notification.js";
+import redisClient from "./redisClient.js";
 
 dotenv.config();
 
 const startSubscriber =async() => {
 
-    const sub = createClient({ url: process.env.REDIS_URL });
+    const sub =redisClient.duplicate();
     try {
         await sub.connect();
     } catch (error) {
@@ -15,7 +16,7 @@ const startSubscriber =async() => {
     }
 
     const channels = [
-        "project:created",
+        "project:invite",
         "project:membersAdded",
         "project:membersRemoved",
         "task:assigned",
@@ -30,7 +31,7 @@ const startSubscriber =async() => {
         "attachment:removed"
     ];
 
-    for (ch of channels) {
+    for (const ch of channels) {
 
         sub.subscribe(ch, async (msg) => {
 
@@ -38,16 +39,18 @@ const startSubscriber =async() => {
                 const evt = JSON.parse(msg);
                 const recepients = evt.watchers || [];
 
-                for (const userId of recepients) {
-                    await Notification.create({
-                        userId,
-                        type: ch,
-                        title: evt.title || `Event: ${ch}`,
-                        message: evt.message || "",
-                        data: evt,
-                        channels: ["inApp", "email"]
-                    });
-                }
+                console.log(`Received message on channel "${ch}":`, evt);
+
+                // for (const userId of recepients) {
+                //     await Notification.create({
+                //         userId,
+                //         type: ch,
+                //         title: evt.title || `Event: ${ch}`,
+                //         message: evt.message || "",
+                //         data: evt,
+                //         channels: ["inApp", "email"]
+                //     });
+                // }
 
                 console.log(`Notification(s) saved for event "${ch}"`);
             } catch (error) {
