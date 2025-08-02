@@ -14,9 +14,13 @@ const { JWT_SECRET, AUTH_URL, PROJECT_URL, PORT } = process.env;
 
 const app = express();
 
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
-app.use(cors({ origin: true, credentials: true }));
-// app.use(express.json());
+// app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(cors({origin:true,credentials: true,}));
+
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -51,6 +55,7 @@ const verifyJWT = (req, res, next) => {
 
 
 app.use("/api", verifyJWT);
+
 
 
 app.use(

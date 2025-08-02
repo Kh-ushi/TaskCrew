@@ -25,7 +25,7 @@ export default function SignupPage() {
 
     try {
       console.log(name, email, password, confirmPassword);
-      const { data } = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,{name,email,password});
+      const { data } = await api.post(`/api/auth/register`,{name,email,password});
       console.log(data);
       setAccessToken(data.accessToken);
       navigate("/createSpace");

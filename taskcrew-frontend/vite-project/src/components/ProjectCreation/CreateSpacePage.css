@@ -11,6 +11,11 @@
     align-items: center;
 }
 
+.create-space-layer-add{
+  align-items:flex-start;
+  padding: 1rem;
+}
+
 
 .projects-container {
   display: flex;
@@ -22,6 +27,11 @@
   /* border: 2px solid black; */
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 
+}
+
+.hide-projects-container{
+  display: none !important;
+  border: none !important;
 }
 
 
@@ -64,3 +74,16 @@
 .empty-btn:hover {
   background-color: #0051cc;
 }
+
+
+.all-projects-container {
+  width: 100%;
+  /* border: 2px solid black; */
+}
+
+.grid-wrapper {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 1rem !important;
+}
+

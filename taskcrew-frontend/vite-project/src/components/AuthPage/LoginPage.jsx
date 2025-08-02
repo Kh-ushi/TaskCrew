@@ -17,7 +17,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       console.log({ email, password })
-      const { data } = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,{email, password });
+      const { data } = await api.post(`/api/auth/login`,{email, password });
       setAccessToken(data.accessToken);
       console.log(data);
       navigate("/createSpace");
