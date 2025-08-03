@@ -6,9 +6,10 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+
 dayjs.extend(relativeTime);
 
-const ProjectCard = ({ space }) => {
+const ProjectCard = ({ space ,onClick}) => {
   const {
     name,
     description,
@@ -22,8 +23,10 @@ const ProjectCard = ({ space }) => {
 
   const formatDate = (d) => (d ? dayjs(d).format("MMM D, YYYY") : "—");
 
+  
+
   return (
-    <div className="project-card-wrapper">
+    <div className="project-card-wrapper"  onClick={() => onClick()}>
       <div className="card-header">
         <div className="icon-wrapper">
           <FontAwesomeIcon icon={faFolder} size="lg" />
@@ -53,8 +56,8 @@ const ProjectCard = ({ space }) => {
       <div className="card-footer">
         <div className="updated">Updated {dayjs(updatedAt).fromNow()}</div>
         <div className="actions">
-          <button className="btn-secondary">View</button>
-          <button className="btn-primary">Manage</button>
+          <button className="btn-secondary">Edit</button>
+          <button className="enter-space-button">Delete</button>
         </div>
       </div>
     </div>

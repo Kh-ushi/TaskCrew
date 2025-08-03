@@ -5,6 +5,7 @@ import LoginPage from './components/AuthPage/LoginPage'
 import SignupPage from './components/AuthPage/SignUpPage'
 import CreateSpacePage from './components/ProjectCreation/CreatSpacePage'
 import ProtectedRoute from './components/ProtectedRoute'
+import ProjectSpacePage from './components/ProjectPage/ProjectSpacePage'
 
 function App() {
 
@@ -15,6 +16,8 @@ function App() {
       <Route path="/signin" element={<SignupPage></SignupPage>}></Route>
       <Route path='/login' element={<LoginPage></LoginPage>}></Route>
       <Route path='/createSpace' element={<ProtectedRoute><CreateSpacePage /></ProtectedRoute>}></Route>
+      <Route path='/projectSpace' element={<ProtectedRoute><ProjectSpacePage /></ProtectedRoute>}></Route>
+      <Route path='/projectSpace/:projectId' element={<ProtectedRoute><ProjectSpacePage /></ProtectedRoute>}></Route>
     </Routes>
    </Router>
   )

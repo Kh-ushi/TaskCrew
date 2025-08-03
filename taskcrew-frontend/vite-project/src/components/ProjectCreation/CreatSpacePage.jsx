@@ -1,6 +1,7 @@
 import "./CreateSpacePage.css";
 import NavBar from "../LandingPage/NavBar";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import api from "../../utils/axiosInstance";
@@ -34,6 +35,11 @@ function CreateSpacePage() {
 
   },[]);
 
+  const navigate = useNavigate();
+  const handleProjectClick = (projectId) => {
+    navigate(`/projectSpace/${projectId}`);
+  };
+
   const onClose = () => {
     setIsOpen(false);
   };
@@ -41,9 +47,9 @@ function CreateSpacePage() {
   const onCreate =async (payload) => {
     try {
       console.log("Creating space with payload:", payload);
-      const { data } = await pi.post(`/api/projects`, payload);
-      console.log("Space created successfully:", data.data.project);
-      setSpaces([...spaces, data.dataproject]);
+      const { data } = await api.post(`/api/projects`, payload);
+      console.log("Space created successfully:", data);
+      setSpaces(prev => [...prev, data.project]);
     } catch (error) {
       console.error("Error creating space:", error);
       if (error?.response?.data?.message) {
@@ -62,7 +68,7 @@ function CreateSpacePage() {
           <div className="all-projects-container">
              <div className="grid-wrapper">
                {spaces.map((space) => (
-                <ProjectCard key={space._id} space={space} />
+                <ProjectCard key={space._id} space={space} onClick={() => handleProjectClick(space._id)} />
               ))}
              </div>
           </div>

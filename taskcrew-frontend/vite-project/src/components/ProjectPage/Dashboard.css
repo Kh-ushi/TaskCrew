@@ -1,0 +1,85 @@
+:root {
+  --navbar-height: 64px;
+  --bg-page: #f6f1e7;
+  --radius: 1rem;
+  --transition: 0.25s cubic-bezier(.4,.2,.2,1);
+  --shadow-btn: 0 6px 16px rgba(225, 109, 55, 0.25);
+  --shadow-btn-hover: 0 12px 24px rgba(225, 109, 55, 0.35);
+  --text-dark: #1f2937;
+  --muted: #555;
+  --ff: system-ui,-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+}
+
+.dashboard {
+  background-color: var(--bg-page);
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 0 1rem;
+  font-family: var(--ff);
+  color: var(--text-dark);
+}
+
+
+.project-space-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.project-space-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.project-space-title h1 {
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.2vw, 2.5rem);
+}
+
+.add-task-button {
+  width: 10rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+.add-task-button button {
+  border: none;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #e16d37 0%, #ff8a3c 90%);
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  transition: transform var(--transition), filter var(--transition), box-shadow var(--transition);
+  /* box-shadow: var(--shadow-btn); */
+  letter-spacing: 0.5px;
+}
+
+.add-task-button button:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.07);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.add-task-button button:active {
+  transform: translateY(0) scale(1);
+  box-shadow: 0 6px 12px rgba(225, 109, 55, 0.4);
+}
+
+.add-task-button button:focus-visible {
+  outline: 3px solid rgba(255, 215, 160, 0.9);
+  outline-offset: 2px;
+}
+
+
+

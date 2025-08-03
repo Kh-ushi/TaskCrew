@@ -105,7 +105,7 @@
   gap: 0.5rem;
 }
 
-.btn-primary,
+.enter-space-button,
 .btn-secondary {
   border: none;
   padding: 6px 14px;
@@ -116,13 +116,14 @@
   transition: filter 0.15s ease;
 }
 
-.btn-primary {
+.enter-space-button {
   background: #6366f1;
   color: white;
 }
 
-.btn-primary:hover {
+.enter-space-button:hover{
   filter: brightness(1.05);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn-secondary {
