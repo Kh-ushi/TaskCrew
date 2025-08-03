@@ -14,6 +14,6 @@ router.get('/:id', getProject);
 router.put('/:id', updateProject);
 router.patch('/:id/memebers', modifyMembers);
 router.delete('/:id',archiveProject);
-router.delete("hard-delete/:id",deleteProject);
+router.delete("/hard-delete/:id",deleteProject);
 
 export default router;

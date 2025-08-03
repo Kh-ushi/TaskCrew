@@ -86,6 +86,20 @@ function CreateSpacePage() {
         setError(error.response.data.message);
       }
     }
+  };
+
+  const onDelete=async(projectId)=>{
+    try{
+      console.log(projectId);
+      const {data} = await api.delete(`/api/projects/hard-delete/${projectId}`);
+      console.log("Space deleted successfully:", data);
+    }
+    catch(error){
+      console.error("Error deleting space:",error);
+      if (error?.response?.data?.message) {
+        setError(error.response.data.message);
+      }
+    }
   }
 
   return (
@@ -98,7 +112,7 @@ function CreateSpacePage() {
           <div className="all-projects-container">
              <div className="grid-wrapper">
                {spaces.map((space) => (
-                <ProjectCard key={space._id} space={space} onClick={() => handleProjectClick(space._id)} onEdit={onEdit} />
+                <ProjectCard key={space._id} space={space} onClick={() => handleProjectClick(space._id)} onEdit={onEdit} onDelete={()=>onDelete(space._id)} />
               ))}
              </div>
           </div>

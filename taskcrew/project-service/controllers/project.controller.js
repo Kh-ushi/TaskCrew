@@ -267,14 +267,18 @@ const deleteProject = async (req, res) => {
         const projectId = req.params.id;
         const userId = req.user.userId;
 
-        const project = Project.findById(projectId);
+        const project = await Project.findById(projectId);
+        
         if (!project) {
             return res.status(404).json({ message: "Project not found" });
         }
 
+        console.log("Project owner ID:", project);
+        console.log("User ID:", userId);
         if (project.ownerId !== userId) {
             return res.status(403).json({ message: "Unauthorized" });
         }
+
 
         await Project.findByIdAndDelete(projectId);
         await redisClient.publish("project:deleted", JSON.stringify({

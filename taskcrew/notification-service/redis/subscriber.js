@@ -20,6 +20,7 @@ const startSubscriber =async() => {
         "project:updated",
         "project:membersAdded",
         "project:membersRemoved",
+        "project:deleted",
         "task:assigned",
         "task:updated",
         "task:deleted",
