@@ -17,6 +17,7 @@ const startSubscriber =async() => {
 
     const channels = [
         "project:invite",
+        "project:updated",
         "project:membersAdded",
         "project:membersRemoved",
         "task:assigned",

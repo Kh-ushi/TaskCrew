@@ -1,18 +1,18 @@
 import Project from "../models/Project.js";
 import redisClient from "../redis/redisClient.js";
-import {partitionRedisKeys} from "../helperFunctions/partitionRedisKeys.js";
+import { partitionRedisKeys } from "../helperFunctions/partitionRedisKeys.js";
 import crypto from "crypto";
 
-const publishInvite= async({projectId,inviteId,email})=>{
-   const message={
-          projectId,
-          inviteId,
-          email,
-          timeStamp:Date.now(),
-          correlationId: crypto.randomUUID(),
-   }
-   console.log("Publishing invite message to Redis:", message);
-   await redisClient.publish("project:invite", JSON.stringify(message));
+const publishInvite = async ({ projectId, inviteId, email }) => {
+    const message = {
+        projectId,
+        inviteId,
+        email,
+        timeStamp: Date.now(),
+        correlationId: crypto.randomUUID(),
+    }
+    console.log("Publishing invite message to Redis:", message);
+    await redisClient.publish("project:invite", JSON.stringify(message));
 };
 
 const createProject = async (req, res) => {
@@ -29,21 +29,22 @@ const createProject = async (req, res) => {
 
         const { present, missing } = await partitionRedisKeys(members);
 
- 
+
         const project = await Project.create({
             name,
             description,
-            ownerId:req.user.userId,
+            ownerId: req.user.userId,
             startDate,
             endDate: endDate ? endDate : null,
         });
 
-          for(const email of missing){
-            await publishInvite({projectId:project._id.toString(), inviteId: crypto.randomUUID(), email});
+        for (const email of missing) {
+            await publishInvite({ projectId: project._id.toString(), inviteId: crypto.randomUUID(), email });
         }
-        
+
         res.status(201).json({
-            message: "Project created successfully",project});
+            message: "Project created successfully", project
+        });
 
     }
     catch (error) {
@@ -113,7 +114,7 @@ const getProject = async (req, res) => {
 const updateProject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, startDate, endDate } = req.body;
+        const { name, description, members, startDate, endDate } = req.body;
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: "Not found" });
 
@@ -122,23 +123,64 @@ const updateProject = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
 
+        const existingMembers = project.members.map(String);
+        const newMembers = members.map(String);
+
+        const removed = existingMembers.filter(member => !newMembers.includes(member));
+        const added = newMembers.filter(member => !existingMembers.includes(member));
+
+        const fieldsChanged = [];
+        if (name && name !== project.name) fieldsChanged.push("name");
+        if (description && description !== project.description) fieldsChanged.push("description");
+        if (startDate && String(startDate) !== String(project.startDate)) fieldsChanged.push("startDate");
+        console.log(String(startDate), String(project.startDate));
+          console.log(String(endDate), String(project.endDate));
+        if (endDate && String(endDate) !== String(project.endDate)) fieldsChanged.push("endDate");
+
+
         project.name = name || project.name;
         project.description = description || project.description;
         project.startDate = startDate || project.startDate;
         project.endDate = endDate || project.endDate;
+        project.members = newMembers;
 
         await project.save();
 
-        await redisClient.publish("project:updated", JSON.stringify({
-            userId: project.ownerId,
-            watchers: project.members,
-            projectId: project._id,
-            title: `Project "${project.name}" has new updates`,
-            startDate: project.startDate,
-            endDate: project.endDate,
-        }));
+        if (added.length > 0) {
+            await redisClient.publish("project:membersAdded", JSON.stringify({
+                watchers: added,
+                projectId: project._id,
+                title: `You've been added to project "${project.name}"`,
+                message: `Welcome to the project`,
+                data: { projectId: project._id }
+            }));
 
-        res.status(201).json({ message: "Project Updated Successfully" });
+        }
+
+        if (removed.length > 0) {
+            await redisClient.publish("project:membersRemoved", JSON.stringify({
+                watchers: removed,
+                projectId: project._id,
+                title: `You've been removed from project "${project.name}"`,
+                message: `Access revoked`,
+                data: { projectId: project._id }
+            }));
+        }
+
+        console.log("Fields changed:", fieldsChanged);
+
+        if (fieldsChanged.length > 0) {
+            await redisClient.publish("project:updated", JSON.stringify({
+                userId: project.ownerId,
+                watchers: project.members,
+                projectId: project._id,
+                title: `Project "${project.name}" has new updates`,
+                startDate: project.startDate,
+                endDate: project.endDate,
+            }));
+        }
+
+        res.status(201).json({ message: "Project Updated Successfully", project});
 
     }
     catch (error) {

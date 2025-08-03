@@ -13,6 +13,7 @@ function CreateSpacePage() {
   const [spaces, setSpaces] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
+  const [spaceInfo, setSpaceInfo] = useState(null);
 
 
   useEffect(() => {
@@ -58,6 +59,35 @@ function CreateSpacePage() {
     }
   };
 
+  const onEdit= (payload) => {
+
+    try{
+      console.log("Editing space with payload:", payload);
+      setSpaceInfo(payload);
+      setIsOpen(true);
+    }
+    catch(error){
+      console.error("Error editing space:", error);
+      if (error?.response?.data?.message) {
+        setError(error.response.data.message);
+      }
+    }
+  };
+
+  const handleEdit = async (payload) => {
+    try{
+      const {data}=await api.put(`/api/projects/${spaceInfo._id}`, payload);
+      console.log("Space edited successfully:", data);
+      // setSpaces(prev => prev.map(space => space._id === data.project._id ? data.project : space));
+    }
+    catch(error){
+      console.error("Error editing space:", error);
+      if (error?.response?.data?.message) {
+        setError(error.response.data.message);
+      }
+    }
+  }
+
   return (
     <div className="create-space-container">
       <NavBar isCreateSpace={true} setOpen={setIsOpen} />
@@ -68,7 +98,7 @@ function CreateSpacePage() {
           <div className="all-projects-container">
              <div className="grid-wrapper">
                {spaces.map((space) => (
-                <ProjectCard key={space._id} space={space} onClick={() => handleProjectClick(space._id)} />
+                <ProjectCard key={space._id} space={space} onClick={() => handleProjectClick(space._id)} onEdit={onEdit} />
               ))}
              </div>
           </div>
@@ -98,7 +128,7 @@ function CreateSpacePage() {
 
       </div>
 
-      {isOpen && <CreateSpaceModal isOpen={isOpen} onClose={onClose} onCreate={onCreate} ></CreateSpaceModal>}
+      {isOpen && <CreateSpaceModal isOpen={isOpen} onClose={onClose} onCreate={onCreate} spaceInfo={spaceInfo} handleEdit={handleEdit} ></CreateSpaceModal>}
     </div>
   );
 }

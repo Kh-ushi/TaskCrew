@@ -4,15 +4,15 @@ import "./CreateSpaceModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
- function CreateSpaceModal({ isOpen, onClose, onCreate }) {
+function CreateSpaceModal({ isOpen, onClose, onCreate, spaceInfo, handleEdit }) {
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    startDate: "",
-    endDate: "",
-    status: "active",
+    name: spaceInfo?.name || "",
+    description: spaceInfo?.description || "",
+    startDate: spaceInfo.startDate ? spaceInfo.startDate.slice(0, 10) : null,
+    endDate: spaceInfo.endDate ? spaceInfo.endDate.slice(0, 10) : null,
+    status: spaceInfo?.status || "active",
     memberInput: "",
-    members: [],
+    members: spaceInfo?.members || [],
   });
 
   const handleChange = e =>
@@ -38,7 +38,11 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
   const handleSubmit = e => {
     e.preventDefault();
-    onCreate({
+    spaceInfo?
+    handleEdit({
+      ...formData,
+    })
+    :onCreate({
       name: formData.name,
       description: formData.description,
       startDate: formData.startDate,
@@ -150,7 +154,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
               Cancel
             </button>
             <button type="submit" className="csm-btn csm-btn--primary">
-              Create
+              {spaceInfo ? "Edit" : "Create"}
             </button>
           </div>
         </form>

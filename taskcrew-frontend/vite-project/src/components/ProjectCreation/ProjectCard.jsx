@@ -9,7 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-const ProjectCard = ({ space ,onClick}) => {
+const ProjectCard = ({ space ,onClick,onEdit}) => {
   const {
     name,
     description,
@@ -56,7 +56,10 @@ const ProjectCard = ({ space ,onClick}) => {
       <div className="card-footer">
         <div className="updated">Updated {dayjs(updatedAt).fromNow()}</div>
         <div className="actions">
-          <button className="btn-secondary">Edit</button>
+          <button className="btn-secondary" style={{zIndex: 1000}} onClick={(e)=>{
+             e.stopPropagation();
+             onEdit(space);
+          }}>Edit</button>
           <button className="enter-space-button">Delete</button>
         </div>
       </div>
