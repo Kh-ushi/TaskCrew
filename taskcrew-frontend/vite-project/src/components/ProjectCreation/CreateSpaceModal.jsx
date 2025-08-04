@@ -8,8 +8,8 @@ function CreateSpaceModal({ isOpen, onClose, onCreate, spaceInfo, handleEdit }) 
   const [formData, setFormData] = useState({
     name: spaceInfo?.name || "",
     description: spaceInfo?.description || "",
-    startDate: spaceInfo.startDate ? spaceInfo.startDate.slice(0, 10) : null,
-    endDate: spaceInfo.endDate ? spaceInfo.endDate.slice(0, 10) : null,
+    startDate: spaceInfo?.startDate ? spaceInfo.startDate.slice(0, 10) : null,
+    endDate: spaceInfo?.endDate ? spaceInfo.endDate.slice(0, 10) : null,
     status: spaceInfo?.status || "active",
     memberInput: "",
     members: spaceInfo?.members || [],

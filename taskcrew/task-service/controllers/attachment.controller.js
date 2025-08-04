@@ -1,7 +1,7 @@
 
-import Task from "../models/Task";
-import { gridfsBucket } from "../config/gridfs";
-import redisClient from "../redis/redisClient";
+import Task from "../models/Task.js";
+import { gridfsBucket } from "../config/gridfs.js";
+import redisClient from "../redis/redisClient.js";
 
 const uploadAttachment = async (req, res) => {
     try {

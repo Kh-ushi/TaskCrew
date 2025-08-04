@@ -1,5 +1,5 @@
-import Task from '../models/Task';
-import redisClient from '../redis/redisClient';
+import Task from '../models/Task.js';
+import redisClient from '../redis/redisClient.js';
 
 const getSubtasks = async (req, res) => {
     try {

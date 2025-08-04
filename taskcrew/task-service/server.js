@@ -15,9 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/tasks",taskRoutes);
-app.use("/api/tasks/:taskId/subtasks",subTaskRoutes);
-app.use("/api/tasks/:taskId/subtasks",attchmentRoutes);
+// app.use("/api/tasks",taskRoutes);
+// app.use("/api/tasks/:taskId/subtasks",subTaskRoutes);
+// app.use("/api/tasks/:taskId/subtasks",attchmentRoutes);
 
 const startServer = async () => {
     try {

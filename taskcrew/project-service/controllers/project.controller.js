@@ -2,18 +2,9 @@ import Project from "../models/Project.js";
 import redisClient from "../redis/redisClient.js";
 import { partitionRedisKeys } from "../helperFunctions/partitionRedisKeys.js";
 import crypto from "crypto";
+import { publishProjectChange,publishInvite} from "../helperFunctions/publishProjectChange.js";
 
-const publishInvite = async ({ projectId, inviteId, email }) => {
-    const message = {
-        projectId,
-        inviteId,
-        email,
-        timeStamp: Date.now(),
-        correlationId: crypto.randomUUID(),
-    }
-    console.log("Publishing invite message to Redis:", message);
-    await redisClient.publish("project:invite", JSON.stringify(message));
-};
+
 
 const createProject = async (req, res) => {
     try {
@@ -37,6 +28,8 @@ const createProject = async (req, res) => {
             startDate,
             endDate: endDate ? endDate : null,
         });
+
+        await publishProjectChange(project, "created");
 
         for (const email of missing) {
             await publishInvite({ projectId: project._id.toString(), inviteId: crypto.randomUUID(), email });
@@ -146,6 +139,8 @@ const updateProject = async (req, res) => {
 
         await project.save();
 
+        await publishProjectChange(project, "updated");
+
         if (added.length > 0) {
             await redisClient.publish("project:membersAdded", JSON.stringify({
                 watchers: added,
@@ -210,6 +205,7 @@ const modifyMembers = async (req, res) => {
 
         project.members = project.memebers.filter(uid => !remove.includes(uid));
         await project.save();
+        await publishProjectChange(project, "members_updated");
 
         if (add.length > 0) {
             await redisClient.publish("project:membersAdded", JSON.stringify({
@@ -254,6 +250,7 @@ const archiveProject = async (req, res) => {
         }
         project.status = "archived";
         await project.save();
+        await publishProjectChange(project, "archived");
         res.status(201).json({ message: "Project archived" });
     }
     catch (error) {
@@ -281,6 +278,7 @@ const deleteProject = async (req, res) => {
 
 
         await Project.findByIdAndDelete(projectId);
+        await publishProjectChange(project, "deleted");
         await redisClient.publish("project:deleted", JSON.stringify({
             projectId,
             deletedBy: userId,

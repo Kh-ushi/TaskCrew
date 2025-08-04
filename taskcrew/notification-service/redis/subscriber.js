@@ -21,6 +21,7 @@ const startSubscriber =async() => {
         "project:membersAdded",
         "project:membersRemoved",
         "project:deleted",
+        "project:riskDetected",
         "task:assigned",
         "task:updated",
         "task:deleted",
