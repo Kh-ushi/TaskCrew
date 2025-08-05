@@ -1,4 +1,4 @@
-import { getProjectSnapShot } from "./snapshotHelpers"
+import { getProjectSnapShot } from "./snapshotHelpers.js"
 
 const accessControl=async(userId,projectId,token)=>{
 

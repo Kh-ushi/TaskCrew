@@ -83,4 +83,8 @@ const startProjectSnapShotConsumer = async () => {
     })();
 }
 
-export{startProjectSnapShotConsumer};
+startProjectSnapShotConsumer().catch(e => {
+    console.error("Failed to start snapshot consumer:", e);
+});
+
+// export{startProjectSnapShotConsumer};

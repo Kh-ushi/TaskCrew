@@ -1,4 +1,4 @@
-import { getProjectSnapShot } from "./snapshotHelpers";
+import { getProjectSnapShot } from "./snapshotHelpers.js";
 import Task from "../models/Task.js";
 import redisClient from "../redis/redisClient.js";
 import crypto from "crypto";
