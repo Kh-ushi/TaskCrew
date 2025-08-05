@@ -7,6 +7,9 @@ dotenv.config();
 const bootStrapSnapshot = async (projectId, token) => {
 
     try {
+        console.log("bootstrapSnapshot");
+        console.log(token);
+        console.log(projectId);
         const resp = await axios.get(`${process.env.PROJECT_URL}/projects/${projectId}`, {
             headers: {
                 Authorization: `Bearer ${token}`

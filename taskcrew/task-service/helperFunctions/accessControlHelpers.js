@@ -1,8 +1,9 @@
 import { getProjectSnapShot } from "./snapshotHelpers.js"
 
-const accessControl=async(userId,projectId,token)=>{
+const accessControl=async(projectId,userId,token)=>{
 
     const snapshot=await getProjectSnapShot(projectId,token);
+    console.log(snapshot);
     if(!snapshot){
         return false;
     }

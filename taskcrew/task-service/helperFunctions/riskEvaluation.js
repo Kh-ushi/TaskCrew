@@ -15,7 +15,7 @@ const evaluateProjectRisk = async (projectId, token) => {
     const totalWindowMs = new Date(project.endDate) - new Date(project.startDate);
     if (totalWindowMs <= 0) return null;
 
-    const elapsedFraction = Math.min(1, Math.max(0, (now - new Date(space.startDate)) / totalWindowMs));
+    const elapsedFraction = Math.min(1, Math.max(0, (now - new Date(project.startDate)) / totalWindowMs));
 
     const rootTasks = await Task.find({ projectId: projectId, subtasks: { $exists: true } }).lean();
 
@@ -31,10 +31,10 @@ const evaluateProjectRisk = async (projectId, token) => {
 
     return {
         projectId,
-        ownerId: space.ownerId,
+        ownerId: project.ownerId,
         currentProgress: Math.round(aggregateProgress),
         timeElapsedPercent: Math.round(elapsedFraction * 100),
-        deadline: space.endDate,
+        deadline: project.endDate,
         behind,
         timeStamp: Date.now()
     }
@@ -56,7 +56,7 @@ const runRiskCheckAndNotify = async (projectId, token) => {
             deadline: risk.deadline,
             alertLevel: "warning",
             correlationId: crypto.randomUUID(),
-            timestamp: risk.timestamp,
+            timestamp: risk.timeStamp,
         }));
     }
 }

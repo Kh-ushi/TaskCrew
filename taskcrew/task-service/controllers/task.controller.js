@@ -13,80 +13,87 @@ import { Console } from "console";
 
 
 dayjs.extend(relativeTime);
-const router = express.Router({ mergeParams: true });
+
 
 const createTask = async (req, res) => {
 
     try {
 
         console.log("createTask");
-        // const authHeader = req.headers.authorization;
-        // if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        //     return res.status(401).json({ msg: "No token provided in createTask" });
-        // }
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ msg: "No token provided in createTask" });
+        }
 
-        // const token = authHeader.split(" ")[1];
+        const token = authHeader.split(" ")[1];
+        console.log(token);
 
-        // const userId = req.user.userId;
-        // const {
-        //     title,
-        //     description = "",
-        //     projectId,
-        //     assignedTo = [],
-        //     priority = "Medium",
-        //     startTime,
-        //     endTime,
-        //     status = "todo",
-        // } = req.body;
+        const userId = req.user.userId;
+        console.log(req.body);
+        const {
+            title,
+            description = "",
+            projectId,
+            assignedTo = [],
+            priority = "Medium",
+            startTime,
+            endTime,
+            status = "todo",
+        } = req.body;
 
-        // if (!title || !projectId || !startTime || !endTime) {
-        //     return res.status(400).json({ message: "title, projectId, startTime and endTime are required" });
-        // }
+        console.log(userId,title,description,projectId,assignedTo,priority,startTime,endTime,status);
 
-        // if (!(await accessControl(projectId, userId, token))) {
-        //     return res.status(403).json({ message: "Forbidden: cannot access project" });
-        // }
+        if (!title || !projectId || !startTime || !endTime) {
+            return res.status(400).json({ message: "title, projectId, startTime and endTime are required" });
+        }
 
-        // const project = await getProjectSnapShot(projectId, token);
-        // if (!project) return res.status(404).json({ message: "Project not found" });
+        if (!(await accessControl(projectId, userId, token))) {
+            console.log("Forbidden: cannot access project");
+            return res.status(403).json({ message: "Forbidden: cannot access project" });
+        }
 
-
-        // const st = new Date(startTime);
-        // const et = new Date(endTime);
-
-        // if (st < new Date(project.startDate) || et > new Date(project.endDate)) {
-        //     return res.status(400).json({ message: "Task must be within project start and deadline" });
-        // }
+        const project = await getProjectSnapShot(projectId, token);
+        if (!project) return res.status(404).json({ message: "Project not found" });
+        console.log(project);
 
 
-        // const task = await Task.create({
-        //     title,
-        //     description,
-        //     projectId,
-        //     assignedTo,
-        //     createdBy: userId,
-        //     status,
-        //     priority,
-        //     startTime: st,
-        //     endTime: et,
-        // });
+        const st = new Date(startTime);
+        const et = new Date(endTime);
 
-        // runRiskCheckAndNotify(projectId, token);
+        if (st < new Date(project.startDate) || et > new Date(project.endDate)) {
+            console.log("Task must be within project start and deadline");
+            return res.status(400).json({ message: "Task must be within project start and deadline" });
+        }
 
-        // await redisClient.publish("task:created", JSON.stringify({
-        //     taskId: task._id,
-        //     projectId: task.projectId,
-        //     assignees: task.assignedTo,
-        //     startTime: task.startTime,
-        //     endTime: task.endTime,
-        //     parentTaskId: task.parentTaskId,
-        //     status: task.status,
-        //     priority: task.priority,
-        //     correlationId: crypto.randomUUID(),
-        //     timestamp: Date.now(),
-        // }));
 
-        // res.status(201).json(task);
+        const task = await Task.create({
+            title,
+            description,
+            projectId,
+            assignedTo,
+            createdBy: userId,
+            status,
+            priority,
+            startTime: st,
+            endTime: et,
+        });
+
+        const risk=runRiskCheckAndNotify(projectId, token);
+
+        await redisClient.publish("task:created", JSON.stringify({
+            taskId: task._id,
+            projectId: task.projectId,
+            assignees: task.assignedTo,
+            startTime: task.startTime,
+            endTime: task.endTime,
+            parentTaskId: task.parentTaskId,
+            status: task.status,
+            priority: task.priority,
+            correlationId: crypto.randomUUID(),
+            timestamp: Date.now(),
+        }));
+
+        res.status(201).json(task);
 
     }
     catch (error) {

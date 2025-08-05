@@ -3,7 +3,7 @@ import "./CreateTaskModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-function CreateTaskModal({ isOpen, onClose, onCreate, taskInfo, handleEdit }) {
+function CreateTaskModal({ isOpen, onClose, onCreate, taskInfo, handleEdit ,taskError,setTaskError}) {
   const [formData, setFormData] = useState({
     title: taskInfo?.title || "",
     description: taskInfo?.description || "",
@@ -16,8 +16,10 @@ function CreateTaskModal({ isOpen, onClose, onCreate, taskInfo, handleEdit }) {
     endTime: taskInfo?.endTime ? taskInfo.endTime.slice(0, 16) : "",
   });
 
-  const handleChange = (e) =>
+  const handleChange = (e) =>{
+    setTaskError("");
     setFormData({ ...formData, [e.target.name]: e.target.value });
+};
 
   const handleAddAssignee = () => {
     const val = formData.assignedInput.trim();
@@ -44,7 +46,6 @@ function CreateTaskModal({ isOpen, onClose, onCreate, taskInfo, handleEdit }) {
     } else {
       onCreate({ ...formData });
     }
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -52,6 +53,7 @@ function CreateTaskModal({ isOpen, onClose, onCreate, taskInfo, handleEdit }) {
   return (
     <div className="ctm-overlay">
       <div className="ctm-modal">
+        {taskError && <p className="ctm-error" style={{color:"red", textAlign:"center", fontSize:"14px",marginBottom:"1rem"}}>{taskError}</p>}
         <div className="ctm-header">
           <h3>{taskInfo ? "Edit Task" : "Create New Task"}</h3>
           <FontAwesomeIcon icon={faTimes} className="ctm-close" onClick={onClose} />

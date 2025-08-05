@@ -91,14 +91,19 @@ const listMyProjects = async (req, res) => {
 const getProject = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id);
         const project = await Project.findById(id);
+        console.log(project);
         if (!project) return res.status(404).json({ message: "Not found" });
         const userId = req.user.userId;
+        console.log(userId);
+        console.log(project.ownerId);
         if (project.ownerId !== userId && !project.members.includes(userId)) {
             return res.status(403).json({ message: "Forbidden" });
         }
         res.status(201).json(project);
     } catch (err) {
+        console.log(err);
         res.status(500).json({ error: err.message });
     }
 };

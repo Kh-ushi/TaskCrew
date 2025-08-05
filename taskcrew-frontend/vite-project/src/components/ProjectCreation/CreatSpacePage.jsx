@@ -38,6 +38,7 @@ function CreateSpacePage() {
 
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
+    console.log(projectId);
     navigate(`/projectSpace/${projectId}`);
   };
 

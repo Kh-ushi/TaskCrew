@@ -5,27 +5,36 @@ import { useState } from "react";
 import api from "../../utils/axiosInstance";
 
 
-const Dashboard = () => {
+const Dashboard = ({ projectId }) => {
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [taskError, setTaskError] = useState("");
 
     const handleAddTaskClick = () => {
         setIsTaskModalOpen(true);
     };
-    
+
     const handleTaskModalClose = () => {
         setIsTaskModalOpen(false);
     };
-    
-    const handleCreateTask =async(task) => {
-        try{
-           const {data} = await api.post("/api/tasks",task);
+
+    const handleCreateTask = async (task) => {
+        try {
+            task.projectId = projectId;
+            const { data } = await api.post("/api/tasks", task);
+            handleTaskModalClose();
         }
-        catch(error){
-            console.error("Failed to create task",error);
+        catch (error) {
+            if (error?.response?.data?.message) {
+                setTaskError(error.response.data.message);
+            }
+            else {
+                setTaskError("Failed to create task");
+            }
+            console.error("Failed to create task", error);
         }
-       
+
     };
-    
+
     const handleEditTask = (task) => {
         setIsTaskModalOpen(false);
     };
@@ -49,8 +58,10 @@ const Dashboard = () => {
                     onCreate={handleCreateTask}
                     handleEdit={handleEditTask}
                     taskInfo={null}
+                    taskError={taskError}
+                    setTaskError={setTaskError}
                 />
-            )}    
+            )}
         </div>
     );
 };
