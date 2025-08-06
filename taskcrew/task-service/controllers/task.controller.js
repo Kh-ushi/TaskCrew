@@ -1,15 +1,13 @@
-import express from "express";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime.js";
-import mongoose from "mongoose";
 import Task from "../models/Task.js";
-import ProjectSnapshot from "../models/ProjectSnapshot.js";
 import redisClient from "../redis/redisClient.js";
 import crypto from "crypto";
 import { accessControl, isUserTaskEditable } from "../helperFunctions/accessControlHelpers.js";
 import { getProjectSnapShot } from "../helperFunctions/snapshotHelpers.js";
 import { runRiskCheckAndNotify } from "../helperFunctions/riskEvaluation.js";
-import { Console } from "console";
+import { publishTaskChange } from "../helperFunctions/publishTaskChange.js";
+
 
 
 dayjs.extend(relativeTime);
@@ -77,6 +75,7 @@ const createTask = async (req, res) => {
             startTime: st,
             endTime: et,
         });
+        publishTaskChange(task, "created");
 
         const risk=runRiskCheckAndNotify(projectId, token);
 
@@ -192,6 +191,7 @@ const updateTask = async (req, res) => {
         task.recomputeSubtaskProgress();
 
         await task.save();
+        publishTaskChange(task, "updated");
 
         runRiskCheckAndNotify(task.projectId, token);
 
@@ -233,6 +233,7 @@ const deleteTask = async (req, res) => {
         }
 
         await Task.deleteOne({ _id: taskId });
+        publishTaskChange(task, "deleted");
 
         runRiskCheckAndNotify(task.projectId, token);
 
@@ -252,6 +253,7 @@ const deleteTask = async (req, res) => {
         res.status(500).json({ message: "Internal server error", details: error.message });
     }
 }
+
 
 
 

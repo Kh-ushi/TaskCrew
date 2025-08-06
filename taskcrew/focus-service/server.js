@@ -2,10 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDb from "./config/db.js";
+import { startConsumer } from "./helperFunctions/streamConsumer.js";
 
 dotenv.config();
-const app=express();
-app.use(cors({origin:true,credentials: true}));
+const app = express();
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -15,6 +16,9 @@ const startServer = async () => {
         await connectDb();
         app.listen(process.env.PORT, () => {
             console.log(`Server is running on port ${process.env.PORT}`);
+            startConsumer()
+                .then(() => console.log('Stream consumer started'))
+                .catch(err => console.error('Stream consumer error:', err));
         });
     }
     catch (error) {

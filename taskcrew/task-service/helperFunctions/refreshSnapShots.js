@@ -1,5 +1,5 @@
-import redisClient from "../redis/redisClient";
-import ProjectSnapshot from "../models/ProjectSnapshot";
+import redisClient from "../redis/redisClient.js";
+import ProjectSnapshot from "../models/ProjectSnapshot.js";
 
 const STREAM_KEY = "project:changes";
 const GROUP_NAME = "project-snapshoters";
@@ -83,8 +83,5 @@ const startProjectSnapShotConsumer = async () => {
     })();
 }
 
-startProjectSnapShotConsumer().catch(e => {
-    console.error("Failed to start snapshot consumer:", e);
-});
+export {startProjectSnapShotConsumer};
 
-// export{startProjectSnapShotConsumer};
