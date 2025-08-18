@@ -1,0 +1,30 @@
+.pi-field { margin-bottom: 14px; }
+.pi-label { display: none; } 
+.pi-row {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.pi-code,
+.pi-input {
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  color: #eaeaea;
+  /* padding: 0 14px; */
+  /* outline: none; */
+  margin-top: 0.75rem;
+  /* border: 2px solid white; */
+}
+
+.pi-input::placeholder { color: rgba(255,255,255,0.35); }
+
+.pi-code { min-width: 140px; }
+
+@media (max-width: 420px) {
+  .pi-row { grid-template-columns: 1fr; }
+  .pi-code { min-width: 100%; }
+}

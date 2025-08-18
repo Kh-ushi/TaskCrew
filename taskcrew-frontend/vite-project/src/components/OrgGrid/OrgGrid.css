@@ -1,0 +1,25 @@
+.og-wrap {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    padding: 20px;
+    background: var(--bg-elev);
+  }
+  
+  /* Tablet screens */
+  @media (max-width: 900px) {
+    .og-wrap {
+      gap: 16px;
+      padding: 16px;
+    }
+  }
+  
+  /* Mobile screens */
+  @media (max-width: 600px) {
+    .og-wrap {
+      grid-template-columns: 1fr; /* Single column */
+      gap: 14px;
+      padding: 12px;
+    }
+  }
+  

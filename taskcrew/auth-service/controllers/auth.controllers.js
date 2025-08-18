@@ -10,11 +10,14 @@ import jwt from 'jsonwebtoken';
 const register = async (req, res) => {
 
     try {
-        // console.log("I am in register");
+        console.log("I am in register");
         const { name, email, password } = req.body;
-        // console.log(req.body);
+        console.log(req.body);
+
         const existing = await User.findOne({ email });
+
         if (existing) {
+            console.log("Email already in use");
             return res.status(400).json({ message: "Email already in use" });
         }
 
@@ -63,6 +66,7 @@ const login = async (req, res) => {
     try {
         console.log("I am in login");
         const { email, password } = req.body;
+        console.log(req.body);
         const user = await User.findOne({ email });
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ msg: "Invalid credentials" });
@@ -197,7 +201,7 @@ const refreshToken = async (req, res) => {
 const tokenVerification = async (req, res) => {
 
 
-    // console.log("I am in tokenVerification code");
+    console.log("I am in tokenVerification code");
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -205,7 +209,7 @@ const tokenVerification = async (req, res) => {
     }
 
     const token = authHeader.split(" ")[1];
-    // console.log("token", token);
+    console.log("token", token);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -219,9 +223,9 @@ const tokenVerification = async (req, res) => {
         }
         return res.status(200).json({ message: "Token is valid", user: decoded });
     } catch (err) {
-        // console.log("I am in auth-verify token");
-        // console.log(err.name);
-        // console.error("Token verification failed:", err.message);
+        console.log("I am in auth-verify token");
+        console.log(err.name);
+        console.error("Token verification failed:", err.message);
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ message: "Access token expired" });
         }

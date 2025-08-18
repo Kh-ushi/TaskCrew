@@ -1,0 +1,183 @@
+/* Theme tokens */
+:root{
+  --bg:#1c2f31;
+  --bg-elev:#20363a;
+  --border:rgba(255,255,255,0.08);
+  --text:rgba(255,255,255,0.92);
+  --muted:rgba(255,255,255,0.6);
+  --accent:#00E5FF;
+}
+
+/* Wrapper */
+.nb-wrap{
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+}
+
+.nb-inner{
+  height: 64px;
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 520px) 1fr;
+  align-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+/* Left */
+.nb-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nb-brand{
+  display:flex; align-items:center; gap:.5rem;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: clamp(16px, 1.6vw, 20px);
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+
+.nb-burger{
+  display: none;
+  width: 40px; height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+.nb-burger span{ display:block; width:18px; height:2px; margin:4px auto; background: var(--text); border-radius:2px; }
+
+/* Center search */
+.nb-search{
+  justify-self: center;
+  width: 100%;
+  position: relative;
+}
+.nb-search input{
+  width: 100%;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  color: var(--text);
+  padding: 0 14px 0 40px;
+  outline: none;
+}
+.nb-search input::placeholder{ color: var(--muted); }
+.nb-search-ico{
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  opacity: .7; pointer-events: none;
+}
+
+/* Right */
+.nb-right{
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nb-icon{
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display:grid; place-items:center;
+}
+
+/* Bell unread dot */
+.nb-bell{ position: relative; }
+.nb-dot{
+  position:absolute;
+  width:8px; height:8px;
+  border-radius:50%;
+  background:#ff7a00;
+  top: 6px; right: 6px;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+/* Profile pill */
+.nb-profile{
+  display:inline-flex; align-items:center; gap:10px;
+  padding: 4px 8px;
+  border:1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+}
+.nb-avatar{
+  width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center;
+  background: var(--bg-elev);
+  border:1px solid var(--border);
+  font-size:12px; font-weight:700;
+  color: var(--text);
+}
+.nb-user{ line-height: 1.05; }
+.nb-name{ font-size:14px; font-weight:600; color: var(--text); }
+.nb-role{ font-size:12px; color: var(--muted); }
+.nb-caret{ color: var(--muted); }
+
+/* Focus + hover */
+.nb-icon:hover,
+.nb-profile:hover,
+.nb-burger:hover,
+.nb-search input:focus{
+  border-color: color-mix(in oklab, var(--accent) 60%, white 0%);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+/* ---------- Responsive ---------- */
+
+/* <= 1024px: shrink container spacing a bit */
+@media (max-width: 1024px){
+  .nb-inner{ padding: 0 12px; }
+}
+
+/* <= 900px: grid adapts; search narrower */
+@media (max-width: 900px){
+  .nb-inner{
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+/* <= 700px: mobile mode */
+@media (max-width: 700px){
+  .nb-burger{ display: inline-grid; place-items:center; }
+  /* hide center search by default; use toggle button */
+  .nb-search{
+    order: 3;
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 8px 0 12px;
+    display: none;
+  }
+  .nb-search.is-open{ display:block; }
+
+  /* show search button on the right only on mobile */
+  .nb-search-btn{ display: grid; }
+}
+
+/* >700px: desktop—hide the mobile search button */
+@media (min-width: 701px){
+  .nb-search-btn{ display: none; }
+}
+
+/* <= 520px: collapse profile text to just avatar */
+@media (max-width: 520px){
+  .nb-user, .nb-caret{ display: none; }
+  .nb-profile{ padding: 4px; }
+}
+
+/* Mobile dropdown (example links) */
+.nb-mobile{ display: none}

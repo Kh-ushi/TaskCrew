@@ -1,6 +1,7 @@
-
 import axios from "axios";
 import { getAccessToken, setAccessToken, clearAuth } from "./auth";
+import {useNavigate} from "react-router-dom";
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -52,6 +53,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(function (response) {
   return response;
 }, async function (error) {
+
   const originalReq = error.config;
 
   const isExpired = error.response &&
@@ -59,8 +61,11 @@ api.interceptors.response.use(function (response) {
     error.response.data &&
     error.response.data.message === "Access token expired";
 
+    console.log("isExpired", isExpired);
+
   if (isExpired && !originalReq._retry) {
     originalReq._retry = true;
+    console.log("isRefreshing", isRefreshing);
 
     if (isRefreshing) {
       return new Promise(function (resolve, reject) {
@@ -76,8 +81,10 @@ api.interceptors.response.use(function (response) {
       });
     }
 
+
     isRefreshing = true;
     try {
+      console.log("Refreshing access token...");
       const { data } = await refreshClient.get("/api/auth/refresh-token");
       const newAccessToken = data.accessToken;
       setAccessToken(newAccessToken);
@@ -85,6 +92,7 @@ api.interceptors.response.use(function (response) {
       originalReq.headers.Authorization = "Bearer " + newAccessToken;
       return api(originalReq);
     } catch (refreshErr) {
+      console.log("Refresh token failed:", refreshErr);
       console.error("Refresh token failed:", refreshErr);
       processQueue(refreshErr, null);
       clearAuth();

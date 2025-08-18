@@ -9,7 +9,7 @@ const generateTokens=async(userId)=>{
     const jti=uuidv4();
 
     const accessToken=jwt.sign({userId,jti},process.env.JWT_SECRET,{
-        expiresIn:'15m'
+        expiresIn:'15s'
     });
 
     const refreshToken=jwt.sign({userId,jti},process.env.JWT_REFRESH_SECRET,{

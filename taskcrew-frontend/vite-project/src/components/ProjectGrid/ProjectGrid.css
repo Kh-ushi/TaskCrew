@@ -1,0 +1,10 @@
+.pg-wrap{
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  padding: 16px;
+  background: #0f191a; /* optional page bg to showcase cards */
+}
+@media (min-width: 1200px){
+  .pg-wrap{ gap: 18px; }
+}
