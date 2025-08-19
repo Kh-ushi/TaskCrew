@@ -1,8 +1,17 @@
 import React from "react";
 import OrgCard from "../OrgCard/OrgCard";
 import "./OrgGrid.css";
+import { useNavigate } from "react-router-dom";
 
 export default function OrgGrid({orgs}) {
+
+    const navigate = useNavigate();
+    const handleOpen = (org) => {
+        navigate(`/org/${org._id}`);
+    }
+    const handleManage = (org) => {
+        
+    }
     
     return (
         <section className="og-wrap">
@@ -13,8 +22,8 @@ export default function OrgGrid({orgs}) {
                     domain={o.domain ||""}
                     planType={o.planType ||"Free"}
                     ownerName={o.owner}
-                    onOpen={() => alert(`Opening ${o.name}`)}
-                    onManage={() => alert(`Managing ${o.name}`)}
+                    onOpen={()=>handleOpen(o)}
+                    onManage={()=>handleManage(o)}
                 />
             ))}
         </section>

@@ -85,7 +85,11 @@
     max-width: 1500px;
     margin: 0 auto;
     padding: 8px 8px 24px;
-
+  }
+  
+  /* Hide MySpaces' internal hero so page hero is the only header */
+  .ap-content .ms-hero{
+    display: none !important;
   }
   
   /* Responsive */

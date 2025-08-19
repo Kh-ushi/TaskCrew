@@ -52,10 +52,10 @@ const navigate = useNavigate();
           </p>
         </div>
 
-        {/* <div className="ap-hero-actions">
+        <div className="ap-hero-actions">
           <button className="ap-btn ap-btn-primary">+New Organization</button>
-          <button className="ap-btn ap-btn-ghost">Invite Member</button>
-        </div> */}
+          {/* <button className="ap-btn ap-btn-ghost">Invite Member</button> */}
+        </div>
       </section>
 
       {/* Grid */}

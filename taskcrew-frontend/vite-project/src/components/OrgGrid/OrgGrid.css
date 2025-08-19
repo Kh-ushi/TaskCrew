@@ -3,7 +3,8 @@
     gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     padding: 20px;
-    background: var(--bg-elev);
+    /* background: var(--bg-elev); */
+    /* border: 2px solid red; */
   }
   
   /* Tablet screens */

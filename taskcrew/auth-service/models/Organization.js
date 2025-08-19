@@ -70,6 +70,13 @@ const organizationSchema = new mongoose.Schema(
       },
     },
 
+    spaces:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Space",
+        },
+    ],
+
     createdAt: {
       type: Date,
       default: Date.now,

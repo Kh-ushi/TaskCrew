@@ -60,6 +60,9 @@ api.interceptors.response.use(function (response) {
     error.response.status === 401 &&
     error.response.data &&
     error.response.data.message === "Access token expired";
+    console.log(error.response.data.message);;
+    console.log(error.response.status);
+    console.log(error.response.data);
 
     console.log("isExpired", isExpired);
 
@@ -95,7 +98,7 @@ api.interceptors.response.use(function (response) {
       console.log("Refresh token failed:", refreshErr);
       console.error("Refresh token failed:", refreshErr);
       processQueue(refreshErr, null);
-      clearAuth();
+      // clearAuth();
       return Promise.reject(refreshErr);
     } finally {
       isRefreshing = false;

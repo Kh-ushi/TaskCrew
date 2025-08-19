@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ msg: "No token provided" });
+      return res.status(401).json({ message: "No token provided" });
     }
 
     const token = authHeader.split(" ")[1];
@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
 
     const isBlacklisted = await redisClient.get(`blacklist:${decoded.jti}`);
     if (isBlacklisted) {
-      return res.status(401).json({ msg: "Token is blacklisted" });
+      return res.status(401).json({ message: "Token is blacklisted" });
     }
 
     req.user = {
@@ -34,9 +34,9 @@ const verifyToken = async (req, res, next) => {
     console.error("Token verification failed:", error.message);
 
     if(error.name=== "TokenExpiredError") {
-      return res.status(401).json({ msg: "Access token expired" });
+      return res.status(401).json({ message: "Access token expired" });
     }
-    return res.status(401).json({ msg: "Invalid token" });
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 

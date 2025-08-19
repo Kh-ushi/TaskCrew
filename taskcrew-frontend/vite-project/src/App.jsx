@@ -4,6 +4,7 @@ import AuthModal from './components/AuthModal/AuthModal';
 import AllProjects from './components/AllProjects/AllProjects';
 import AllOrganizations from './components/AllOrganizations/AllOrganizations';
 import ProtectedRoute from './utils/ProtectedRoute';
+import MySpacesPage from './components/MySpaces/MySpacesPage';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
     <Route path="/" element={<AuthModal onOrgSignup={false} />} ></Route>
     <Route path='/allProjects' element={<ProtectedRoute><AllProjects></AllProjects></ProtectedRoute>}></Route>
     <Route path='/allOrganizations' element={<ProtectedRoute><AllOrganizations></AllOrganizations></ProtectedRoute>}></Route>
+    <Route path='/org/:id' element={<ProtectedRoute><MySpacesPage></MySpacesPage></ProtectedRoute>}></Route>
     </Routes>
    </Router>
   )

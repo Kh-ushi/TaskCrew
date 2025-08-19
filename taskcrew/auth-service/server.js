@@ -6,6 +6,7 @@ import connectDb from "./config/db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import orgRoutes from "./routes/org.routes.js";
+import spaceRoutes from "./routes/space.routes.js";
 
 
 dotenv.config();
@@ -27,8 +28,8 @@ app.use("/auth", (req, res, next) => {
     next();
   });
 
+  app.use("/auth/org/:id/space", spaceRoutes);
   app.use("/auth/org", orgRoutes);
-  
   app.use("/auth", authRoutes);
 
 const startServer = async () => {
