@@ -1,7 +1,20 @@
 import React from "react";
 import "./MySpaces.css";
+import { Trash2 ,UserRoundPlus} from "lucide-react";
 
-function SpaceTile({ name, description, members = 0, onOpen }) {
+function SpaceTile({ name, description, members = 0, onOpen, onAddMember, onDelete }) {
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete();
+  };
+
+  const handleAddMember = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddMember();
+  };
+
   return (
     <button className="ms-tile" type="button" onClick={onOpen} aria-label={`Open space ${name}`}>
       <div className="ms-header">
@@ -11,25 +24,23 @@ function SpaceTile({ name, description, members = 0, onOpen }) {
       {description && <p className="ms-desc">{description}</p>}
       <div className="ms-meta">
         <span className="ms-chip">{members} member{members === 1 ? "" : "s"}</span>
+        <div className="ms-icon">
+        <UserRoundPlus className="ms-users" onClick={handleAddMember} />
+        <Trash2 className="ms-trash" onClick={handleDelete} />
+        </div>
       </div>
     </button>
   );
 }
 
 export default function MySpaces({
-  spaces = [
-
-    // { id: "sp1", name: "Acme Corp — Marketing", description: "Campaign briefs & assets", membersCount: 12 },
-    // { id: "sp2", name: "Nimbus Health — Product", description: "Roadmap & sprints", membersCount: 9 },
-    // { id: "sp3", name: "BluePeak Finance — Ops", description: "Compliance & reporting", membersCount: 7 },
-    // // Private / personal spaces
-    // { id: "sp4", name: "Khushi — Personal", description: "Notes & planning", membersCount: 1 },
-    // { id: "sp5", name: "Freelance — Clients", description: "Proposals & invoices", membersCount: 3 },
-  ],
+  spaces = [],
   onOpenSpace = (s) => alert(`Open space: ${s.name}`),
   onCreateSpace = () => alert("Create new space"),
+  onDeleteSpace = () => alert("Delete space"),
+  onAddMember = () => alert("Add member"),
 }) {
-    
+
   const hasSpaces = Array.isArray(spaces) && spaces.length > 0;
 
   return (
@@ -50,11 +61,13 @@ export default function MySpaces({
         <div className="ms-grid">
           {spaces.map((s) => (
             <SpaceTile
-              key={s.id}
+              key={s._id}
               name={s.name}
               description={s.description}
               members={s.membersCount ?? 0}
               onOpen={() => onOpenSpace(s)}
+              onAddMember={() => onAddMember(s._id)}
+              onDelete={() => onDeleteSpace(s._id)}
             />
           ))}
         </div>

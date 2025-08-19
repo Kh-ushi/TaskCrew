@@ -109,7 +109,39 @@
     font-size: 13px;
     line-height: 1.5;
   }
-  .ms-meta{ display: flex; gap: 8px; }
+  .ms-meta{ 
+    display: flex; gap: 8px;
+    display: flex;
+    /* border: 1px solid red; */
+    align-items: center;
+    justify-content: space-between;
+   }
+
+   .ms-trash{
+    cursor: pointer;
+    color: var(--muted);
+    transition: color .2s ease;
+    z-index: 1000 !important;
+   }
+   .ms-trash:hover{
+    transform: scale(1.2);
+    color: var(--accent);
+   }
+
+   .ms-icon{
+    display: flex;
+    gap: 8px;
+   }
+   .ms-users{
+    cursor: pointer;
+    color: var(--muted);
+    transition: color .2s ease;
+    z-index: 1000 !important;
+   }
+   .ms-users:hover{
+    transform: scale(1.2);
+    color: var(--accent);
+   }
   .ms-chip{
     display: inline-flex; align-items: center;
     font-size: 12px; font-weight: 700;

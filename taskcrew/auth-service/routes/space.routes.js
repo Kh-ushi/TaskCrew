@@ -10,6 +10,6 @@ router.use(verifyToken);
 
 router.post("/create-space", validateRequest(spaceSchema), createSpace);
 router.get("/get-spaces", getSpaces);
-router.delete("/delete-space/:id", validateRequest(spaceSchema), deleteSpace);
+router.delete("/delete-space/:spaceId", validateRequest(spaceSchema), deleteSpace);
 
 export default router;

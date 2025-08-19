@@ -4,7 +4,7 @@ import Organization from "../models/Organization.js";
 const createSpace = async (req, res) => {
     try {
         const { userId } = req.user;
-        const { id} = req.params;
+        const { id } = req.params;
         const { name, description, icon, color = "", visibility, members = [], settings = {} } = req.body;
 
         console.log(req.body);
@@ -18,7 +18,7 @@ const createSpace = async (req, res) => {
             visibility,
             members,
             settings,
-            orgId:id,
+            orgId: id,
             ownerId: userId,
             createdBy: userId,
             updatedBy: userId
@@ -26,7 +26,7 @@ const createSpace = async (req, res) => {
 
         space.ensureOwnerMember();
         await space.save();
-        
+
         const organization = await Organization.findById(id);
         organization.spaces.push(space._id);
         await organization.save();
@@ -46,8 +46,8 @@ const createSpace = async (req, res) => {
 const getSpaces = async (req, res) => {
     try {
         const { userId } = req.user;
-        const {id}=req.params;
-        const spaces = await Space.find({$or:[{ownerId:userId},{"members.userId":userId}],orgId:id});
+        const { id } = req.params;
+        const spaces = await Space.find({ $or: [{ ownerId: userId }, { "members.userId": userId }], orgId: id });
         console.log(spaces);
         return res.status(200).json({ spaces });
     } catch (error) {
@@ -58,8 +58,15 @@ const getSpaces = async (req, res) => {
 
 const deleteSpace = async (req, res) => {
     try {
-        const { id } = req.params;
-        const space = await Space.findByIdAndDelete(id);
+        console.log("I am here in space deletion");
+        const { id, spaceId } = req.params;
+        const organization = await Organization.findByIdAndUpdate(
+            id,
+            { $pull: { spaces: spaceId } },
+            { new: true }
+        );
+        console.log(organization);
+        const space = await Space.findByIdAndDelete(spaceId);
         if (!space) {
             return res.status(404).json({ error: "Space not found" });
         }

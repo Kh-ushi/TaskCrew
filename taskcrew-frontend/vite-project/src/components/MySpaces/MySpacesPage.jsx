@@ -11,12 +11,27 @@ export default function MySpacesPage() {
     console.log(id);
     const [open, setOpen] = useState(false);
     const [spaces, setSpaces] = useState([]);
+  
     
     const handleCreateSpace = () => {
        setOpen(true);
     }
     const handleInviteMember = () => {
         
+    }
+
+    const handleDeleteSpace = async(space_id) => {
+      console.log(space_id);
+      try{
+        const {data} = await api.delete(`/api/auth/org/${id}/space/delete-space/${space_id}`);
+        console.log(data);
+        setSpaces(spaces.filter((s) => s._id !== space_id));
+      } catch (error) {
+        if(error.response?.data?.message){
+          alert(error.response.data.message);
+        }
+        console.log(error);
+      } 
     }
 
     const onSubmit = async(payload) => {
@@ -67,7 +82,7 @@ export default function MySpacesPage() {
       <main className="ap-content">
         {/* Hide the internal MySpaces hero so the page hero is the only one */}
         <div className="ap-content-inner">
-          <MySpaces spaces={spaces} />
+          <MySpaces spaces={spaces} onDeleteSpace={handleDeleteSpace}/>
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />
