@@ -1,0 +1,164 @@
+:root{
+    /* --bg:#1c2f31; */
+    --bg-elev:#20363a;
+    --border:rgba(255,255,255,0.08);
+    --text:rgba(255,255,255,0.95);
+    --muted:rgba(255,255,255,0.68);
+    --accent:#00E5FF;
+  }
+  
+  /* Overlay (same as cs-overlay) */
+  .im-overlay{
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(1200px 500px at 15% 85%, rgba(0,229,255,0.13), transparent 60%),
+      radial-gradient(1200px 500px at 90% 100%, rgba(255,255,255,0.06), transparent 60%),
+      rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    z-index: 60;
+  }
+  
+  /* Card (same vibe as cs-card) */
+  .im-card{
+    width: min(92vw, 720px);
+    border-radius: 20px;
+    background: rgba(28,47,49,0.96);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
+    color: var(--text);
+    padding: 20px;
+    position: relative;
+  }
+  
+  /* Header */
+  .im-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 8px;
+  }
+  .im-title{
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing:.2px;
+  }
+  .im-close{
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 20px; line-height: 1;
+  }
+  
+  /* Form */
+  .im-form{ margin-top: 8px; }
+  .im-error{
+    margin-bottom: 10px;
+    color: #ffb4b4;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  
+  /* Grid (2 cols on >=768px) */
+  .im-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 768px){
+    .im-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+  }
+  .span-2{ grid-column: 1 / -1; }
+  
+  .im-field{ display:flex; flex-direction:column; gap: 6px; }
+  .im-field label{ font-size: 13px; color: var(--muted); }
+  
+  /* Inputs / selects / textarea */
+  .im-field input,
+  .im-field select,
+  .im-field textarea{
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .im-field textarea{
+    resize: vertical;
+    min-height: 84px;
+  }
+  .im-field input:focus,
+  .im-field select:focus,
+  .im-field textarea:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+  
+  /* Emails list */
+  .im-invite-row{
+    display:flex; gap: 8px; margin-bottom: 8px;
+  }
+  .im-mini{
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .im-mini.im-danger:hover{
+    border-color: color-mix(in oklab, #ff6b6b 55%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in oklab, #ff6b6b 25%, transparent);
+  }
+  
+  .im-add{
+    align-self: flex-start;
+    margin-top: 2px;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  /* Actions */
+  .im-actions{
+    display:flex; gap: 10px; justify-content: flex-end;
+    margin-top: 16px;
+  }
+  .im-btn{
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .im-btn:hover{
+    border-color: color-mix(in oklab, var(--accent) 60%, white 0%);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+  .im-btn.im-primary{
+    border: 0;
+    background: linear-gradient(180deg, var(--accent), #79f3ff);
+    color: #00272b;
+    font-weight: 800;
+  }
+  
+  /* Responsive */
+  @media (max-width: 520px){
+    .im-card{ width: min(92vw, 96vw); padding: 16px; border-radius: 16px; }
+    .im-title{ font-size: 20px; }
+    .im-actions{ flex-direction: column; }
+    .im-btn{ width: 100%; }
+  }
+  

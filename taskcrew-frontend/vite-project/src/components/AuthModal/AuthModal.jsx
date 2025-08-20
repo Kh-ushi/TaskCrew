@@ -5,7 +5,7 @@ import SignUpForm from "../SignUpForm/SignUpForm";
 import SignInForm from "../SignInForm/SignInForm";
 import OrgSignupForm from "../OrgSignUpForm/OrgSignUpForm";
 
-export default function AuthModal({ open = true, onClose, onOrgSignup = true }) {
+export default function AuthModal({ open = true, onClose, onOrgSignup = true ,onRegister=true}) {
   const [activeTab, setActiveTab] = useState("signup");
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function AuthModal({ open = true, onClose, onOrgSignup = true }) 
         </div>
       </div>}
 
-      {onOrgSignup && <OrgSignupForm onSubmit={(data) => console.log("OrgSignup:", data)} />}
+      {onOrgSignup && <OrgSignupForm  onRegister={onRegister} />}
     </div>
   </>
   );

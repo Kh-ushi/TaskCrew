@@ -12,9 +12,11 @@ function App() {
    <Router>
     <Routes>
     <Route path="/" element={<AuthModal onOrgSignup={false} />} ></Route>
+    <Route path="/registerOrg" element={<AuthModal onOrgSignup={true} />} ></Route>
     <Route path='/allProjects' element={<ProtectedRoute><AllProjects></AllProjects></ProtectedRoute>}></Route>
     <Route path='/allOrganizations' element={<ProtectedRoute><AllOrganizations></AllOrganizations></ProtectedRoute>}></Route>
     <Route path='/org/:id' element={<ProtectedRoute><MySpacesPage></MySpacesPage></ProtectedRoute>}></Route>
+     <Route path='/addNewOrg' element={<ProtectedRoute><AuthModal onOrgSignup={true} onRegister={false}></AuthModal></ProtectedRoute>}></Route>
     </Routes>
    </Router>
   )

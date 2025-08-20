@@ -17,6 +17,8 @@ export default function SignInForm({ onSubmit }) {
           const {data}=await api.post("/api/auth/login",form);
           console.log(data);
           setAccessToken(data.accessToken);
+          console.log(data.user.name);
+          localStorage.setItem("user",JSON.stringify(data.user.name));
           navigate("/allOrganizations");
         }
         catch(error){

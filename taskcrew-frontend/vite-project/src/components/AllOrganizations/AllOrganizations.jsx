@@ -8,25 +8,25 @@ import { useNavigate } from "react-router-dom";
 
 export default function AllOrganizations() {
 
-const [orgs, setOrgs] = useState([]);   
+  const [orgs, setOrgs] = useState([]);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchOrganizations = async () => {
       try {
         const { data } = await api.get("/api/auth/org/get-organizations");
         console.log(data);
-        console.log(data.organization);
-        if(data.organization!=null || data.organization!=undefined || data.organization!=""){
-            setOrgs(data.organization);
+        if (data?.organizations) {
+          console.log(data.organizations);
+          setOrgs([...orgs,...data.organizations]);
         }
-        else{
-            setOrgs([]);
+        else {
+          setOrgs([]);
         }
       } catch (error) {
         console.log(error);
-        navigate("/login");
+        navigate("/");
       }
     };
     fetchOrganizations();
@@ -46,22 +46,38 @@ const navigate = useNavigate();
             <span>Organizations</span>
           </nav> */}
 
-          <h1 className="ap-title">Hi, Khushi</h1>
+          <h1 className="ap-title">Hi,{JSON.parse(localStorage.getItem("user"))}</h1>
           <p className="ap-subtitle">
             Maintain organizations and teams — open and manage.
           </p>
         </div>
 
         <div className="ap-hero-actions">
-          <button className="ap-btn ap-btn-primary">+New Organization</button>
+          <button className="ap-btn ap-btn-primary" onClick={()=>navigate("/addNewOrg",)}>+New Organization</button>
           {/* <button className="ap-btn ap-btn-ghost">Invite Member</button> */}
         </div>
       </section>
 
       {/* Grid */}
-      <main className="ap-content">
-        <OrgGrid orgs={[orgs]} />
-      </main>
+      {orgs.length > 0 ? (
+        <main className="ap-content">
+          <OrgGrid orgs={orgs} />
+        </main>
+      ) : (
+        <div className="ms-empty" role="status" aria-live="polite">
+          <div className="ms-empty-card">
+            <div className="ms-empty-icon" aria-hidden="true">🗂️</div>
+            <h2 className="ms-empty-title">No Organization yet</h2>
+            <p className="ms-empty-text">
+              You’re not part of any space in this organization.
+            </p>
+            <button className="ms-btn ms-btn-primary" onClick={()=>navigate("/addNewOrg")}>
+              + Add Your Own Organization
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

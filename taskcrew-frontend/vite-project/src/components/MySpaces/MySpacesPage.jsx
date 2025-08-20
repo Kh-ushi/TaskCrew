@@ -4,20 +4,23 @@ import "./MySpacesPage.css";
 import {useState,useEffect} from "react";
 import {useParams} from "react-router-dom";
 import CreateSpaceModal from "../CreateSpaceModal/CreateSpaceModal";
+import InviteMemberModal from "../InviteMemberModal/InviteMemberModal";
 import api from "../../utils/axiosInstance";
+
 
 export default function MySpacesPage() {
     const {id} = useParams();
     console.log(id);
     const [open, setOpen] = useState(false);
     const [spaces, setSpaces] = useState([]);
+    const [openInvite, setOpenInvite] = useState(false);
   
     
     const handleCreateSpace = () => {
        setOpen(true);
     }
     const handleInviteMember = () => {
-        
+        setOpenInvite(true);
     }
 
     const handleDeleteSpace = async(space_id) => {
@@ -86,6 +89,7 @@ export default function MySpacesPage() {
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />
+      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={onSubmit} />
     </div>
   );
 }

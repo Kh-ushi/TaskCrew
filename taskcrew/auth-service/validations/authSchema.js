@@ -21,4 +21,9 @@ const addOrganizationSchema = Joi.object({
     phoneNumber: Joi.string().min(10),
 });
 
-export {loginSchema, registerSchema ,addOrganizationSchema};
+const addNewOrganizationSchema = Joi.object({
+    orgName: Joi.string().min(2).required(),
+    domain: Joi.string().allow(null).allow(""),
+});
+
+export {loginSchema, registerSchema ,addOrganizationSchema,addNewOrganizationSchema};

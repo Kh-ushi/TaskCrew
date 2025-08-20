@@ -35,6 +35,8 @@ export default function SignUpForm({}) {
       const {data}=await api.post("/api/auth/register",payload);
       console.log(data);
       setAccessToken(data.accessToken);
+      console.log(data.user.name);
+      localStorage.setItem("user",JSON.stringify(data.user.name));
       navigate("/allOrganizations");
     }
     catch(error){

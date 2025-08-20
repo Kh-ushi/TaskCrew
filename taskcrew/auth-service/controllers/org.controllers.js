@@ -35,7 +35,11 @@ const addOrganization = async (req, res) => {
         });
 
         //create new organization
-        const organization = new Organization({ name: orgName, domain: domain, owner: newUser._id });
+        const existingOrg = await Organization.findOne({ name: orgName });
+        if (existingOrg) {
+            return res.status(400).json({ message: "Organization name already exists" });
+        }
+        const organization = new Organization({ name: orgName, domain: domain, owner: newUser._id }).populate("owner");
         await organization.save();
 
         newUser.organizationId = organization._id;
@@ -63,15 +67,40 @@ const addOrganization = async (req, res) => {
     }
 };
 
+const addNewOrganization = async (req, res) => {
+    try {
+        const { userId } = req.user;
+        const user = await User.findById(userId);
+        const { orgName, domain } = req.body;
+        console.log(req.body);
+        if (!orgName) {
+            console.log("Organization name is required");
+            return res.status(400).json({ error: "Organization name is required" });
+        }
+        const existingOrg = await Organization.findOne({ name: orgName });
+        if (existingOrg) {
+            console.log("Organization name already exists");
+            return res.status(400).json({ message: "Organization name already exists" });
+        }
+        const organization = new Organization({ name: orgName, domain: domain, owner: user._id }).populate("owner");
+        await organization.save();
+        user.organizationId = organization._id;
+        await user.save();
+        return res.status(201).json({ message: "Organization added successfully", organization });
+    } catch (error) {
+        console.log(error);
+        console.error(error);
+        return res.status(500).json({ error: "Failed to add organization" });
+    }
+};
+
 const getOrganizations = async (req, res) => {
     try {
         console.log("I am in getOrganizations");
-        const {userId}=req.user;
-        const user=await User.findById(userId).populate("organizationId");
-        if(user.organizationId!=null || user.organizationId!=undefined || user.organizationId!=""){
-           return res.status(200).json({organization:user.organizationId}); 
-        }
-        return res.status(200).json({organization:null}); 
+        const { userId } = req.user;
+        const orgs=await Organization.find({owner:userId}).populate("owner");
+        console.log(orgs);
+        return res.status(200).json({ organizations: orgs });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to get organizations" });
@@ -93,4 +122,4 @@ const deleteOrganization = async (req, res) => {
 };
 
 
-export { addOrganization,getOrganizations, deleteOrganization };
+export { addOrganization, addNewOrganization, getOrganizations, deleteOrganization };

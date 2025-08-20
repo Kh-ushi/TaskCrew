@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./OrgSignupForm.css";
 import api from "../../utils/axiosInstance";
-import {getAccessToken, setAccessToken, clearAuth} from "../../utils/auth";
-import {useNavigate} from "react-router-dom";
+import { getAccessToken, setAccessToken, clearAuth } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
 
-export default function OrgSignupForm() {
-    const [form, setForm] = useState({
+export default function OrgSignupForm({ onRegister }) {
+  const [form, setForm] = useState({
     orgName: "",
     domain: "",
     ownerName: "",
@@ -20,10 +20,10 @@ export default function OrgSignupForm() {
     // defaultWorkspaceName: "",
     // brandColor: "#00E5FF",
   });
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const handleChange = (k, v) => {setForm((f) => ({ ...f, [k]: v })); setError("");};
+  const handleChange = (k, v) => { setForm((f) => ({ ...f, [k]: v })); setError(""); };
   const handleInviteChange = (i, v) =>
     handleChange(
       "inviteEmails",
@@ -32,41 +32,49 @@ export default function OrgSignupForm() {
   const addInviteField = () =>
     handleChange("inviteEmails", [...form.inviteEmails, ""]);
 
-  const submit = async(e) => {
+  const submit = async (e) => {
     e.preventDefault();
     console.log(form);
     try {
-        const {data}=await api.post("/api/auth/org/add-organization", form);
+      if(onRegister){
+        const { data } = await api.post("/api/auth/org/add-organization", form);
         console.log(data);
         setAccessToken(data.accessToken);
-        setForm({
-            orgName: "",
-            domain: "",
-            ownerName: "",
-            ownerEmail: "",
-            password: "",
-            phoneNumber: "",
-            // inviteEmails: [""],
-            // planType: "Free",
-            // billingEmail: "",
-            // paymentMethod: "",
-            // timeZone: "",
-            // defaultWorkspaceName: "",
-            // brandColor: "#00E5FF",
-          });
-          navigate("/allOrganizations");
+        console.log(data.user.name);
+        localStorage.setItem("user",JSON.stringify(data.user.name));
+      }
+      else{
+        const { data } = await api.post("/api/auth/org/addNewOrganization", {orgName: form.orgName, domain: form.domain});
+        console.log(data);
+      }
+      setForm({
+        orgName: "",
+        domain: "",
+        ownerName: "",
+        ownerEmail: "",
+        password: "",
+        phoneNumber: "",
+        // inviteEmails: [""],
+        // planType: "Free",
+        // billingEmail: "",
+        // paymentMethod: "",
+        // timeZone: "",
+        // defaultWorkspaceName: "",
+        // brandColor: "#00E5FF",
+      });
+      navigate("/allOrganizations");
 
     } catch (error) {
-        if(error.response?.data?.message){
-            setError(error.response.data.message);
-        }
-        console.log(error);
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      }
+      console.log(error);
     }
   };
 
   return (
     <form className="org-form" onSubmit={submit}>
-        {error && <p className="error" style={{color:"red"}}>{error}</p>}
+      {error && <p className="error" style={{ color: "red" }}>{error}</p>}
       <h2 className="org-title">Add Your Organization</h2>
 
       {/* Organization Identity */}
@@ -94,51 +102,53 @@ export default function OrgSignupForm() {
       </div>
 
       {/* Owner/Admin */}
-      <h3 className="org-section">Owner / Admin</h3>
-      <div className="org-grid">
-        <div className="org-field">
-          <label>Owner Name</label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            minLength={2}
-            value={form.ownerName}
-            onChange={(e) => handleChange("ownerName", e.target.value)}
-            required
-          />
+      {onRegister && <>
+        <h3 className="org-section">Owner / Admin</h3>
+        <div className="org-grid">
+          <div className="org-field">
+            <label>Owner Name</label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              minLength={2}
+              value={form.ownerName}
+              onChange={(e) => handleChange("ownerName", e.target.value)}
+              required
+            />
+          </div>
+          <div className="org-field">
+            <label>Owner Email</label>
+            <input
+              type="email"
+              placeholder="john@acme.com"
+              minLength={6}
+              value={form.ownerEmail}
+              onChange={(e) => handleChange("ownerEmail", e.target.value)}
+              required
+            />
+          </div>
+          <div className="org-field">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              minLength={6}
+              value={form.password}
+              onChange={(e) => handleChange("password", e.target.value)}
+              required
+            />
+          </div>
+          <div className="org-field">
+            <label>Phone Number (optional)</label>
+            <input
+              type="tel"
+              placeholder="+91 9876543210"
+              value={form.phoneNumber}
+              onChange={(e) => handleChange("phoneNumber", e.target.value)}
+            />
+          </div>
         </div>
-        <div className="org-field">
-          <label>Owner Email</label>
-          <input
-            type="email"
-            placeholder="john@acme.com"
-            minLength={6}
-            value={form.ownerEmail}
-            onChange={(e) => handleChange("ownerEmail", e.target.value)}
-            required
-          />
-        </div>
-        <div className="org-field">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            minLength={6}
-            value={form.password}
-            onChange={(e) => handleChange("password", e.target.value)}
-            required
-          />
-        </div>
-        <div className="org-field">
-          <label>Phone Number (optional)</label>
-          <input
-            type="tel"
-            placeholder="+91 9876543210"
-            value={form.phoneNumber}
-            onChange={(e) => handleChange("phoneNumber", e.target.value)}
-          />
-        </div>
-      </div>
+      </>}
 
       {/* Invite */}
       {/* <h3 className="org-section">Invite Teammates (optional)</h3> */}

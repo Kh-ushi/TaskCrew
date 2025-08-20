@@ -21,7 +21,7 @@ export default function OrgGrid({orgs}) {
                     orgName={o.name}
                     domain={o.domain ||""}
                     planType={o.planType ||"Free"}
-                    ownerName={o.owner}
+                    ownerName={o.owner.name}
                     onOpen={()=>handleOpen(o)}
                     onManage={()=>handleManage(o)}
                 />
