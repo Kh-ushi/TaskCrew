@@ -8,7 +8,7 @@ import "./InviteMemberModal.css";
  * - onSubmit: (payload) => void
  * - orgName?: string   // optional, just for display
  */
-export default function InviteMemberModal({ open = false, onClose, onSubmit, orgName }) {
+export default function InviteMemberModal({ open = false, onClose, onSubmit, orgName="" }) {
   const dialogRef = useRef(null);
   const [form, setForm] = useState({
     emails: [""],

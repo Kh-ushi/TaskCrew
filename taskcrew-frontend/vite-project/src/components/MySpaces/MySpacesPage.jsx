@@ -2,7 +2,7 @@ import Navbar from "../Navbar/NavBar";
 import MySpaces from "./MySpaces";
 import "./MySpacesPage.css";
 import {useState,useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useParams,useLocation} from "react-router-dom";
 import CreateSpaceModal from "../CreateSpaceModal/CreateSpaceModal";
 import InviteMemberModal from "../InviteMemberModal/InviteMemberModal";
 import api from "../../utils/axiosInstance";
@@ -11,9 +11,14 @@ import api from "../../utils/axiosInstance";
 export default function MySpacesPage() {
     const {id} = useParams();
     console.log(id);
+    const location = useLocation();
     const [open, setOpen] = useState(false);
     const [spaces, setSpaces] = useState([]);
     const [openInvite, setOpenInvite] = useState(false);
+    const[addMemberToSpace,setAddMemberToSpace] = useState(false);
+    const [spaceName,setSpaceName] = useState("");
+
+
   
     
     const handleCreateSpace = () => {
@@ -21,6 +26,13 @@ export default function MySpacesPage() {
     }
     const handleInviteMember = () => {
         setOpenInvite(true);
+        setAddMemberToSpace(false);
+    }
+
+    const handleAddMember = (spaceName) => {
+       setAddMemberToSpace(true);
+        setOpenInvite(true);
+        setSpaceName(spaceName);
     }
 
     const handleDeleteSpace = async(space_id) => {
@@ -85,11 +97,11 @@ export default function MySpacesPage() {
       <main className="ap-content">
         {/* Hide the internal MySpaces hero so the page hero is the only one */}
         <div className="ap-content-inner">
-          <MySpaces spaces={spaces} onDeleteSpace={handleDeleteSpace}/>
+          <MySpaces spaces={spaces} onDeleteSpace={handleDeleteSpace} onAddMember={handleAddMember}/>
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />
-      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={onSubmit} />
+      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={onSubmit} orgName={addMemberToSpace ? spaceName : location.state.org.name} />
     </div>
   );
 }

@@ -21,11 +21,11 @@ function SpaceTile({ name, description, members = 0, onOpen, onAddMember, onDele
         <div className="ms-badge" aria-hidden />
         <h3 className="ms-name">{name}</h3>
       </div>
-      {description && <p className="ms-desc">{description}</p>}
+      {description && <p className="ms-desc">{description}</p>}   
       <div className="ms-meta">
         <span className="ms-chip">{members} member{members === 1 ? "" : "s"}</span>
         <div className="ms-icon">
-        <UserRoundPlus className="ms-users" onClick={handleAddMember} />
+        <UserRoundPlus className="ms-users" onClick={(e)=>handleAddMember(e)} />
         <Trash2 className="ms-trash" onClick={handleDelete} />
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function MySpaces({
               description={s.description}
               members={s.membersCount ?? 0}
               onOpen={() => onOpenSpace(s)}
-              onAddMember={() => onAddMember(s._id)}
+              onAddMember={() => onAddMember(s.name)}
               onDelete={() => onDeleteSpace(s._id)}
             />
           ))}

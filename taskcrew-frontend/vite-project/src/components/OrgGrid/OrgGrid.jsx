@@ -7,7 +7,7 @@ export default function OrgGrid({orgs}) {
 
     const navigate = useNavigate();
     const handleOpen = (org) => {
-        navigate(`/org/${org._id}`);
+        navigate(`/org/${org._id}`,{state:{org}});
     }
     const handleManage = (org) => {
         
