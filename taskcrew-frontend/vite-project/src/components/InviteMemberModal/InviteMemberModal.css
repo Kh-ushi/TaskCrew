@@ -31,6 +31,7 @@
     color: var(--text);
     padding: 20px;
     position: relative;
+    z-index: 2000;
   }
   
   /* Header */
@@ -152,6 +153,10 @@
     background: linear-gradient(180deg, var(--accent), #79f3ff);
     color: #00272b;
     font-weight: 800;
+  }
+
+  #im-role option{
+    color:black !important;
   }
   
   /* Responsive */

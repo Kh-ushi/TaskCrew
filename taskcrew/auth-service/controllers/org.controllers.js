@@ -98,7 +98,7 @@ const getOrganizations = async (req, res) => {
     try {
         console.log("I am in getOrganizations");
         const { userId } = req.user;
-        const orgs=await Organization.find({owner:userId}).populate("owner");
+        const orgs = await Organization.find({ owner: userId }).populate("owner");
         console.log(orgs);
         return res.status(200).json({ organizations: orgs });
     } catch (error) {
@@ -122,4 +122,31 @@ const deleteOrganization = async (req, res) => {
 };
 
 
-export { addOrganization, addNewOrganization, getOrganizations, deleteOrganization };
+const inviteMembers = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { emails, role, message} = req.body;
+        const { id } = req.params;
+        const { userId } = req.user;
+        const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
+        const existingEmails = existingUsers.map(u => u.email);
+
+        await Promise.all(existingEmails.map(email => redisClient.publish(
+            "inviteMember",
+            JSON.stringify({ email, role, message, orgId: id })
+        )));
+
+        const missingEmails = emails.filter(e => !existingEmails.includes(e));
+        return res.status(200).json({
+            message: "Invitation processed",
+            sent: existingEmails,
+            notFound: missingEmails
+        });
+    } catch (error) {
+        console.error("inviteMembers error:", error.message, error.stack);
+        return res.status(500).json({ error: "Failed to invite members" });
+    }
+}
+
+
+export { addOrganization, addNewOrganization, getOrganizations, deleteOrganization, inviteMembers };

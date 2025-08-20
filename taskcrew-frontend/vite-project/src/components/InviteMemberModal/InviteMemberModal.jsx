@@ -12,7 +12,7 @@ export default function InviteMemberModal({ open = false, onClose, onSubmit, org
   const dialogRef = useRef(null);
   const [form, setForm] = useState({
     emails: [""],
-    role: "Member", // Member | Admin
+    role: "member", // Member | Admin
     message: "",
   });
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ export default function InviteMemberModal({ open = false, onClose, onSubmit, org
   useEffect(() => {
     if (!open) return;
     setError(null);
-    setForm({ emails: [""], role: "Member", message: "" });
+    setForm({ emails: [""], role: "member", message: "" });
   }, [open]);
 
   // ESC to close + autofocus first email
@@ -60,7 +60,6 @@ export default function InviteMemberModal({ open = false, onClose, onSubmit, org
       emails,
       role: form.role,
       message: form.message.trim(),
-      orgName,
     });
   };
 
@@ -120,8 +119,8 @@ export default function InviteMemberModal({ open = false, onClose, onSubmit, org
                 value={form.role}
                 onChange={(e) => set("role", e.target.value)}
               >
-                <option>Member</option>
-                <option>Admin</option>
+                <option value="member">Member</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
 
