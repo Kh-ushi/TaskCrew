@@ -22,4 +22,10 @@ const spaceSchema = Joi.object({
 
 });
 
-export { spaceSchema };
+const inviteMembersSchema = Joi.object({
+    emails: Joi.array().items(Joi.string().email()).required(),
+    role: Joi.string().valid("admin", "member", "viewer").default("member"),
+    message: Joi.string().allow(null).allow(""),
+});
+
+export { spaceSchema ,inviteMembersSchema };

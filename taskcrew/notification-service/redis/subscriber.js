@@ -32,7 +32,8 @@ const startSubscriber =async() => {
         "comment:removed",
         "attachment:added",
         "attachment:removed",
-        "inviteMember"
+        "inviteMember",
+        "inviteMembertoSpace"
     ];
 
     for (const ch of channels) {

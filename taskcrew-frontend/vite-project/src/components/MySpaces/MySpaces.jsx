@@ -66,7 +66,7 @@ export default function MySpaces({
               description={s.description}
               members={s.membersCount ?? 0}
               onOpen={() => onOpenSpace(s)}
-              onAddMember={() => onAddMember(s.name)}
+              onAddMember={() => onAddMember(s)}
               onDelete={() => onDeleteSpace(s._id)}
             />
           ))}

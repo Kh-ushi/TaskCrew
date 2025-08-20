@@ -1,5 +1,6 @@
 import Space from "../models/Space.js";
 import Organization from "../models/Organization.js";
+import User from "../models/User.js";
 
 const createSpace = async (req, res) => {
     try {
@@ -77,6 +78,32 @@ const deleteSpace = async (req, res) => {
     }
 };
 
+const inviteMembersToSpace = async (req, res) => {
+    try {
+        console.log("I am here in space invitation");
+    
+        const { userId } = req.user;
+        const { id, spaceId } = req.params;
+        const { emails, role, message } = req.body;
+        const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
+        const existingEmails = existingUsers.map(u => u.email);
+
+        await Promise.all(existingEmails.map(email => redisClient.publish(
+            "inviteMembertoSpace",
+            JSON.stringify({ email, role, message, orgId: id, spaceId })
+        )));
+
+        const missingEmails = emails.filter(e => !existingEmails.includes(e));
+        return res.status(200).json({
+            message: "Invitation processed",
+            sent: existingEmails,
+            notFound: missingEmails
+        });
+    } catch (error) {
+        console.error("inviteMembers error:", error.message, error.stack);
+        return res.status(500).json({ error: "Failed to invite members" });
+    }
+}
 
 
-export { createSpace, getSpaces, deleteSpace };
+export { createSpace, getSpaces, deleteSpace, inviteMembersToSpace};

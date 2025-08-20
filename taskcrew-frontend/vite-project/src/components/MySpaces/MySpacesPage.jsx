@@ -16,7 +16,7 @@ export default function MySpacesPage() {
   const [spaces, setSpaces] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
   const [addMemberToSpace, setAddMemberToSpace] = useState(false);
-  const [spaceName, setSpaceName] = useState("");
+  const [space, setSpace] = useState(null);
 
 
 
@@ -29,10 +29,10 @@ export default function MySpacesPage() {
     setAddMemberToSpace(false);
   }
 
-  const handleAddMember = (spaceName) => {
+  const handleAddMember = (space) => {
     setAddMemberToSpace(true);
     setOpenInvite(true);
-    setSpaceName(spaceName);
+    setSpace(space);
   }
 
   const handleDeleteSpace = async (space_id) => {
@@ -65,6 +65,26 @@ export default function MySpacesPage() {
       console.log(payload);
       console.log(id);
       const { data } = await api.post(`/api/auth/org/invite-members/${id}`, payload);
+      console.log(data);
+      setOpenInvite(false);
+    } catch (error) {
+      console.log(error);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      }
+      else {
+        alert("Failed to invite members");
+      }
+    }
+  }
+
+
+  const handleMemberInviteToSpace = async (payload) => {
+    try {
+      console.log(payload);
+      console.log(id);
+      console.log(space._id);
+      const { data } = await api.post(`/api/auth/org/${id}/space/invite-members/${space._id}`, payload);
       console.log(data);
       setOpenInvite(false);
     } catch (error) {
@@ -119,7 +139,7 @@ export default function MySpacesPage() {
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />
-      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={handleMemeberInvite} orgName={addMemberToSpace ? spaceName : location.state.org.name} />
+      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={addMemberToSpace ? handleMemberInviteToSpace : handleMemeberInvite} orgName={addMemberToSpace ? space.name : location.state.org.name} />
     </div>
   );
 }
