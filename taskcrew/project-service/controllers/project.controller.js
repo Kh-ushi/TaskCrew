@@ -18,7 +18,7 @@ const createProject = async (req, res) => {
             return res.status(400).json({ message: "Name and StartDate are required" });
         }
 
-        const { present, missing } = await partitionRedisKeys(members);
+        // const { present, missing } = await partitionRedisKeys(members);
 
 
         const project = await Project.create({

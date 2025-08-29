@@ -2,7 +2,7 @@ import Navbar from "../Navbar/NavBar";
 import MySpaces from "./MySpaces";
 import "./MySpacesPage.css";
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation,useNavigate } from "react-router-dom";
 import CreateSpaceModal from "../CreateSpaceModal/CreateSpaceModal";
 import InviteMemberModal from "../InviteMemberModal/InviteMemberModal";
 import api from "../../utils/axiosInstance";
@@ -12,6 +12,7 @@ export default function MySpacesPage() {
   const { id } = useParams();
   console.log(id);
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [spaces, setSpaces] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
@@ -98,6 +99,10 @@ export default function MySpacesPage() {
     }
   }
 
+  const onOpenSpace = (space) => {
+    navigate(`/space/${space._id}`);
+  }
+
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
@@ -135,7 +140,7 @@ export default function MySpacesPage() {
       <main className="ap-content">
         {/* Hide the internal MySpaces hero so the page hero is the only one */}
         <div className="ap-content-inner">
-          <MySpaces spaces={spaces} onDeleteSpace={handleDeleteSpace} onAddMember={handleAddMember} />
+          <MySpaces spaces={spaces} onDeleteSpace={handleDeleteSpace} onAddMember={handleAddMember} onOpenSpace={onOpenSpace} />
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />

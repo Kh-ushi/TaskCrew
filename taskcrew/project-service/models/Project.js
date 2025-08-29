@@ -8,6 +8,7 @@ const projectSchema = new mongoose.Schema({
   status: { type: String, enum: ["active", "archived"], default: "active" },
   startDate: { type: Date, required: true },
   endDate: { type: Date },
+  spaceId:{type:String},
 }, { timestamps: true });
 
 export default mongoose.model("Project", projectSchema);

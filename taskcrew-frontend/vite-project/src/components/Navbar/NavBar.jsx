@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Bell, CircleCheckBig, Search } from "lucide-react";
 import "./Navbar.css";
 
-export default function Navbar() {
+export default function Navbar({isMainSpace=false}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -21,10 +21,12 @@ export default function Navbar() {
             <span />
           </button>
 
-          <div className="nb-brand">
+         {!isMainSpace && (
+            <div className="nb-brand">
             <CircleCheckBig size={22} />
             <span>TaskCrew</span>
           </div>
+         )}
         </div>
 
         {/* Center: Search */}

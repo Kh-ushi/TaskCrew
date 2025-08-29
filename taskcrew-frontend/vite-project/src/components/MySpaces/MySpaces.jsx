@@ -15,8 +15,14 @@ function SpaceTile({ name, description, members = 0, onOpen, onAddMember, onDele
     onAddMember();
   };
 
+  const handleOpen = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpen();
+  };
+
   return (
-    <button className="ms-tile" type="button" onClick={onOpen} aria-label={`Open space ${name}`}>
+    <button className="ms-tile" type="button" onClick={handleOpen} aria-label={`Open space ${name}`}>
       <div className="ms-header">
         <div className="ms-badge" aria-hidden />
         <h3 className="ms-name">{name}</h3>

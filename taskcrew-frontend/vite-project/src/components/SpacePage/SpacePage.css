@@ -1,0 +1,40 @@
+:root{
+    /* --bg:#1c2f31; */
+    --text:rgba(255,255,255,.95);
+    --border:rgba(255,255,255,.08);
+  }
+  
+  /* host */
+  .space-page{
+    min-height: 100dvh;
+    /* default if JS hasn't set yet */
+    --sb-w: 264px;
+  }
+  
+  /* your sidebar is fixed on the left */
+  .sidebar{
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--sb-w);
+    background: #20363a;           /* or your existing style */
+    border-right: 1px solid var(--border);
+    transition: width .2s ease, transform .24s ease;
+    z-index: 60;
+  }
+  
+  /* content takes “the rest” by shifting itself right */
+  .space-content{
+    margin-left: calc(var(--sb-w) + 15px);
+    min-width: 0;
+    background: #f6f8f9;           
+    color: #0b1d20;
+    transition: margin-left .2s ease;
+  }
+  
+ 
+  @media (max-width: 900px){
+    .sidebar{ transform: translateX(-100%); }
+    .sidebar.is-open{ transform: translateX(0); }
+    .space-content{ margin-left: 0; }
+  }
+  
