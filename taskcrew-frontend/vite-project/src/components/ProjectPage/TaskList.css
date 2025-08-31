@@ -1,0 +1,179 @@
+:root{
+  /* --bg:#1c2f31; */
+  --bg-elev:#20363a;
+  --border:rgba(255,255,255,0.08);
+  --text:rgba(255,255,255,0.95);
+  --muted:rgba(255,255,255,0.68);
+  --accent:#00E5FF;
+}
+
+.tl-wrap{ width: 100%; overflow-x: auto; }
+
+/* Table */
+.tl-table{
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text);
+  font-size: 14px;
+}
+.tl-table th, .tl-table td{
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tl-table thead th{
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: .2px;
+  background: rgba(255,255,255,.03);
+}
+.tl-row:hover td{
+  background: rgba(255,255,255,.04);
+}
+
+/* Cells */
+.tl-title{
+  font-weight: 700;
+  cursor: pointer;
+}
+.tl-status{
+  color: var(--muted);
+}
+.tl-assignee{
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* Delete button */
+.tl-delete{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 16px;
+  transition: color .2s ease;
+}
+.tl-delete:hover{
+  color: #ff6b6b;
+}
+
+/* Empty state */
+.tl-empty{
+  display:grid; place-items:center;
+  padding: 24px 8px;
+}
+.tl-empty-card{
+  text-align: center;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.tl-empty-icon{ font-size: 32px; margin-bottom: 8px; }
+.tl-empty-title{ font-weight: 800; margin-bottom: 4px; }
+.tl-empty-text{ color: var(--muted); margin-bottom: 12px; }
+
+
+
+/* Responsive tweaks */
+@media (max-width: 560px){
+  .tl-table th, .tl-table td{ padding: 8px; }
+  .tl-title{ font-size: 13px; }
+  .tl-status, .tl-assignee{ font-size: 12px; }
+}
+
+
+/* ======== TaskList styles (append-only) ======== */
+
+.task-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding: 10px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  max-width: 100%;
+  margin: 0 auto;
+  /* border: 2px solid red; */
+}
+
+.task-list-empty{
+  color: var(--muted);
+  text-align: center;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+}
+
+.task-row{
+  display:flex;
+  align-items:stretch;
+  justify-content:space-between;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .12s ease, .18s ease;
+  /* border: 2px solid red; */
+}
+.task-row:hover{
+  transform: translateY(-1px);
+  border-color: color-mix(in oklab, var(--accent) 35%, var(--border) 65%);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+.tl-main{
+  min-width: 0; /* allow title to truncate nicely */
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+}
+.tl-title{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.tl-text{
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 54ch;
+}
+.tl-status{
+  font-size:11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(255,255,255,.05);
+}
+
+.tl-dates{
+  display:flex; align-items:center; gap:10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.tl-dates .date{ display:inline-flex; align-items:center; gap:6px; }
+.tl-dates .sep{ opacity:.7; }
+
+.tl-right{
+  display:flex; align-items:center; gap:12px; flex-shrink:0;
+}
+.tl-right .avatars{ display:flex; align-items:center; gap:6px; }
+.tl-right .avatar{ width:22px; height:22px; font-size:11px; font-weight:800; }
+
+.tl-right .actions{
+  display:flex; align-items:center; gap:8px;
+}
+
+/* compact on small screens */
+@media (max-width: 640px){
+  .task-row{ flex-direction: column; align-items: stretch; }
+  .tl-right{ justify-content: space-between; }
+  .tl-text{ max-width: 100%; }
+}

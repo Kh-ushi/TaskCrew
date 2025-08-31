@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./AddProjectModal.css";
 
+
 export default function AddProjectModal({
   open = true,
   onClose,
@@ -9,11 +10,11 @@ export default function AddProjectModal({
   currentUserId,        // ✅ add this
   spaces = [],          // ✅ add this
   defaultSpaceId = "",  // optional: preselect a space
-  editProject = null
+  editProject = null,
 }) {
   const dialogRef = useRef(null);
   const [form, setForm] = useState({
-    name: editProject.name || "",
+    name:editProject?.name || "",
     description: editProject?.description || "",
     members: editProject?.members || [""],
     status: editProject?.status || "active",
@@ -36,12 +37,12 @@ export default function AddProjectModal({
         : "");
   
     setForm({
-      name:editProject.name || "",
+      name:editProject?.name || "",
       description: editProject?.description || "",
       members: editProject?.members || [""],
       status: editProject?.status || "active",
-      startDate: fmtDate(editProject.startDate) || "",
-      endDate: fmtDate(editProject.endDate) || "",
+      startDate: fmtDate(editProject?.startDate) || "",
+      endDate: fmtDate(editProject?.endDate) || "",
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]); // 👈 ONLY depends on `open`

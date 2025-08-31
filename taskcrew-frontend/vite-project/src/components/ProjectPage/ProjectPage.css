@@ -1,0 +1,205 @@
+:root{
+  /* --bg:#1c2f31; */
+  --bg-elev:#20363a;
+  --border:rgba(255,255,255,0.08);
+  --text:rgba(255,255,255,0.95);
+  --muted:rgba(255,255,255,0.68);
+  --accent:#00E5FF;
+}
+
+/* Page wrapper */
+.pp-page{
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  width: 100%;
+  /* border: 2px solid red; */
+}
+
+/* Hero */
+.pp-hero{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: end;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 18px 16px 8px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(900px 300px at 10% 120%, rgba(0,229,255,.10), transparent 60%),
+    radial-gradient(900px 300px at 90% 120%, rgba(255,255,255,.05), transparent 60%);
+}
+.pp-title{
+  margin: 0;
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+.pp-subtitle{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: clamp(13px, 1.6vw, 14px);
+}
+
+/* Hero actions & buttons */
+.pp-hero-actions{
+  display: inline-flex; gap: 10px; align-self: center;
+}
+.pp-btn{
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.pp-btn:hover{
+  border-color: color-mix(in oklab, var(--accent) 60%, white 0%);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent);
+}
+.pp-btn-primary{
+  background: linear-gradient(180deg, var(--accent), #79f3ff);
+  color: #00272b;
+  border: none;
+  font-weight: 700;
+}
+
+/* Content area */
+.pp-content{
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 12px 8px 24px;
+}
+
+/* Card */
+.pp-card{
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+  padding: 12px;
+}
+.pp-card + .pp-card{ margin-top: 14px; }
+
+.pp-card-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 6px 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.pp-card-title{
+  margin: 0;
+  font-size: 18px; font-weight: 800; letter-spacing: .2px;
+}
+.pp-actions{ display: inline-flex; gap: 10px; }
+
+/* File input (hidden) */
+.pp-file-input{ position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* File list */
+.pp-file-list{
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: grid;
+  gap: 8px;
+}
+.pp-file-row{
+  display:flex; align-items:center; justify-content:space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+}
+.pp-file-left{
+  display:flex; align-items:center; gap: 10px; min-width: 0;
+}
+.pp-file-ico{
+  width: 34px; height: 34px; border-radius: 8px;
+  display:grid; place-items:center;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+.pp-file-meta{ min-width: 0; }
+.pp-file-name{
+  font-weight: 700; font-size: 14px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pp-file-sub{
+  color: var(--muted); font-size: 12px;
+  display: inline-flex; gap: 6px; align-items: center;
+}
+.pp-file-sub .dot{ opacity: .6; }
+
+/* Delete icon button */
+.pp-icon-btn{
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  cursor: pointer;
+  display:grid; place-items:center;
+}
+.pp-icon-btn:hover{
+  border-color: color-mix(in oklab, #ff6b6b 55%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, #ff6b6b 25%, transparent);
+}
+
+/* Empty state */
+.pp-empty{
+  display:grid; place-items:center;
+  padding: 24px 8px;
+}
+.pp-empty-card{
+  width: min(92vw, 560px);
+  text-align: center;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.pp-empty-ico{ font-size: 32px; margin-bottom: 8px; }
+.pp-empty-title{ font-weight: 800; margin-bottom: 4px; }
+.pp-empty-text{ color: var(--muted); margin-bottom: 12px; }
+
+
+/* Toggle pill */
+.pp-toggle{
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  overflow: hidden;
+}
+.pp-toggle-btn{
+  height: 34px;
+  padding: 0 12px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.pp-toggle-btn.is-active{
+  background: linear-gradient(180deg, var(--accent), #79f3ff);
+  color: #00272b;
+}
+.pp-card-head{ gap: 10px; }
+
+
+/* Responsive */
+@media (max-width: 900px){
+  .pp-hero{ grid-template-columns: 1fr; align-items: start; row-gap: 10px; }
+  .pp-hero-actions{ justify-self: start; }
+}
+@media (max-width: 520px){
+  .pp-content{ padding: 10px 6px 20px; }
+  .pp-card{ padding: 10px; border-radius: 14px; }
+  .pp-file-row{ padding: 8px; }
+}

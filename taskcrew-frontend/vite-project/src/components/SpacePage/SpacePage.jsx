@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import AddProjectModal from "../AddProjectModal/AddProjectModal";
 import api from "../../utils/axiosInstance";
 import { useEffect } from "react";
+import ProjectPage from "../ProjectPage/ProjectPage";
 
 const SpacePage = () => {
   const { id } = useParams();
@@ -14,9 +15,16 @@ const SpacePage = () => {
   const [projects, setProjects] = useState([]);
   const [editProject, setEditProject] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const SB_EXPANDED = 264;
   const SB_COLLAPSED = 76;
+
+  useEffect(() => {
+    if (selectedOption) {
+      console.log("Selected option changed:", selectedOption);
+    }
+  }, [selectedOption]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -32,6 +40,7 @@ const SpacePage = () => {
   }, [openAddProjectModal,isDeleted]);
 
   const handleAddProject = async (payload) => {
+    setEditProject(null);
     console.log("I am in add project")
     console.log(payload);
     try {
@@ -81,15 +90,33 @@ const SpacePage = () => {
       <Sidebar
         forceCollapsed={collapsed}
         onCollapsedChange={setCollapsed}
-        onAddProject={() => setOpenAddProjectModal(true)}
+        onAddProject={() => {setOpenAddProjectModal(true);setEditProject(null)}}
         onEdit={editProjectHandler}
         onDelete={handleDeleteProject}
         projects={projects}
+        setEditProject={setEditProject}
+        setSelectedOption={setSelectedOption}
       />
       <div className="space-content">
         <Navbar isMainSpace={true} />
-        <div className="space-content-inner">
-         <h1>Hi</h1>
+        <div className="space-content-inner" style={{backgroundColor:"black"}}>
+         {
+           (()=>{
+            switch (selectedOption?.group) {
+          case "workspaces":
+            return <ProjectPage project={selectedOption.project} />;
+          {/* case "workspaces":
+            return <WorkspacePage workspace={selectedOption.workspace} />;
+          case "Collaborations":
+            return <CollaborationPage collaboration={selectedOption.collaboration} />;
+          case "Insights":
+            return <InsightsPage insights={selectedOption.insights} />; */}
+          default:
+            return null;
+        }
+          })()
+         }
+
         </div>
       </div>
       {openAddProjectModal && <AddProjectModal open={openAddProjectModal} onClose={() => setOpenAddProjectModal(false)} onSubmit={handleAddProject} onEdit={handleEditProject}  currentUserId={id} spaces={projects} editProject={editProject} />}
