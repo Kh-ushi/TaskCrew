@@ -111,7 +111,10 @@
     background: rgba(255,255,255,.04);
     box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 18%, transparent);
   }
-  .sb-item.depth-1{ padding-left: 32px; }
+  .sb-item.depth-1{ 
+    padding-left: 32px;
+    font-size: 12px; 
+  }
   
   .sb-ico{ display:grid; place-items:center; opacity: .95; }
   .sb-label{ white-space: nowrap; }
@@ -138,4 +141,17 @@
 
   .sb-add-project{
     font-size: 12px;
+  }
+
+  .sb-edit{
+    margin-left: auto;
+
+  }
+ 
+  .sb-delete{
+    margin-left: auto;
+  }
+
+  .sb-edit:hover,.sb-delete:hover{
+    color: var(--accent);  
   }

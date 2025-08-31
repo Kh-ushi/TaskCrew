@@ -30,6 +30,13 @@
     color: #0b1d20;
     transition: margin-left .2s ease;
   }
+
+
+  .space-content-inner{
+    padding: 20px;
+    border: 2px solid red;
+    min-height: calc(100vh - 64px);
+  }
   
  
   @media (max-width: 900px){

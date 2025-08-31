@@ -9,11 +9,13 @@ import {
   Video,          
   LineChart,       
   FileBarChart,    
-  Bot      
+  Bot ,
+  Edit2,
+  Trash    
 } from "lucide-react";
 
 
-export default function Sidebar({ open = false, onClose, collapsed: forceCollapsed ,onCollapsedChange,onAddProject}) {
+export default function Sidebar({ open = false, onClose, collapsed: forceCollapsed ,onCollapsedChange,onAddProject,onEdit,onDelete,projects=[]}) {
   const [collapsed, setCollapsed] = useState(false);
   const [wsOpen, setWsOpen] = useState(true);
   const [collabOpen, setCollabOpen] = useState(true);
@@ -31,10 +33,12 @@ export default function Sidebar({ open = false, onClose, collapsed: forceCollaps
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  const Item = ({ icon: Icon, label, href = "#", depth = 0, isDashboard = false,isAddProject=false }) => (
+  const Item = ({ project, icon: Icon, label, href = "#", depth = 0, isDashboard = false,isAddProject=false ,isEdit=false,isDelete=false}) => (
     <a className={`sb-item depth-${depth}`} href={href} onClick={isAddProject ? onAddProject : ()=>{}}>
       <span className={`sb-ico ${isDashboard ? "" : "sb-label"}`} aria-hidden><Icon size={16}/></span>
       <span className={`sb-label ${isAddProject ? "sb-add-project" : ""}`}>{label}</span>
+      {isEdit && <Edit2 size={16} className="sb-edit" onClick={(e)=>{e.stopPropagation();onEdit(project)}} />}
+      {isDelete && <Trash size={16} className="sb-delete" onClick={(e)=>{e.stopPropagation();onDelete(project)}} />}
     </a>
   );
 
@@ -88,6 +92,9 @@ export default function Sidebar({ open = false, onClose, collapsed: forceCollaps
           <Item icon={LayoutDashboard} label="Dashboard" isDashboard={true} />
 
           <Group title="Workspaces" open={wsOpen} setOpen={setWsOpen} icon={FolderKanban}>
+            {projects.length > 0 && projects.map((project)=>{
+              return <Item project={project} icon={FolderKanban} label={project.name} depth={1} isEdit={true} isDelete={true} />
+            })}
             <Item icon={SquarePlus} label=" Add Projects" depth={1}  isAddProject={true}/>
           </Group>
 

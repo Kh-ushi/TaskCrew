@@ -10,10 +10,10 @@ const router = express.Router({mergeParams:true});
 
 router.use(verifyToken);
 
-router.post('/', validateRequest(projectSchema), createProject);
-router.get('/my', listMyProjects);
+router.post('/:spaceId', validateRequest(projectSchema), createProject);
+router.get('/my/:spaceId', listMyProjects);
 router.get('/:id', getProject);
-router.put('/:id', updateProject);
+router.put('/:id', validateRequest(projectSchema), updateProject);
 router.patch('/:id/memebers', modifyMembers);
 router.delete('/:id',archiveProject);
 router.delete("/hard-delete/:id",deleteProject);

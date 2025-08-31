@@ -5,8 +5,9 @@ const projectSchema = Joi.object({
     description: Joi.string().allow(null).allow("").max(1024),
     members: Joi.array().items(
         Joi.object({
-            userId: Joi.string().required(),
-            role: Joi.string().valid("admin", "member", "viewer").default("member")
+            userId: Joi.string(),
+            role: Joi.string().valid("admin", "member", "viewer").default("member"),
+            email: Joi.string().email(),
         })
     ).default([]),
     status: Joi.string().valid("active", "archived").default("active"),

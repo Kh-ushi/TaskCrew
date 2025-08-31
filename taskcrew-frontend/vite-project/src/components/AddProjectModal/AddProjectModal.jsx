@@ -5,20 +5,25 @@ export default function AddProjectModal({
   open = true,
   onClose,
   onSubmit,
+  onEdit,
   currentUserId,        // ✅ add this
   spaces = [],          // ✅ add this
-  defaultSpaceId = ""  // optional: preselect a space
+  defaultSpaceId = "",  // optional: preselect a space
+  editProject = null
 }) {
   const dialogRef = useRef(null);
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    members: [""],
-    status: "active",
-    startDate: "",
-    endDate: "",
+    name: editProject.name || "",
+    description: editProject?.description || "",
+    members: editProject?.members || [""],
+    status: editProject?.status || "active",
+    startDate: editProject?.startDate || "",
+    endDate: editProject?.endDate || "",
   });
   const [error, setError] = useState(null);
+
+  const fmtDate = (d) => (d ? new Date(d).toISOString().slice(0, 10) : "");
+
 
   useEffect(() => {
     if (!open) return;
@@ -31,14 +36,12 @@ export default function AddProjectModal({
         : "");
   
     setForm({
-      name: "",
-      description: "",
-      members: [""],
-      status: "active",
-      startDate: "",
-      endDate: "",
-      ownerId: currentUserId || "",
-      spaceId: firstSpaceId,
+      name:editProject.name || "",
+      description: editProject?.description || "",
+      members: editProject?.members || [""],
+      status: editProject?.status || "active",
+      startDate: fmtDate(editProject.startDate) || "",
+      endDate: fmtDate(editProject.endDate) || "",
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]); // 👈 ONLY depends on `open`
@@ -75,14 +78,12 @@ export default function AddProjectModal({
     const payload = {
       name: form.name.trim(),
       description: form.description.trim() || undefined,
-      ownerId: form.ownerId.trim(),
       members: form.members.map((m) => m.trim()).filter(Boolean),
       status: form.status,
       startDate: start,
       endDate: end || undefined,
-      spaceId: form.spaceId || undefined,
     };
-    onSubmit?.(payload);
+    editProject?onEdit?.(payload):onSubmit?.(payload);
   };
 
   if (!open) return null;
@@ -214,7 +215,7 @@ export default function AddProjectModal({
 
           <div className="apm-actions">
             <button type="button" className="apm-btn" onClick={onClose}>Cancel</button>
-            <button className="apm-btn apm-primary" type="submit">Create Project</button>
+            <button className="apm-btn apm-primary" type="submit">{editProject ? "Edit Project" : "Create Project"}</button>
           </div>
         </form>
       </div>
