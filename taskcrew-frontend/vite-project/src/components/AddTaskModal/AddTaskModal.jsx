@@ -15,24 +15,29 @@ import "./AddTaskModal.css";
 export default function AddTaskModal({
   open = false,
   onClose,
-  onSubmit=() => {},
+  onSubmit = () => { },
+  onEdit = () => { },
   project,
   defaultStatus = "todo",
   defaultPriority = "medium",
   initialAssignees = [],
+  task = null,
 }) {
   const dialogRef = useRef(null);
 
+  const fmtDateTimeLocal = (d) =>
+    d ? new Date(d).toISOString().slice(0, 16) : "";
+
   const [error, setError] = useState(null);
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    assignedTo: initialAssignees.length ? initialAssignees : [""],
-    status: defaultStatus,            
-    priority: defaultPriority,
-    startTime: "",
-    endTime: "",
-    dueDate: "",
+    title: task?.title || "",
+    description: task?.description || "",
+    assignedTo: task?.assignedTo || initialAssignees.length ? initialAssignees : [""],
+    status: task?.status || defaultStatus,
+    priority: task?.priority || defaultPriority,
+    startTime: fmtDateTimeLocal(task?.startTime) || "",
+    endTime: fmtDateTimeLocal(task?.endTime) || "",
+    dueDate: fmtDateTimeLocal(task?.dueDate) || "",
   });
 
   // Reset + autofocus on open
@@ -40,14 +45,14 @@ export default function AddTaskModal({
     if (!open) return;
     // setError(null);
     setForm({
-      title: "",
-      description: "",
-      assignedTo: initialAssignees.length ? initialAssignees : [""],
-      status: defaultStatus,
-      priority: defaultPriority,
-      startTime: "",
-      endTime: "",
-      dueDate: "",
+      title: task?.title || "",
+      description: task?.description || "",
+      assignedTo: task?.assignedTo || initialAssignees.length ? initialAssignees : [""],
+      status: task?.status || defaultStatus,
+      priority: task?.priority || defaultPriority,
+      startTime: fmtDateTimeLocal(task?.startTime) || "",
+      endTime: fmtDateTimeLocal(task?.endTime) || "",
+      dueDate: fmtDateTimeLocal(task?.dueDate) || "",
     });
 
     const onKey = (e) => e.key === "Escape" && onClose?.();
@@ -85,7 +90,7 @@ export default function AddTaskModal({
 
     const payload = {
       title: form.title.trim(),
-      description: form.description.trim() || undefined,    
+      description: form.description.trim() || undefined,
       assignedTo: form.assignedTo.map(s => s.trim()).filter(Boolean), // strings
       status: form.status,             // enum
       priority: form.priority,         // enum
@@ -94,7 +99,7 @@ export default function AddTaskModal({
       dueDate: form.dueDate ? new Date(form.dueDate) : undefined,
     };
 
-    onSubmit?.(payload);
+    task ? onEdit?.(payload) : onSubmit?.(payload);
   };
 
   if (!open) return null;
@@ -114,7 +119,7 @@ export default function AddTaskModal({
         aria-labelledby="tk-title-h"
       >
         <div className="tk-head">
-          <h2 id="tk-title-h" className="tk-title">Add Task to {project?.name}</h2>
+          <h2 id="tk-title-h" className="tk-title">{task ? `Edit Task ${task.title}` : `Add Task to ${project?.name}`}</h2>
           <button className="tk-close" aria-label="Close" onClick={onClose}>×</button>
         </div>
 
@@ -243,7 +248,7 @@ export default function AddTaskModal({
 
           <div className="tk-actions">
             <button type="button" className="tk-btn" onClick={onClose}>Cancel</button>
-            <button className="tk-btn tk-primary" type="submit">Create Task</button>
+            <button className="tk-btn tk-primary" type="submit">{task ? "Edit Task" : "Create Task"}</button>
           </div>
         </form>
       </div>

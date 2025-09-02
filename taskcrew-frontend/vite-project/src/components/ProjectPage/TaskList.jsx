@@ -30,6 +30,7 @@ export default function TaskList({
   onEdit,
   onDelete,
   onRowClick,
+  setToBeEdited
 }) {
   const prClass = (p) => {
     const key = String(p || "Low").toLowerCase();
@@ -155,7 +156,7 @@ export default function TaskList({
                 className="icon-btn"
                 title="Edit"
                 aria-label="Edit"
-                onClick={() => onEdit?.(t)}
+                onClick={() => {onEdit?.(); setToBeEdited(t);}}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -170,7 +171,7 @@ export default function TaskList({
                 className="icon-btn danger"
                 title="Delete"
                 aria-label="Delete"
-                onClick={() => onDelete?.(t)}
+                onClick={() => onDelete?.(t._id)}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                   <path

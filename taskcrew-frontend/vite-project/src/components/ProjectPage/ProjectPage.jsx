@@ -20,6 +20,7 @@ export default function ProjectPage({
     const [taskView, setTaskView] = useState("kanban");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [toBeEdited, setToBeEdited] = useState(null);
 
     useEffect(() => {
         // Fetch tasks from API or use demo data
@@ -86,6 +87,27 @@ export default function ProjectPage({
 
     };
 
+    const handleEdit=async(payload)=>{
+       try{
+           const { data } = await api.put(`/api/tasks/${toBeEdited._id}`, payload);
+           console.log(data);
+           setTasks((prevTasks) => prevTasks.map((task) => task._id === data.task._id ? data.task : task));
+           setIsModalOpen(false);
+       } catch (error) {
+           console.error("Error editing task:", error);
+       }
+    }
+
+
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/api/tasks/${id}`);
+            setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    };
+
     return (
         <div className="pp-page">
             {/* Header / hero */}
@@ -126,9 +148,9 @@ export default function ProjectPage({
                     </header>
                     <div style={{ padding: 8, maxHeight: "400px", overflowY: "auto" }}>
                         {taskView === "kanban" ? (
-                            <KanbanBoard tasks={tasks} />
+                            <KanbanBoard tasks={tasks} onEdit={() => setIsModalOpen(true)} setToBeEdited={setToBeEdited} onDelete={handleDelete} />
                         ) : (
-                            <TaskList tasks={tasks} />
+                            <TaskList tasks={tasks} onEdit={() => setIsModalOpen(true)}  setToBeEdited={setToBeEdited} onDelete={handleDelete} />
                         )}
                     </div>
                 </section>
@@ -199,9 +221,11 @@ export default function ProjectPage({
             {isModalOpen && (
                 <AddTaskModal
                     open={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => {setIsModalOpen(false); setToBeEdited(null);}}
                     onSubmit={handleSubmit}
+                    onEdit={handleEdit}
                     project={project}
+                    task={toBeEdited}
                 />
             )}
         </div>

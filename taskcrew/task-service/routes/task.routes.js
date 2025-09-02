@@ -11,7 +11,7 @@ router.get("/:projectId/my", getMyTasks);
 router.post("/:projectId", validateRequest(taskSchema), createTask);
 router.get("/:projectId", getTasksByProject);
 router.get("/:taskId", getTaskById);
-router.put("/:taskId", updateTask);
+router.put("/:taskId",validateRequest(taskSchema), updateTask);
 router.delete("/:taskId", deleteTask);
 
 

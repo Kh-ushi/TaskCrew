@@ -162,20 +162,22 @@ const updateTask = async (req, res) => {
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
-        if (!(await isUserTaskEditable(userId, task, token))) {
-            return res.status(403).json({ message: "Forbidden" });
-        }
+        // if (!(await isUserTaskEditable(userId, task, token))) {
+        //     return res.status(403).json({ message: "Forbidden" });
+        // }
 
         if (updates.startTime || updates.endTime) {
-            const project = await getProjectSnapShot(project, token);
-            if (!project) return res.status(404).json({ message: "Project not found" });
+            // const project = await getProjectSnapShot(project, token);
+            // if (!project) return res.status(404).json({ message: "Project not found" });
 
             const newStart = updates.startTime ? new Date(updates.startTime) : task.startTime;
             const newEnd = updates.endTime ? new Date(updates.endTime) : task.endTime;
+            console.log("New Start:", newStart);
+            console.log("New End:", newEnd);
 
-            if (newStart < new Date(project.startDate) || newEnd > new Date(project.endDate)) {
-                return res.status(400).json({ message: "Task must remain within project boundaries" });
-            }
+            // if (newStart < new Date(project.startDate) || newEnd > new Date(project.endDate)) {
+            //     return res.status(400).json({ message: "Task must remain within project boundaries" });
+            // }
 
             task.startTime = newStart;
             task.endTime = newEnd;
@@ -189,22 +191,25 @@ const updateTask = async (req, res) => {
         if (Array.isArray(updates.assignedTo)) task.assignedTo = updates.assignedTo;
         if (updates.subtasks) task.subtasks = updates.subtasks;
 
-        task.recomputeSubtaskProgress();
+        // task.recomputeSubtaskProgress();
 
+        // console.log(task);
         await task.save();
-        publishTaskChange(task, "updated");
+        // publishTaskChange(task, "updated");
 
-        runRiskCheckAndNotify(task.projectId, token);
+        // runRiskCheckAndNotify(task.projectId, token);
 
-        await redisClient.publish("task:updated", JSON.stringify({
-            taskId: task._id,
-            projectId: task.projectId,
-            updatedFields: Object.keys(updates),
-            status: task.status,
-            subtaskProgress: task.subtaskProgress,
-            correlationId: crypto.randomUUID(),
-            timestamp: Date.now(),
-        }));
+        // await redisClient.publish("task:updated", JSON.stringify({
+        //     taskId: task._id,
+        //     projectId: task.projectId,
+        //     updatedFields: Object.keys(updates),
+        //     status: task.status,
+        //     subtaskProgress: task.subtaskProgress,
+        //     correlationId: crypto.randomUUID(),
+        //     timestamp: Date.now(),
+        // }));
+
+        res.status(201).json({ message: "Task updated", task });
     }
     catch (error) {
         console.error("updateTask failed:", error);
@@ -229,21 +234,21 @@ const deleteTask = async (req, res) => {
         const task = await Task.findById(taskId);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
-        if (!(await isUserTaskEditable(userId, task, token))) {
-            return res.status(403).json({ message: "Forbidden" });
-        }
+        // if (!(await isUserTaskEditable(userId, task, token))) {
+        //     return res.status(403).json({ message: "Forbidden" });
+        // }
 
         await Task.deleteOne({ _id: taskId });
-        publishTaskChange(task, "deleted");
+        // publishTaskChange(task, "deleted");
 
-        runRiskCheckAndNotify(task.projectId, token);
+        // runRiskCheckAndNotify(task.projectId, token);
 
-        await redisClient.publish("task:deleted", JSON.stringify({
-            taskId,
-            projectId: task.projectId,
-            correlationId: crypto.randomUUID(),
-            timestamp: Date.now(),
-        }));
+        // await redisClient.publish("task:deleted", JSON.stringify({
+        //     taskId,
+        //     projectId: task.projectId,
+        //     correlationId: crypto.randomUUID(),
+        //     timestamp: Date.now(),
+        // }));
 
         res.status(201).json({message: "Deleted",task});
 

@@ -28,7 +28,7 @@ const initialColumns = {
 };
 
 
-export default function KanbanBoard({ tasks = [] }) {
+export default function KanbanBoard({ tasks = [], onEdit = null, setToBeEdited = null, onDelete=null }) {
     const [columns, setColumns] = useState(initialColumns);
 
     console.log("Tasks in KanbanBoard:", tasks);
@@ -42,20 +42,24 @@ export default function KanbanBoard({ tasks = [] }) {
     }, {});
 
     const sameColumns = (a = {}, b = {}) => {
-        const ak = Object.keys(a);
-        const bk = Object.keys(b);
+        const ak = Object.keys(a), bk = Object.keys(b);
         if (ak.length !== bk.length) return false;
         for (const k of ak) {
             if (!b[k]) return false;
-            if ((a[k].tasks?.length || 0) !== (b[k].tasks?.length || 0)) return false;
+            const aSig = (a[k].tasks || []).map(t => `${t._id}|${t.updatedAt || ""}`).join(",");
+            const bSig = (b[k].tasks || []).map(t => `${t._id}|${t.updatedAt || ""}`).join(",");
+            if (aSig !== bSig) return false;
         }
         return true;
     };
 
 
-    const nextColumns = useMemo(() => { const grouped = groupedTasks(tasks);
-                                         console.log("Grouped tasks:", grouped);
-                                         return grouped; }, [tasks]);
+
+    const nextColumns = useMemo(() => {
+        const grouped = groupedTasks(tasks);
+        console.log("Grouped tasks:", grouped);
+        return grouped;
+    }, [tasks]);
 
 
 
@@ -154,11 +158,11 @@ export default function KanbanBoard({ tasks = [] }) {
                                                     </div>
                                                     <div className="actions">
                                                         {/* edit */}
-                                                        <button className="icon-btn" title="Edit">
+                                                        <button className="icon-btn" title="Edit" onClick={() => { onEdit?.(); setToBeEdited?.(task); }}>
                                                             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m3 17.25V21h3.75L17.81 9.94l-3.75-3.75ZM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83l3.75 3.75Z" /></svg>
                                                         </button>
                                                         {/* delete */}
-                                                        <button className="icon-btn danger" title="Delete">
+                                                        <button className="icon-btn danger" title="Delete" onClick={() => onDelete?.(task._id)}>
                                                             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2H8l1-2Z" /></svg>
                                                         </button>
                                                     </div>
