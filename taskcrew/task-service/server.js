@@ -25,9 +25,9 @@ const startServer = async () => {
         await connectDb();
         app.listen(process.env.PORT, () => {
             console.log(`Server is running on port ${process.env.PORT}`);
-            startProjectSnapShotConsumer()
-                .then(() => console.log('Stream consumer started'))
-                .catch(err => console.error('Stream consumer error:', err));
+            // startProjectSnapShotConsumer()
+            //     .then(() => console.log('Stream consumer started'))
+            //     .catch(err => console.error('Stream consumer error:', err));
         });
 
     }

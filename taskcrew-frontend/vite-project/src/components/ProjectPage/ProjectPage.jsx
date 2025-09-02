@@ -1,17 +1,11 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import "./ProjectPage.css";
 import { Plus, Upload, Trash2, File as FileIcon } from "lucide-react";
 import KanbanBoard from "./KanbanBoard";
 import TaskList from "./TaskList";
+import AddTaskModal from "../AddTaskModal/AddTaskModal";
+import api from "../../utils/axiosInstance";
 
-/**
- * Props:
- * - project: { id, name, description }
- * - files: Array<{ id, name, size, uploadedAt }>
- * - onAddTask?: () => void
- * - onUploadFiles?: (FileList | File[]) => void
- * - onDeleteFile?: (fileId: string) => void
- */
 export default function ProjectPage({
     project = { id: "p1", name: "Website Revamp", description: "Modernize landing and blog." },
     files = [
@@ -24,16 +18,33 @@ export default function ProjectPage({
     onDeleteFile = (id) => alert(`Delete file: ${id}`),
 }) {
     const [taskView, setTaskView] = useState("kanban");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [tasks, setTasks] = useState([]);
+
+    useEffect(() => {
+        // Fetch tasks from API or use demo data
+        const fetchTasks = async () => {
+            try {
+                const { data } = await api.get(`/api/tasks/${project._id}`);
+                console.log(data);
+                setTasks(data);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+
+        fetchTasks();
+    }, []);
 
     const demoKanban = {
-  todo: [{ id: "1", title: "Setup project repo", status: "To Do" }],
-  inProgress: [{ id: "2", title: "Implement auth", status: "In Progress" }],
-  done: [{ id: "3", title: "Setup Docker", status: "Done" }],
-};
+        todo: [{ id: "1", title: "Setup project repo", status: "To Do" }],
+        inProgress: [{ id: "2", title: "Implement auth", status: "In Progress" }],
+        done: [{ id: "3", title: "Setup Docker", status: "Done" }],
+    };
 
-const listTasks=useMemo(()=>{
-  return Object.entries(demoKanban).flatMap(([_,tasks])=>tasks);
-});
+    const listTasks = useMemo(() => {
+        return Object.entries(demoKanban).flatMap(([_, tasks]) => tasks);
+    });
 
     const fileInputRef = useRef(null);
 
@@ -62,6 +73,19 @@ const listTasks=useMemo(()=>{
         } catch { return iso || "-"; }
     };
 
+    const handleSubmit = async (payload) => {
+
+        try {
+            const { data } = await api.post(`/api/tasks/${project._id}`, payload);
+            console.log(data);
+            setTasks((prevTasks) => [...prevTasks, data.task]);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error("Error creating task:", error);
+        }
+
+    };
+
     return (
         <div className="pp-page">
             {/* Header / hero */}
@@ -73,7 +97,7 @@ const listTasks=useMemo(()=>{
                     )}
                 </div>
                 <div className="pp-hero-actions">
-                    <button className="pp-btn pp-btn-primary" onClick={onAddTask}>
+                    <button className="pp-btn pp-btn-primary" onClick={() => setIsModalOpen(true)}>
                         <Plus size={16} /> Add Task
                     </button>
                 </div>
@@ -100,11 +124,11 @@ const listTasks=useMemo(()=>{
                             </button>
                         </div>
                     </header>
-                    <div style={{ padding: 8 }}>
+                    <div style={{ padding: 8, maxHeight: "400px", overflowY: "auto" }}>
                         {taskView === "kanban" ? (
-                            <KanbanBoard />
+                            <KanbanBoard tasks={tasks} />
                         ) : (
-                            <TaskList tasks={[{ id:"1", title:"Setup repo", startDate:"2025-09-01", endDate:"2025-09-03", priority:"High", assignees:["KG","RS"], status:"To Do" }]} />
+                            <TaskList tasks={tasks} />
                         )}
                     </div>
                 </section>
@@ -172,6 +196,14 @@ const listTasks=useMemo(()=>{
                     )}
                 </section>
             </main>
+            {isModalOpen && (
+                <AddTaskModal
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleSubmit}
+                    project={project}
+                />
+            )}
         </div>
     );
 }

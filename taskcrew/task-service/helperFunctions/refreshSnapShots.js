@@ -59,29 +59,33 @@ const processProjectChange = async (entryId, fieldsArray) => {
 
 
 const startProjectSnapShotConsumer = async () => {
-    await ensureGroup();
-    (async function loop() {
-        while (true) {
-            try {
-                const resp = await redisClient.xReadGroup(
-                    GROUP_NAME,
-                    CONSUMER_NAME,
-                    [{ key: STREAM_KEY, id: ">" }],
-                    { COUNT: 10, BLOCK: 5000 }
-                );
-                if (!resp) continue;
-                for (const stream of resp) {
-                    for (const [id, fields] of stream.messages) {
-                        await processProjectChange(id, fields);
-                    }
-                }
-            } catch (e) {
-                console.error("Stream consumer loop error:", e);
-                await new Promise(r => setTimeout(r, 1000));
-            }
+  await ensureGroup();
+  (async function loop() {
+    while (true) {
+      try {
+        const resp = await redisClient.xReadGroup(
+          GROUP_NAME,
+          CONSUMER_NAME,
+          [{ key: STREAM_KEY, id: ">" }],
+          { COUNT: 10, BLOCK: 5000 }
+        );
+        if (!resp) continue;
+
+        // CHANGE: node-redis v4 returns [{ name, messages: [{ id, message }] }]
+        for (const { name, messages } of resp) {
+          for (const { id, message } of messages) {
+            await processProjectChange(id, message); // 'message' is the fields object
+            await redisClient.xAck(name, GROUP_NAME, id); // ack after success
+          }
         }
-    })();
-}
+      } catch (e) {
+        console.error("Stream consumer loop error:", e);
+        await new Promise(r => setTimeout(r, 1000));
+      }
+    }
+  })();
+};
+
 
 export {startProjectSnapShotConsumer};
 

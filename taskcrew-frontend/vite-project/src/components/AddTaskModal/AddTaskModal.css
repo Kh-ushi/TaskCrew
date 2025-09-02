@@ -1,0 +1,146 @@
+:root{
+  /* --bg:#1c2f31; */
+  --bg-elev:#20363a;
+  --border:rgba(255,255,255,0.08);
+  --text:rgba(255,255,255,0.95);
+  --muted:rgba(255,255,255,0.68);
+  --accent:#00E5FF;
+}
+
+/* Overlay */
+.tk-overlay{
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(1200px 500px at 15% 85%, rgba(0,229,255,0.13), transparent 60%),
+    radial-gradient(1200px 500px at 90% 100%, rgba(255,255,255,0.06), transparent 60%),
+    rgba(0,0,0,0.65);
+  backdrop-filter: blur(4px);
+  z-index: 70;
+}
+
+/* Card */
+.tk-card{
+  width: min(92vw, 720px);
+  border-radius: 20px;
+  background: rgba(28,47,49,0.96);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
+  color: var(--text);
+  padding: 20px;
+  position: relative;
+}
+
+/* Head */
+.tk-head{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 8px;
+}
+.tk-title{
+  margin: 0;
+  font-size: 22px; font-weight: 800; letter-spacing:.2px;
+}
+.tk-close{
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 0;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  cursor: pointer; font-size: 20px; line-height: 1;
+}
+
+/* Form */
+.tk-form{ margin-top: 8px; }
+.tk-error{
+  margin-bottom: 10px;
+  color: #ffb4b4; font-weight: 600; font-size: 13px;
+}
+
+/* Grid */
+.tk-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 768px){
+  .tk-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+}
+.span-2{ grid-column: 1 / -1; }
+
+.tk-field{ display:flex; flex-direction:column; gap: 6px; }
+.tk-field label{ font-size: 13px; color: var(--muted); }
+
+/* Inputs */
+.tk-field input,
+.tk-field select,
+.tk-field textarea{
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.tk-field textarea{ resize: vertical; min-height: 84px; }
+.tk-field input:focus,
+.tk-field select:focus,
+.tk-field textarea:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+/* Assignees */
+.tk-assignees{ margin-top: 2px; }
+.tk-assignee-row{
+  display:flex; gap: 8px; margin-bottom: 8px;
+}
+.tk-mini{
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor: pointer;
+}
+.tk-mini.tk-danger:hover{
+  border-color: color-mix(in oklab, #ff6b6b 55%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, #ff6b6b 25%, transparent);
+}
+.tk-add{
+  align-self: flex-start;
+  margin-top: 2px;
+  border: none; background: transparent;
+  color: var(--accent); cursor: pointer; font-size: 14px;
+}
+
+/* Actions */
+.tk-actions{
+  display:flex; gap: 10px; justify-content: flex-end;
+  margin-top: 16px;
+}
+.tk-btn{
+  height: 42px; padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  cursor: pointer; font-weight: 600;
+}
+.tk-btn:hover{
+  border-color: color-mix(in oklab, var(--accent) 60%, white 0%);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent);
+}
+.tk-btn.tk-primary{
+  border: 0;
+  background: linear-gradient(180deg, var(--accent), #79f3ff);
+  color: #00272b; font-weight: 800;
+}
+
+/* Responsive */
+@media (max-width: 520px){
+  .tk-card{ width: min(92vw, 96vw); padding: 16px; border-radius: 16px; }
+  .tk-title{ font-size: 20px; }
+  .tk-actions{ flex-direction: column; }
+  .tk-btn{ width: 100%; }
+}

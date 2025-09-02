@@ -27,13 +27,13 @@ const createTask = async (req, res) => {
         console.log(token);
 
         const userId = req.user.userId;
+        const { projectId } = req.params;
         console.log(req.body);
         const {
             title,
             description = "",
-            projectId,
             assignedTo = [],
-            priority = "Medium",
+            priority = "medium",
             startTime,
             endTime,
             status = "todo",
@@ -45,23 +45,23 @@ const createTask = async (req, res) => {
             return res.status(400).json({ message: "title, projectId, startTime and endTime are required" });
         }
 
-        if (!(await accessControl(projectId, userId, token))) {
-            console.log("Forbidden: cannot access project");
-            return res.status(403).json({ message: "Forbidden: cannot access project" });
-        }
+    //     if (!(await accessControl(projectId, userId, token))) {
+    //         console.log("Forbidden: cannot access project");
+    //         return res.status(403).json({ message: "Forbidden: cannot access project" });
+    //     }
 
-        const project = await getProjectSnapShot(projectId, token);
-        if (!project) return res.status(404).json({ message: "Project not found" });
-        console.log(project);
+        // const project = await getProjectSnapShot(projectId, token);
+        // if (!project) return res.status(404).json({ message: "Project not found" });
+        // console.log(project);
 
 
         const st = new Date(startTime);
         const et = new Date(endTime);
 
-        if (st < new Date(project.startDate) || et > new Date(project.endDate)) {
-            console.log("Task must be within project start and deadline");
-            return res.status(400).json({ message: "Task must be within project start and deadline" });
-        }
+    //     if (st < new Date(project.startDate) || et > new Date(project.endDate)) {
+    //         console.log("Task must be within project start and deadline");
+    //         return res.status(400).json({ message: "Task must be within project start and deadline" });
+    //     }
 
 
         const task = await Task.create({
@@ -75,24 +75,24 @@ const createTask = async (req, res) => {
             startTime: st,
             endTime: et,
         });
-        publishTaskChange(task, "created");
+        // publishTaskChange(task, "created");
 
-        const risk=runRiskCheckAndNotify(projectId, token);
+    //     const risk=runRiskCheckAndNotify(projectId, token);
 
-        await redisClient.publish("task:created", JSON.stringify({
-            taskId: task._id,
-            projectId: task.projectId,
-            assignees: task.assignedTo,
-            startTime: task.startTime,
-            endTime: task.endTime,
-            parentTaskId: task.parentTaskId,
-            status: task.status,
-            priority: task.priority,
-            correlationId: crypto.randomUUID(),
-            timestamp: Date.now(),
-        }));
+    //     await redisClient.publish("task:created", JSON.stringify({
+    //         taskId: task._id,
+    //         projectId: task.projectId,
+    //         assignees: task.assignedTo,
+    //         startTime: task.startTime,
+    //         endTime: task.endTime,
+    //         parentTaskId: task.parentTaskId,
+    //         status: task.status,
+    //         priority: task.priority,
+    //         correlationId: crypto.randomUUID(),
+    //         timestamp: Date.now(),
+    //     }));
 
-        res.status(201).json(task);
+        res.status(201).json({ message: "Task created successfully", task });
 
     }
     catch (error) {
@@ -133,6 +133,7 @@ const getMyTasks = async (req, res) => {
     try {
         const userId = req.user.userId;
         const tasks = await Task.find({ $or: [{ createdBy: userId }, { assignedTo: userId }] }).sort({ dueDate: 1 });
+        console.log("Fetched tasks for user:", userId, tasks);
         res.status(201).json(tasks);
     }
     catch (error) {
