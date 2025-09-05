@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { Bell, CircleCheckBig, Search } from "lucide-react";
 import "./Navbar.css";
+import {useNotification} from "../Notifications/NotificationsProvider.jsx";
+import NotificationPopup from "../Notifications/NotificationPopUp.jsx";
 
 export default function Navbar({isMainSpace=false}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { unread, notifications,onJoin } = useNotification();
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  console.log("Notifications:");
+  console.log(unread, notifications);
 
   return (
     <header className="nb-wrap">
@@ -52,9 +59,9 @@ export default function Navbar({isMainSpace=false}) {
             <Search size={18} />
           </button>
 
-          <button className="nb-icon nb-bell" aria-label="Notifications">
+          <button className="nb-icon nb-bell" aria-label="Notifications" onClick={() => setNotifOpen(true)}>
             <Bell size={18} />
-            <span className="nb-dot" />
+            <span className="nb-dot">{unread}</span>
           </button>
 
           <div className="nb-profile">
@@ -76,6 +83,18 @@ export default function Navbar({isMainSpace=false}) {
           <a href="#team">Team</a>
           <a href="#settings">Settings</a>
         </div>
+      )}
+
+      {notifOpen && (
+        <NotificationPopup
+          open={notifOpen}
+          notifications={notifications}
+          onClose={() => setNotifOpen(false)}
+          onMarkAllRead={() => {}}
+          onDismiss={() => {}}
+          onToggleRead={() => {}}
+          onJoin={onJoin}
+        />
       )}
     </header>
   );

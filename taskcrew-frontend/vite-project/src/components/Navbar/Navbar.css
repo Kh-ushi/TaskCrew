@@ -100,11 +100,14 @@
 .nb-bell{ position: relative; }
 .nb-dot{
   position:absolute;
-  width:8px; height:8px;
+  width:15px; height:15px;
   border-radius:50%;
   background:#ff7a00;
   top: 6px; right: 6px;
   box-shadow: 0 0 0 2px var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Profile pill */

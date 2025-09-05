@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const { JWT_SECRET, AUTH_URL, PROJECT_URL, TASK_URL,PORT } = process.env;
+const { JWT_SECRET, AUTH_URL, PROJECT_URL, TASK_URL, NOTIFICATION_URL, PORT } = process.env;
 
 const app = express();
 
@@ -93,6 +93,16 @@ app.use(
     })
 );
 
+app.use(
+    "/api/notifications",
+    createProxyMiddleware({
+        target: NOTIFICATION_URL,
+        changeOrigin: true,
+        pathRewrite: { "": "/notifications" },
+        cookieDomainRewrite: { "*": "" },
+        logLevel: "debug",
+    })
+);
 
 
 app.listen(PORT, () =>

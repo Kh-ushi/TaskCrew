@@ -25,17 +25,21 @@ export default function ProjectPage({
     useEffect(() => {
         // Fetch tasks from API or use demo data
         const fetchTasks = async () => {
+            console.log("Fetching tasks...");
             try {
+                console.log("Fetching tasks for project:");
+                console.log(project._id);
                 const { data } = await api.get(`/api/tasks/${project._id}`);
                 console.log(data);
                 setTasks(data);
             } catch (error) {
+                console.log("Error fetching tasks:");
                 console.error("Error fetching tasks:", error);
             }
         };
 
         fetchTasks();
-    }, []);
+    }, [project]);
 
     const demoKanban = {
         todo: [{ id: "1", title: "Setup project repo", status: "To Do" }],

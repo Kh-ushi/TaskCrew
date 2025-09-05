@@ -3,6 +3,8 @@ import redisClient from "../redis/redisClient.js";
 import { partitionRedisKeys } from "../helperFunctions/partitionRedisKeys.js";
 import crypto from "crypto";
 import { publishProjectChange,publishInvite} from "../helperFunctions/publishProjectChange.js";
+import { emitEvent } from "../helperFunctions/events.js";
+import e from "express";
 
 
 
@@ -31,9 +33,14 @@ const createProject = async (req, res) => {
 
         await publishProjectChange(project, "created");
 
-        // for (const email of missing) {
-        //     await publishInvite({ projectId: project._id.toString(), inviteId: crypto.randomUUID(), email });
-        // }
+        for (const email of members) {
+            console.log("Sending project invite to:", email);
+            const data={
+                assignedTo:[email],
+                title:project.name,
+            }
+            await emitEvent("project:invite", {spaceId,projectId: project._id, data});
+        }
 
         res.status(201).json({
             message: "Project created successfully", project

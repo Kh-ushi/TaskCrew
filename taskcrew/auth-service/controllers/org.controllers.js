@@ -4,6 +4,7 @@ import Organization from "../models/Organization.js";
 import User from "../models/User.js";
 import { generateTokens } from "../utils/generateToken.js";
 import redisClient from "../redis/redisClient.js";
+import { emitEvent } from "../helperFunctions/events.js";
 
 
 const addOrganization = async (req, res) => {
@@ -29,7 +30,7 @@ const addOrganization = async (req, res) => {
 
         const newUser = await user.save();
 
-        const { accessToken, refreshToken } = await generateTokens(newUser._id);
+        const { accessToken, refreshToken } = await generateTokens(newUser._id, newUser.email);
         await redisClient.set(`refresh:${newUser._id}`, refreshToken, {
             EX: 7 * 24 * 60 * 60,
         });
@@ -39,8 +40,8 @@ const addOrganization = async (req, res) => {
         if (existingOrg) {
             return res.status(400).json({ message: "Organization name already exists" });
         }
-        const organization = new Organization({ name: orgName, domain: domain, owner: newUser._id }).populate("owner");
-        await organization.save();
+        const organization = await Organization.create({ name: orgName, domain: domain, owner: newUser._id });
+        await organization.populate("owner");
 
         newUser.organizationId = organization._id;
         await newUser.save();
@@ -70,7 +71,10 @@ const addOrganization = async (req, res) => {
 const addNewOrganization = async (req, res) => {
     try {
         const { userId } = req.user;
+        console.log(userId);
         const user = await User.findById(userId);
+        console.log("I am in addNewOrganization");
+        console.log(user);
         const { orgName, domain } = req.body;
         console.log(req.body);
         if (!orgName) {
@@ -82,8 +86,8 @@ const addNewOrganization = async (req, res) => {
             console.log("Organization name already exists");
             return res.status(400).json({ message: "Organization name already exists" });
         }
-        const organization = new Organization({ name: orgName, domain: domain, owner: user._id }).populate("owner");
-        await organization.save();
+        const organization = await Organization.create({ name: orgName, domain: domain, owner: user._id });
+        await organization.populate("owner");
         user.organizationId = organization._id;
         await user.save();
         return res.status(201).json({ message: "Organization added successfully", organization });
@@ -124,17 +128,27 @@ const deleteOrganization = async (req, res) => {
 
 const inviteMembers = async (req, res) => {
     try {
+        console.log("I am in inviteMembers");
         console.log(req.body);
-        const { emails, role, message} = req.body;
+
+        const { emails, role, message = "" } = req.body;
         const { id } = req.params;
         const { userId } = req.user;
         const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
         const existingEmails = existingUsers.map(u => u.email);
+        console.log(existingEmails);
+        const orgName = await Organization.findById(id)
 
-        await Promise.all(existingEmails.map(email => redisClient.publish(
-            "inviteMember",
-            JSON.stringify({ email, role, message, orgId: id })
-        )));
+        const data = {
+            email: [...emails],
+            role: role,
+            message: message,
+            orgName: orgName.name
+        }
+
+        console.log(data);
+
+        await Promise.all(existingEmails.map(email => emitEvent("org:invite", { organizationId: id, data })));
 
         const missingEmails = emails.filter(e => !existingEmails.includes(e));
         return res.status(200).json({

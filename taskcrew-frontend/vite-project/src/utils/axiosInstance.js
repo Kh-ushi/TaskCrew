@@ -98,7 +98,7 @@ api.interceptors.response.use(function (response) {
       console.log("Refresh token failed:", refreshErr);
       console.error("Refresh token failed:", refreshErr);
       processQueue(refreshErr, null);
-      // clearAuth();
+      clearAuth();
       return Promise.reject(refreshErr);
     } finally {
       isRefreshing = false;

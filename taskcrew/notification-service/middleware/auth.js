@@ -23,6 +23,7 @@ const verifyToken=async(req,res,next)=>{
      req.user = {
       userId: decoded.userId,
       jti: decoded.jti,
+      email: decoded.email
     };
 
     next();

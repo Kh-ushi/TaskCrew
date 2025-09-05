@@ -30,7 +30,7 @@ const register = async (req, res) => {
 
         const newUser = await user.save();
 
-        const { accessToken, refreshToken } = await generateTokens(newUser._id);
+        const { accessToken, refreshToken } = await generateTokens(newUser._id, newUser.email);
         await redisClient.set(`refresh:${newUser._id}`, refreshToken, {
             EX: 7 * 24 * 60 * 60,
         });
@@ -72,7 +72,7 @@ const login = async (req, res) => {
             return res.status(401).json({ msg: "Invalid credentials" });
         }
 
-        const { accessToken, refreshToken } = await generateTokens(user._id);
+        const { accessToken, refreshToken } = await generateTokens(user._id, user.email);
 
         await redisClient.set(`refresh:${user._id}`, refreshToken, {
             EX: 7 * 24 * 60 * 60,
@@ -168,10 +168,10 @@ const refreshToken = async (req, res) => {
         if (storedToken !== refreshToken) {
             // console.log("Stored token:", storedToken);
             // console.log("Refresh token:", refreshToken);
-            return res.status(403).json({ msg: "Refresh token no longer valid (rotated or reused)" ,storedToken,refreshToken});
+            return res.status(403).json({ msg: "Refresh token no longer valid (rotated or reused)", storedToken, refreshToken });
         }
 
-        const { accessToken, refreshToken: newRefreshToken } = await generateTokens(userId);
+        const { accessToken, refreshToken: newRefreshToken } = await generateTokens(userId, decoded.email);
 
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,

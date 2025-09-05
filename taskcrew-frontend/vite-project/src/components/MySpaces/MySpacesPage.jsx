@@ -63,7 +63,7 @@ export default function MySpacesPage() {
 
   const handleMemeberInvite = async (payload) => {
     try {
-      console.log(payload);
+      console.log("invite member to company",payload);
       console.log(id);
       const { data } = await api.post(`/api/auth/org/invite-members/${id}`, payload);
       console.log(data);
@@ -82,7 +82,7 @@ export default function MySpacesPage() {
 
   const handleMemberInviteToSpace = async (payload) => {
     try {
-      console.log(payload);
+       console.log("invite member to space",payload);
       console.log(id);
       console.log(space._id);
       const { data } = await api.post(`/api/auth/org/${id}/space/invite-members/${space._id}`, payload);

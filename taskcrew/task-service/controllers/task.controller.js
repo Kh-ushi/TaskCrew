@@ -119,8 +119,10 @@ const getTaskById = async (req, res) => {
 
 const getTasksByProject = async (req, res) => {
     try {
+        console.log("Fetching tasks for project:", req.params.projectId);
         const { projectId } = req.params;
         const tasks = await Task.find({ projectId }).sort({ dueDate: 1, updatedAt: -1 });
+        console.log("Fetched tasks:", tasks);
         res.status(201).json(tasks);
     }
     catch (error) {

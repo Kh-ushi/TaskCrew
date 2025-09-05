@@ -4,15 +4,15 @@ import redisClient from '../redis/redisClient.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const generateTokens=async(userId)=>{
+const generateTokens=async(userId,email)=>{
 
     const jti=uuidv4();
 
-    const accessToken=jwt.sign({userId,jti},process.env.JWT_SECRET,{
-        expiresIn:'15s'
+    const accessToken=jwt.sign({userId,email,jti},process.env.JWT_SECRET,{
+        expiresIn:'15m'
     });
 
-    const refreshToken=jwt.sign({userId,jti},process.env.JWT_REFRESH_SECRET,{
+    const refreshToken=jwt.sign({userId,email,jti},process.env.JWT_REFRESH_SECRET,{
         expiresIn:'7d'
     });
 
