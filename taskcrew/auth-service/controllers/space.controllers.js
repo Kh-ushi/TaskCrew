@@ -88,15 +88,12 @@ const inviteMembersToSpace = async (req, res) => {
         const { emails, role, message } = req.body;
         const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
         const existingEmails = existingUsers.map(u => u.email);
+        const space=await Space.findById(spaceId);
 
-        const data = {
-            email: [...emails],
-            role: role,
-            message: message
-        }
+    
 
         await Promise.all(existingEmails.map(email => {
-            emitEvent("space:invite", { organizationId: id, spaceId, data });
+            emitEvent("space:invite", { organizationId: id, spaceId, data:{email,role,message,spaceName:space.name,spaceId:spaceId}});
         }));
 
         const missingEmails = emails.filter(e => !existingEmails.includes(e));

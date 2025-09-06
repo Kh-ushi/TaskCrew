@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./InviteMemberModal.css";
+import { all } from "axios";
 
 /**
  * Props:
@@ -8,7 +9,7 @@ import "./InviteMemberModal.css";
  * - onSubmit: (payload) => void
  * - orgName?: string   // optional, just for display
  */
-export default function InviteMemberModal({ open = false, onClose, onSubmit, orgName="" }) {
+export default function InviteMemberModal({ open = false, onClose, onSubmit, orgName = "", allowedEmails = [], addMemberToSpace = false }) {
   const dialogRef = useRef(null);
   const [form, setForm] = useState({
     emails: [""],
@@ -34,9 +35,26 @@ export default function InviteMemberModal({ open = false, onClose, onSubmit, org
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
+
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.(com|in)$/.test(email);
+  };
+
+
+
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const setEmail = (i, v) =>
+  const setEmail = (i, v) => {
     set("emails", form.emails.map((e, idx) => (idx === i ? v : e)));
+
+    if (isValidEmail(v)) {
+      if (allowedEmails.includes(v)) {
+        setError(null);
+      } else {
+        setError(`"${v}" is not a part of this organization`);
+        set("emails", form.emails.filter((_, idx) => idx !== i));
+      }
+    }
+  };
   const addEmail = () => set("emails", [...form.emails, ""]);
   const removeEmail = (i) => set("emails", form.emails.filter((_, idx) => idx !== i));
 

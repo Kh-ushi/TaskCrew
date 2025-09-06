@@ -144,7 +144,12 @@ const NotificationProvider = ({ children, token, url, path = "/ws" }) => {
         markAllRead,
         onJoin:(n)=>{
           console.log(n);
-          socketRef.current?.emit("notification:join",{room:`org:${n.data.orgName}`,data:n});
+          if(n?.data?.orgName){
+           socketRef.current?.emit("notification:join",{room:`org:${n.data.orgName}`,data:n});
+          }
+          else if(n?.data?.spaceName){
+            socketRef.current?.emit("notification:join",{room:`space:${n.data.spaceName}`,data:n});
+          }
         }
       }}
     >

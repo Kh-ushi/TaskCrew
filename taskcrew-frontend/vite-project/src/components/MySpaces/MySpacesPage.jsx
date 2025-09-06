@@ -2,10 +2,12 @@ import Navbar from "../Navbar/NavBar";
 import MySpaces from "./MySpaces";
 import "./MySpacesPage.css";
 import { useState, useEffect } from "react";
-import { useParams, useLocation,useNavigate } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import CreateSpaceModal from "../CreateSpaceModal/CreateSpaceModal";
 import InviteMemberModal from "../InviteMemberModal/InviteMemberModal";
 import api from "../../utils/axiosInstance";
+import { set } from "mongoose";
+import{useNotification} from "../Notifications/NotificationsProvider";
 
 
 export default function MySpacesPage() {
@@ -18,8 +20,11 @@ export default function MySpacesPage() {
   const [openInvite, setOpenInvite] = useState(false);
   const [addMemberToSpace, setAddMemberToSpace] = useState(false);
   const [space, setSpace] = useState(null);
+  const [allowedEmails, setAllowedEmails] = useState(()=>{
+    return location.state.org.members.map((m)=>m.userId.email!==location.state.org.owner.email?m.userId.email:null).filter((m)=>m!==null);
+  },[]);
 
-
+  const {  notifications } = useNotification();
 
 
   const handleCreateSpace = () => {
@@ -63,7 +68,7 @@ export default function MySpacesPage() {
 
   const handleMemeberInvite = async (payload) => {
     try {
-      console.log("invite member to company",payload);
+      console.log("invite member to company", payload);
       console.log(id);
       const { data } = await api.post(`/api/auth/org/invite-members/${id}`, payload);
       console.log(data);
@@ -82,7 +87,8 @@ export default function MySpacesPage() {
 
   const handleMemberInviteToSpace = async (payload) => {
     try {
-       console.log("invite member to space",payload);
+      console.log("invite member to space", payload);
+      payload.emails = payload.emails.filter((email) => allowedEmails.includes(email));
       console.log(id);
       console.log(space._id);
       const { data } = await api.post(`/api/auth/org/${id}/space/invite-members/${space._id}`, payload);
@@ -114,7 +120,7 @@ export default function MySpacesPage() {
       }
     }
     fetchSpaces();
-  }, [id]);
+  }, [id,notifications]);
 
   return (
     <div className="ap-page">
@@ -144,7 +150,9 @@ export default function MySpacesPage() {
         </div>
       </main>
       <CreateSpaceModal open={open} onClose={() => setOpen(false)} onSubmit={onSubmit} />
-      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={addMemberToSpace ? handleMemberInviteToSpace : handleMemeberInvite} orgName={addMemberToSpace ? space.name : location.state.org.name} />
+      <InviteMemberModal open={openInvite} onClose={() => setOpenInvite(false)} onSubmit={addMemberToSpace ? handleMemberInviteToSpace : handleMemeberInvite} orgName={addMemberToSpace ? space.name : location.state.org.name}
+        allowedEmails={allowedEmails} addMemberToSpace={addMemberToSpace}
+      />
     </div>
   );
 }

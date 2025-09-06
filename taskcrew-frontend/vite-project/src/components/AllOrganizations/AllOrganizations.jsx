@@ -22,7 +22,7 @@ export default function AllOrganizations() {
     const fetchOrganizations = async () => {
       try {
         const { data } = await api.get("/api/auth/org/get-organizations");
-        console.log(data);
+        // console.log("all-organizations", data);
         if (data?.organizations) {
           console.log(data.organizations);
           setOrgs([...data.organizations]);

@@ -45,8 +45,8 @@ io.use((socket, next) => {
     }
     try {
         console.log(process.env.JWT_SECRET);
-        const  payload=jwt.verify(token, process.env.JWT_SECRET);
-        console.log(payload); 
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(payload);
         socket.data.email = payload.email;
         socket.join(`user:${payload.email}`);
         console.log("User joined:", payload.email);
@@ -62,11 +62,19 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
     console.log("New client connected:", socket.id);
     const token = socket.handshake.auth?.token;
-    socket.on("notification:join", ({room,data}) => {
+
+    socket.on("notification:join", ({ room, data }) => {
         console.log("Joining room:", room);
         socket.join(room);
-        redisClient.publish("org:join",JSON.stringify({data,token}));
+        if(data?.data?.orgName){
+             redisClient.publish("org:join", JSON.stringify({ data, token }));
+        }
+        else if(data?.data?.spaceName){
+            redisClient.publish("space:join", JSON.stringify({ data, token }));
+        } 
     });
+
+
 });
 
 
@@ -82,7 +90,8 @@ const buildText = (evt) => {
     if (evt.type == "project:created") return `New project created: ${evt.data.title}`;
     if (evt.type == "project:updated") return `Project updated: ${evt.data.title}`;
     if (evt.type == "project:deleted") return `Project deleted: ${evt.data.title}`;
-    if(evt.type=="org:invite")return `You have been invited to join the organization: ${evt.data.orgName}`;
+    if (evt.type == "org:invite") return `You have been invited to join the organization: ${evt.data.orgName}`;
+    if (evt.type=="space:invite")return `You have been invited to join the space: ${evt.data.spaceName}`
     return evt.type;
 }
 
@@ -92,14 +101,14 @@ const resolveTargets = async (evt) => {
         ...(evt.data?.watchers || []),
         ...(evt.data?.subscribers || []),
     ]);
-    return [...set,evt.data?.email].filter(Boolean);
+    return [...set, evt.data?.email].filter(Boolean);
 };
 
-let count=0;
+let count = 0;
 await sub.subscribe("events", async (msg) => {
 
     console.log("Received event:", msg);
-    console.log("Processing event number:",++count);
+    console.log("Processing event number:", ++count);
     const evt = JSON.parse(msg);
     const targets = await resolveTargets(evt);
     console.log("Notification targets:", targets);
@@ -117,34 +126,34 @@ await sub.subscribe("events", async (msg) => {
         data: evt.data,
         message: evt?.message || "No message",
         channel: evt?.channel || "general",
-        isJoin: evt.type==="org:invite"?true:false,
-
+        isJoin: evt.type === "org:invite" || evt.type === "space:invite",
     }));
+
 
     console.log("Notification documents:", docs);
 
-    const result = await Notification.insertMany(docs);
-    console.log("Notifications saved:", result);
-    console.log(targets);
-    for (const email of targets) {
-    await kv.incr(`notif:unread:${email}`);
-    console.log(`Unread notifications for ${email}: ${await kv.get(`notif:unread:${email}`)}`);
-    const payload = docs.find(doc => doc.email === email);
-    payload._id = result.find(r => r.email === email)._id;
-    console.log(payload);
-    io.to(`user:${email}`).emit("notification", payload);
-    const count = Number(await kv.get(`notif:unread:${email}`) || 0);
-    io.to(`user:${email}`).emit("notification:unread", { count });
-}
+        const result = await Notification.insertMany(docs);
+        console.log("Notifications saved:", result);
+        console.log(targets);
+        for (const email of targets) {
+        await kv.incr(`notif:unread:${email}`);
+        console.log(`Unread notifications for ${email}: ${await kv.get(`notif:unread:${email}`)}`);
+        const payload = docs.find(doc => doc.email === email);
+        payload._id = result.find(r => r.email === email)._id;
+        console.log(payload);
+        io.to(`user:${email}`).emit("notification", payload);
+        const count = Number(await kv.get(`notif:unread:${email}`) || 0);
+        io.to(`user:${email}`).emit("notification:unread", { count });
+    }
 
 });
 
 
-await sub.subscribe("org:joined", async(message) => {
-    const event=JSON.parse(message);
-    console.log("org joined event received:",event);
-    const {orgName,role,notifId}=event;
-    const notif=await Notification.findByIdAndUpdate(notifId,{isRead:true,isJoin:false},{new:true});
+await sub.subscribe("org:joined", async (message) => {
+    const event = JSON.parse(message);
+    console.log("org joined event received:", event);
+    const { orgName, role, notifId } = event;
+    const notif = await Notification.findByIdAndUpdate(notifId, { isRead: true, isJoin: false }, { new: true });
     console.log(notif);
     io.to(`user:${notif.email}`).emit("notification:resolved", notif);
     await kv.decr(`notif:unread:${notif.email}`);
@@ -154,7 +163,18 @@ await sub.subscribe("org:joined", async(message) => {
 });
 
 
-
+await sub.subscribe("space:joined",async(message)=>{
+    const event = JSON.parse(message);
+    console.log("space joined event recieved",event);
+    const {spaceName,role,notifId}=event;
+    const notif=await Notification.findByIdAndUpdate(notifId,{isRead:true,isJoin:false},{new :true});
+    console.log(notif);
+    io.to(`user:${notif.email}`).emit("notification:resolved", notif);
+    await kv.decr(`notif:unread:${notif.email}`);
+    const count = Number(await kv.get(`notif:unread:${notif.email}`) || 0);
+    io.to(`user:${notif.email}`).emit("notification:unread", { count });
+    console.log(`User ${notif.email} joined space ${spaceName} as ${role}`);
+});
 
 
 
