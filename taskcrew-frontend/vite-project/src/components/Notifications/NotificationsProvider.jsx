@@ -99,7 +99,7 @@ const NotificationProvider = ({ children, token, url, path = "/ws" }) => {
       console.log("New notification:", n);
       setNotifications((prev) => {
         // Deduplicate by id if server provides one
-        if (n.id && prev.some((x) => x.id === n.id)) {
+        if (n.id && prev.some((x) => x.title === n.title)) {
           return prev;
         }
         return [n, ...prev].slice(0, 100);
@@ -118,6 +118,7 @@ const NotificationProvider = ({ children, token, url, path = "/ws" }) => {
 
     socket.on("notification:resolved",(notif)=>{
       setNotifications((prev)=>prev.filter((n)=>n._id!==notif._id));
+      console.log("Notification resolved:",notif);
     });
 
     return () => {

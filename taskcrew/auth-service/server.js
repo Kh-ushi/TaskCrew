@@ -40,6 +40,7 @@ app.use("/auth", (req, res, next) => {
   await subscriber.subscribe("org:join", async(message) => {
     const event=JSON.parse(message);
     const {data}=event;
+    console.log("org join event received:",event);
     if(!data){
         console.error("No data found in the message");
         return;
@@ -58,6 +59,11 @@ app.use("/auth", (req, res, next) => {
 
     console.log(member,org)
 
+    if(org.members.some(m=>m.userId.toString()==member._id.toString())){
+        console.log("User already a member of the organization");
+        return;
+    }
+
    org.members.push({userId:member._id,role:role});
     await org.save();
     console.log(`User ${data.email} added to organization ${orgName} as ${role}`);
@@ -65,6 +71,8 @@ app.use("/auth", (req, res, next) => {
     redisClient.publish("org:joined",JSON.stringify({orgName:org.name,role:role,notifId:data._id}));
 
   });
+
+  await subscriber.subscribe("space:join",async(message)=>{})
 
 const startServer = async () => {
     try {

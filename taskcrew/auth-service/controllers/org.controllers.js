@@ -102,7 +102,7 @@ const getOrganizations = async (req, res) => {
     try {
         console.log("I am in getOrganizations");
         const { userId } = req.user;
-        const orgs = await Organization.find({ owner: userId }).populate("owner");
+        const orgs = await Organization.find({ $or: [{ owner: userId }, { members: { $elemMatch: { userId } } }] }).populate("owner");
         console.log(orgs);
         return res.status(200).json({ organizations: orgs });
     } catch (error) {
@@ -139,16 +139,16 @@ const inviteMembers = async (req, res) => {
         console.log(existingEmails);
         const orgName = await Organization.findById(id)
 
-        const data = {
-            email: [...emails],
-            role: role,
-            message: message,
-            orgName: orgName.name
-        }
+        // const data = {
+        //     email: [...emails],
+        //     role: role,
+        //     message: message,
+        //     orgName: orgName.name
+        // }
 
-        console.log(data);
+        // console.log(data);
 
-        await Promise.all(existingEmails.map(email => emitEvent("org:invite", { organizationId: id, data })));
+        await Promise.all(existingEmails.map(email => emitEvent("org:invite", { organizationId: id, data:{email,role,message,orgName:orgName.name} })));
 
         const missingEmails = emails.filter(e => !existingEmails.includes(e));
         return res.status(200).json({

@@ -96,7 +96,7 @@ const inviteMembersToSpace = async (req, res) => {
         }
 
         await Promise.all(existingEmails.map(email => {
-            emitEvent("inviteMembertoSpace", { organizationId: id, spaceId, data });
+            emitEvent("space:invite", { organizationId: id, spaceId, data });
         }));
 
         const missingEmails = emails.filter(e => !existingEmails.includes(e));

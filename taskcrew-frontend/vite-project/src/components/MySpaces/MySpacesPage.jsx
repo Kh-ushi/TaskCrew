@@ -31,9 +31,9 @@ export default function MySpacesPage() {
   }
 
   const handleAddMember = (space) => {
+    setSpace(space);
     setAddMemberToSpace(true);
     setOpenInvite(true);
-    setSpace(space);
   }
 
   const handleDeleteSpace = async (space_id) => {

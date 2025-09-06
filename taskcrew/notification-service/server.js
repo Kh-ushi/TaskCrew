@@ -54,7 +54,6 @@ io.use((socket, next) => {
     } catch (err) {
         console.log(err);
         return next(new Error("Authentication error"));
-
     }
 });
 
@@ -92,17 +91,18 @@ const resolveTargets = async (evt) => {
         ...(evt.data?.assignedTo || []),
         ...(evt.data?.watchers || []),
         ...(evt.data?.subscribers || []),
-        ...(evt.data?.email || [])
     ]);
-    return [...set];
+    return [...set,evt.data?.email].filter(Boolean);
 };
 
-
+let count=0;
 await sub.subscribe("events", async (msg) => {
 
     console.log("Received event:", msg);
+    console.log("Processing event number:",++count);
     const evt = JSON.parse(msg);
     const targets = await resolveTargets(evt);
+    console.log("Notification targets:", targets);
     console.log("Notification targets:", targets);
 
     if (!targets) {
@@ -117,31 +117,35 @@ await sub.subscribe("events", async (msg) => {
         data: evt.data,
         message: evt?.message || "No message",
         channel: evt?.channel || "general",
-        isJoin: evt.type==="org:invite"?true:false
+        isJoin: evt.type==="org:invite"?true:false,
+
     }));
 
     console.log("Notification documents:", docs);
 
     const result = await Notification.insertMany(docs);
     console.log("Notifications saved:", result);
+    console.log(targets);
     for (const email of targets) {
     await kv.incr(`notif:unread:${email}`);
     console.log(`Unread notifications for ${email}: ${await kv.get(`notif:unread:${email}`)}`);
     const payload = docs.find(doc => doc.email === email);
+    payload._id = result.find(r => r.email === email)._id;
     console.log(payload);
     io.to(`user:${email}`).emit("notification", payload);
     const count = Number(await kv.get(`notif:unread:${email}`) || 0);
     io.to(`user:${email}`).emit("notification:unread", { count });
 }
 
-
 });
 
 
 await sub.subscribe("org:joined", async(message) => {
     const event=JSON.parse(message);
+    console.log("org joined event received:",event);
     const {orgName,role,notifId}=event;
     const notif=await Notification.findByIdAndUpdate(notifId,{isRead:true,isJoin:false},{new:true});
+    console.log(notif);
     io.to(`user:${notif.email}`).emit("notification:resolved", notif);
     await kv.decr(`notif:unread:${notif.email}`);
     const count = Number(await kv.get(`notif:unread:${notif.email}`) || 0);

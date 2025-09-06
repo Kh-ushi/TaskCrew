@@ -1,14 +1,20 @@
-import React from "react";
+import React, { use } from "react";
 import Navbar from "../Navbar/NavBar";
 import OrgGrid from "../OrgGrid/OrgGrid";
 import "./AllOrganizations.css";
 import api from "../../utils/axiosInstance";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../Notifications/NotificationsProvider";
 
 export default function AllOrganizations() {
 
   const [orgs, setOrgs] = useState([]);
+    const {  notifications } = useNotification();
+
+    // useEffect(() => {
+    //   console.log("Notifications changed:", notifications);
+    // }, [notifications]);
 
   const navigate = useNavigate();
 
@@ -19,7 +25,7 @@ export default function AllOrganizations() {
         console.log(data);
         if (data?.organizations) {
           console.log(data.organizations);
-          setOrgs([...orgs,...data.organizations]);
+          setOrgs([...data.organizations]);
         }
         else {
           setOrgs([]);
@@ -30,7 +36,7 @@ export default function AllOrganizations() {
       }
     };
     fetchOrganizations();
-  }, []);
+  }, [notifications]);
 
 
   return (

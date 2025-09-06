@@ -7,7 +7,17 @@ const getMyNotifications = async (req, res) => {
         if(!email){
             return res.status(400).json({message:"Email not found in token"});
         }
-        const notifications=await Notification.find({email, isRead:false}).sort({createdAt:-1});
+        const notifications=await Notification.aggregate([
+            {$match:{email,isRead:false,isJoin:true}},
+            {$sort:{createdAt:-1}},
+            {$group:{
+                _id:"$title",
+                doc:{$first:"$$ROOT"},
+            }},
+            { $replaceRoot: { newRoot: "$doc" } }, 
+            {$sort:{createdAt:-1}},
+        ]);
+        console.log(notifications);
         res.status(201).json({notifications});
     } catch (error) {
         console.error("An error has occured in fetching all notifications", error);
