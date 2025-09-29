@@ -6,6 +6,26 @@ import axios from "axios";
 const ProjectDetailsModal = ({ project, onClose }) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const [showTaskForm, setShowTaskForm] = useState(false);
+    const [editTask, setEditTask] = useState(null);
+
+    useEffect(() => {
+        if (editTask) {
+            setTaskForm({
+                title: editTask.title || "",
+                description: editTask.description || "",
+                startDate: editTask.startDate
+                    ? new Date(editTask.startDate).toISOString().split("T")[0]
+                    : "",
+                endDate: editTask.endDate
+                    ? new Date(editTask.endDate).toISOString().split("T")[0]
+                    : "",
+                priority: editTask.priority || "medium",
+                status: editTask.status || "to-do",
+            });
+        }
+    }, [editTask]);
+
+
     const [taskForm, setTaskForm] = useState({
         title: "",
         startDate: "",
@@ -62,10 +82,58 @@ const ProjectDetailsModal = ({ project, onClose }) => {
             setShowTaskForm(false);
         }
         catch (error) {
-            console.log(data);
+            console.log(error);
         }
 
     };
+
+    const handleEditTask = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem("accessToken");
+            const { data } = await axios.put(`${BACKEND_URL}/api/task/${editTask._id}`, taskForm, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
+
+            const { message, task } = data;
+            setTasks((prev) => (
+                prev.map((p) => {
+                    if (p._id == task._id) return task;
+                    return p;
+                })
+            ));
+            alert(message);
+            setShowTaskForm(false);
+
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteTask = async (task) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const { data } = await axios.delete(`${BACKEND_URL}/api/task/${task._id}`, {
+                headers: {
+                    authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log(data);
+
+            const { task: deletedTask, message } = data;
+
+            setTasks((prev) => prev.filter((p) => p._id !== deletedTask._id));
+
+            alert(message);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     return (
         <div className="project-modal-overlay" onClick={onClose}>
@@ -94,7 +162,17 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                 <div className="task-control">
                     <button
                         className="add-task-btn"
-                        onClick={() => setShowTaskForm((prev) => !prev)}
+                        onClick={() => {
+                            setEditTask(null);
+                            setTaskForm({
+                                title: "",
+                                startDate: "",
+                                endDate: "",
+                                priority: "medium",
+                                status: "to-do",
+                            })
+                            setShowTaskForm((prev) => !prev);
+                        }}
                     >
                         <FiPlus /> {showTaskForm ? "Cancel" : "Add Task"}
                     </button>
@@ -102,7 +180,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
 
                 {/* 📥 New Task Form */}
                 {showTaskForm && (
-                    <form className="task-form" onSubmit={handleTaskSubmit}>
+                    <form className="task-form" onSubmit={editTask ? handleEditTask : handleTaskSubmit}>
                         <div className="form-group">
                             <label>Task Name</label>
                             <input
@@ -167,7 +245,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                             </div>
                         </div>
                         <button type="submit" className="submit-task-btn">
-                            Save Task
+                            {editTask ? "Edit Task" : "Save Task"}
                         </button>
                     </form>
                 )}
@@ -179,10 +257,13 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                             <div className="task-header">
                                 <h3>{task.title}</h3>
                                 <div className="task-actions">
-                                    <button className="task-icon edit" onClick={() => handleEditTask(task)}>
+                                    <button className="task-icon edit" onClick={() => {
+                                        setEditTask(task);
+                                        setShowTaskForm(true);
+                                    }}>
                                         ✏️
                                     </button>
-                                    <button className="task-icon delete" onClick={() => handleDeleteTask(task._id)}>
+                                    <button className="task-icon delete" onClick={() => handleDeleteTask(task)}>
                                         🗑️
                                     </button>
                                     <span className={`status ${task.status.toLowerCase()}`}>

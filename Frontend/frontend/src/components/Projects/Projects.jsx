@@ -166,7 +166,8 @@ const Projects = ({ spaceId }) => {
               ><FiMoreVertical /></div>
               {menuOpen === p._id && (
                 <div className="action-menu" style={{"zIndex":"99999"}} onMouseLeave={() => setMenuOpen(null)}>
-                  <button  onClick={()=>{
+                  <button  onClick={(e)=>{
+                    e.stopPropagation();
                     setEditProject(p);
                     setOpenProjectModal(true);
                     setMenuOpen(null);
@@ -174,10 +175,15 @@ const Projects = ({ spaceId }) => {
                     }>
                     <FiEdit2 /> Edit
                   </button>
-                  <button onClick={()=>handleDeleteProject(p._id)}>
+                  <button onClick={(e)=>{
+                    e.stopPropagation();
+                    handleDeleteProject(p._id)
+                  }}>
                     <FiTrash2 /> Delete
                   </button>
-                  <button >
+                  <button  onClick={(e)=>{
+                      e.stopPropagation();
+                  }}>
                     <FiUserPlus /> Add Members
                   </button>
                 </div>
