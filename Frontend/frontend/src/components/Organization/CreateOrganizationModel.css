@@ -1,0 +1,242 @@
+/* 🌌 Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 17, 23, 0.85);
+  backdrop-filter: blur(18px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 📦 Modal Card */
+.org-modal {
+  background: rgba(24, 27, 35, 0.95);
+  padding: 3rem 2.5rem;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f9fafb;
+  text-align: center;
+  position: relative;
+  animation: slideUp 0.35s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ❌ Close Button */
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.8rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+/* 🪩 Header */
+.org-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.5px;
+}
+
+.org-subtitle {
+  color: #a1a1aa;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* 📄 Form */
+.org-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  width: 100%;
+}
+
+.form-group {
+  text-align: left;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e4e4e7;
+  letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  /* padding: 0.9rem 1rem; */
+  border-radius: 12px;
+  border: 1px solid #2a2d3a;
+  background: #13161f;
+  color: #f9fafb;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #6b7280;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border: 1px solid #8b5cf6;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+}
+
+textarea {
+  resize: none;
+  height: 110px;
+  line-height: 1.5;
+}
+
+/* 🚀 Button */
+.submit-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.submit-btn:hover {
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.7);
+  transform: translateY(-3px);
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .org-modal {
+    padding: 2.5rem 2rem;
+  }
+
+  .org-title {
+    font-size: 1.8rem;
+  }
+
+  .org-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .org-modal {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .org-title {
+    font-size: 1.6rem;
+  }
+
+  .submit-btn {
+    font-size: 1rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.9rem;
+  }
+}
+
+
+/* 📧 Members Input Field */
+.members-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  min-height: 55px;
+  border-radius: 12px;
+  border: 1px solid #2a2d3a;
+  background: #13161f;
+  cursor: text;
+}
+
+.members-input-container input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 180px;
+  padding: 0.5rem 0.3rem;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #f9fafb;
+}
+
+.members-input-container input::placeholder {
+  color: #6b7280;
+}
+
+/* 🏷️ Member Tags */
+.member-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #2a2d3a;
+  color: #e4e4e7;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.remove-member {
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #a1a1aa;
+  transition: color 0.2s ease;
+}
+
+.remove-member:hover {
+  color: #f87171;
+}
+
+/* ✨ Focus effect */
+.members-input-container:focus-within {
+  border: 1px solid #8b5cf6;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+}

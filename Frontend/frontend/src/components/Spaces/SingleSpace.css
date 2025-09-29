@@ -1,0 +1,99 @@
+.single-space {
+    display: flex;
+    background: radial-gradient(circle at top, #1e2230, #0f1117);
+}
+
+.left,
+.between,
+.right {
+    /* border: 2px solid black; */
+    height: 100vh;
+}
+
+
+.left {
+    width: 5%;
+}
+
+.between {
+    width: 95%;
+    /* border: 2px solid red; */
+}
+
+
+/* 🌐 Container */
+.topnav-container {
+    width: 100%;
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.06); */
+    padding: 0.8rem 2rem;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+    /* border: 2px solid red; */
+    text-align: center;
+    height: 12%;
+}
+
+/* 🧭 Nav Bar */
+.topnav {
+    display: flex;
+    background: linear-gradient(180deg, #13161f, #0f1117);
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    /* border: 2px solid red; */
+    height: 100%;
+    border-radius: 1rem;
+}
+
+.rem-nav {
+    flex-grow: 1;
+}
+
+/* 🏷️ Tab Item */
+.topnav-item {
+    position: relative;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a1a1aa;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+}
+
+.topnav-item:hover {
+    color: #f9fafb;
+    transform: translateY(-1px);
+}
+
+/* ⭐ Active State */
+.topnav-item.active {
+    color: #fff;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+
+.main-container {
+    /* border: 2px solid black; */
+    height: calc(100vh - 12%);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    .topnav {
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    .topnav-item {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+}
