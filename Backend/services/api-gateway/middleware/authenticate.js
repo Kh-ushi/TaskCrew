@@ -10,7 +10,7 @@ const authenticate=(req,res,next)=>{
 
     const authHeader=req.headers.authorization;
     if(!authHeader || !authHeader.startsWith('Bearer ')){
-        return res.stataus(401).json({message:"Access Token missing"});
+        return res.status(401).json({message:"Access Token missing"});
     }
 
     const accessToken=authHeader.split(" ")[1];

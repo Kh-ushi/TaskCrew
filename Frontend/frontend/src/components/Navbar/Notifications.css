@@ -50,7 +50,7 @@
 } */
 
 .notif-item:hover {
-  background: rgba(139, 92, 246);
+  /* background: rgba(139, 92, 246); */
 }
 
 .notif-item p {
@@ -104,4 +104,22 @@
 .notif-list::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0.5);
   border-radius: 10px;
+}
+
+
+.join-button button{
+    position: relative;
+    left: 80%;
+    background-color:#7c3aed;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition:all 0.3s ease;
+}
+
+.join-button button:hover {
+    transform: scale(1.05) translateY(-2px);
 }

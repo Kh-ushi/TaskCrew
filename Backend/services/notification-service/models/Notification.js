@@ -32,6 +32,11 @@ const notificationSchema=new mongoose.Schema({
       type: String,
       enum: ["Organization", "Task", "Project", "Comment"],
     },
+    join:{
+      type:Boolean,
+      default:false,
+      index:true
+    },
     read:{
         type:Boolean,
         default:false,

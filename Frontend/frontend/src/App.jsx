@@ -12,9 +12,9 @@ import { useEffect } from 'react';
 
 function App() {
 
-  useEffect(() => {
-    socket.connect();
-  }, [])
+  // useEffect(() => {
+  //   socket.connect();
+  // }, [])
 
   return (
     <Router>

@@ -7,6 +7,6 @@ import authenticate from "../middlewares/authenticate.js";
 router.use(authenticate);
 
 router.get("/", getAllNotifications);
-router.put("/:id/read", markAsRead);
+router.put("/mark-as-read/:id", markAsRead);
 
 export default router;

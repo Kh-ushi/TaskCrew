@@ -8,6 +8,7 @@ import subscriber from "./redis/subscriber.js";
 import Notification from "./models/Notification.js";
 import connectDb from "./config/db.js";
 import notifRoutes from "./routes/notif.route.js";
+import { create } from "domain";
 
 
 dotenv.config();
@@ -16,9 +17,9 @@ const httpServer = createServer(app);
 const { PORT, JWT_SECRET } = process.env;
 
 
-app.use(cors({origin:true,credentials:true}));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/notifications", notifRoutes);
@@ -43,7 +44,8 @@ io.use((socket, next) => {
         next();
     }
     catch (error) {
-        console.error("JWT Error:", err.message);
+        console.log(error);
+        console.error("JWT Error:", error.message);
         next(new Error("Authentication error: invalid token"));
     }
 });
@@ -57,22 +59,31 @@ subscriber.subscribe("notifications", async (message) => {
         const { organization, members } = event;
         for (const member of members) {
             if (member.toString() !== organization.owner.toString()) {
+
+                const notif = await Notification.create({
+                    recipient: member,
+                    message: `You Have Been Invited to Join ${organization.name}`,
+                    type: "Org:MembersAdded",
+                    entity: organization._id,
+                    entityModel: "Organization",
+                    join: true
+                });
+                console.log("Notification created:", notif);
+
                 const room = `user:${member}`;
                 console.log("Emitting to room:", room);
                 io.to(room).emit("notification", {
                     message: `You Have Been Invited to Join ${organization.name}`,
-                    orgId: organization._id
+                    type: "Org:MembersAdded",
+                    entity: organization._id,
+                    entityModel: "Organization",
+                    join: true,
+                    read: false,
+                    createdAt: new Date(),
+                    _id: notif._id
                 });
 
             }
-            const notif = await Notification.create({
-                recipient: member,
-                message: `You Have Been Invited to Join ${organization.name}`,
-                type: "Org:MembersAdded",
-                entity: organization._id,
-                entityModel: "Organization"
-            });
-            console.log("Notification created:", notif);
         }
     }
 

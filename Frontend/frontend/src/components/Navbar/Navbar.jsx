@@ -23,22 +23,24 @@ const Navbar = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
-        setNotifications((prev)=>{
 
-          const combined=[...prev,...data];
+        console.log("New Notifications:", data);
 
-          const unique=combined.filter(
-            (notif,index,self)=>
-              index===self.findIndex((n)=>n.message===notif.message)
+        setNotifications((prev) => {
+
+          const combined = [...prev, ...data];
+
+          const unique = combined.filter(
+            (notif, index, self) =>
+              index === self.findIndex((n) => n.message === notif.message)
           );
 
-          unique.sort((a,b)=>b.createdAt-a.createdAt);
+          unique.sort((a, b) => b.createdAt - a.createdAt);
 
           return unique;
 
         });
-         
+
         console.log("Fetched Notifications:", data);
       } catch (error) {
         console.log("Error fetching notifications:", error);
@@ -54,12 +56,65 @@ const Navbar = () => {
 
     socket.on("notification", handleNotification);
 
-   
+
     return () => {
       socket.off("notification", handleNotification);
     };
   }, []);
 
+  const addToOrganization = async (notif) => {
+
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const { data } = await axios.get(`${BACKEND_URL}/api/org/accept-invite/${notif.entity}`, {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      });
+
+      console.log(data);
+
+      const resp = await axios.put(
+        `${BACKEND_URL}/api/notifications/mark-as-read/${notif._id}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+
+
+      console.log(resp.data.message);
+
+      const { message } = data;
+      alert(message);
+
+      setNotifications((prev) => (
+        prev.filter(p => p.entity !== notif.entity)
+      ));
+    }
+    catch (error) {
+      console.log("Error joining organization:", error);
+    }
+  }
+
+  const resolveNotification = (notif) => {
+
+    const entityModel = notif.entityModel;
+    switch (entityModel) {
+      case "Organization":
+        addToOrganization(notif);
+        break;
+      // case "Project":
+      //   window.location.href=`/project/${notif.entity}`;
+      //   break;
+      default:
+        console.log("Unknown entity model:", entityModel);
+    }
+
+  };
 
   return (
     <nav className="navbar">
@@ -91,7 +146,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {openNotif && <Notifications open={openNotif} setOpen={setOpenNotif} notifications={notifications} />}
+      {openNotif && <Notifications open={openNotif} setOpen={setOpenNotif} notifications={notifications} resolveNotification={resolveNotification} />}
     </nav>
   );
 };

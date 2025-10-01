@@ -260,5 +260,30 @@ const deleteMember = async (req, res) => {
 };
 
 
+const acceptInvite = async (req, res) => {
+    try{
+        const {id}=req.params;
+        const {userId}=req.user;
+        const organization = await Organization.findById(id);
+        console.log(organization,userId,id);
+        if(!organization){
+            return res.status(404).json({message:"Organization not found"});
+        }
+        const isMember = organization.members.some(m => m.userId.toString() === userId);
+        if(isMember){ 
+            console.log("Already a member"); 
+            return res.status(400).json({message:"You are already a member of this organization"});
+        }
+        organization.members.push({userId});
+        await organization.save();
+        return res.status(200).json({message:"You have successfully joined the organization",organization}); 
+    }
+    catch(error){
+        console.error("Error joining organization:", error);
+        return res.status(500).json({error:"Failed to join organization"});     
+    }
+}
 
-export { allOrganizations, getOrganization, addOrganization, editOrganization, deleteOrganization, inviteMembers, deleteMember };
+
+
+export { allOrganizations, getOrganization, addOrganization, editOrganization, deleteOrganization, inviteMembers, deleteMember, acceptInvite };

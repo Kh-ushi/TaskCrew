@@ -3,6 +3,7 @@ import "./Signup.css";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import socket from "../../socket";
 
 const Signup = () => {
 
@@ -38,6 +39,10 @@ const Signup = () => {
             const { accessToken, user, message } = data;
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("user", user);
+
+            socket.auth = { token: accessToken };
+            socket.connect();
+
             setFormData({
                 name: "",
                 email: "",

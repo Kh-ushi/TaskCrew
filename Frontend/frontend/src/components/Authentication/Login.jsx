@@ -2,6 +2,7 @@ import React from "react";
 import "./Login.css";
 import axios from "axios";
 import { useState } from "react";
+import socket from "../../socket";
 
 const Login = () => {
 
@@ -33,6 +34,10 @@ const Login = () => {
             const { user, accessToken, message } = data;
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("user", user);
+            
+            socket.auth = { token: accessToken };
+            socket.connect();
+
             setFormData({
                 email: "",
                 password: ""

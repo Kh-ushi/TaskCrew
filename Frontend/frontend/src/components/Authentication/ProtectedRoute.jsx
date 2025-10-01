@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import socket from "../../socket";
 
 const ProtectedRoute = ({ children }) => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -29,6 +30,21 @@ const ProtectedRoute = ({ children }) => {
 
     verifyUser();
   }, [token, BACKEND_URL]);
+
+
+  useEffect(()=>{
+    if(isAuthorized){
+      socket.auth={token};
+      socket.connect();
+      console.log("🔌 Socket connected automatically inside ProtectedRoute");
+    }
+    return ()=>{
+       if (socket.connected) {
+        socket.disconnect();
+        console.log("🔌 Socket disconnected (ProtectedRoute cleanup)");
+      }
+    }
+  },[isAuthorized, token]);
 
   if (isAuthorized === null) {
     return (

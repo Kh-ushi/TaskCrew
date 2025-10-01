@@ -1,5 +1,5 @@
 import express from 'express';
-import { allOrganizations, getOrganization, addOrganization, editOrganization, deleteOrganization, inviteMembers, deleteMember } from "../controllers/org.controller.js";
+import { allOrganizations, getOrganization, addOrganization, editOrganization, deleteOrganization, inviteMembers, deleteMember,acceptInvite} from "../controllers/org.controller.js";
 import { organizationSchema } from "../validations/orgSchema.js"
 import validateRequest from "../middlewares/validationRequest.js";
 import authenticate from '../middlewares/authenticate.js';
@@ -23,6 +23,10 @@ router
     .route("/invite/:id")
     .post(inviteMembers)
     .delete(deleteMember)
+
+router
+.route("/accept-invite/:id")
+.get(acceptInvite);
 
 
 export default router;

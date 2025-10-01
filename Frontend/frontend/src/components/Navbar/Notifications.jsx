@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 import "./Notifications.css";
 
-const Notifications = ({ open, setOpen, notifications }) => {
+const Notifications = ({ open, setOpen, notifications, resolveNotification }) => {
     const dropdownRef = useRef(null);
     console.log("Notifications Component:", notifications);
 
@@ -34,6 +34,7 @@ const Notifications = ({ open, setOpen, notifications }) => {
                                         <span className="notif-time">
                                             {new Date(notif.createdAt).toLocaleString()}
                                         </span>
+                                       {notif.join &&  <div className="join-button"  onClick={() => resolveNotification(notif)} ><button>Join</button></div>}
                                     </div>
                                 );
                         })}
