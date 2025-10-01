@@ -1,8 +1,66 @@
 import React from "react";
 import "./Navbar.css";
 import { FiBell } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import socket from "../../socket";
+import axios from "axios";
+import Notifications from "./Notifications";
+
 
 const Navbar = () => {
+
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+  const [notifications, setNotifications] = useState([]);
+  const [openNotif, setOpenNotif] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const { data } = await axios.get(`${BACKEND_URL}/api/notifications`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        setNotifications((prev)=>{
+
+          const combined=[...prev,...data];
+
+          const unique=combined.filter(
+            (notif,index,self)=>
+              index===self.findIndex((n)=>n.message===notif.message)
+          );
+
+          unique.sort((a,b)=>b.createdAt-a.createdAt);
+
+          return unique;
+
+        });
+         
+        console.log("Fetched Notifications:", data);
+      } catch (error) {
+        console.log("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+
+    const handleNotification = (data) => {
+      console.log("🔔 New Notification:", data);
+      setNotifications((prevNotifs) => [data, ...prevNotifs]);
+    };
+
+    socket.on("notification", handleNotification);
+
+   
+    return () => {
+      socket.off("notification", handleNotification);
+    };
+  }, []);
+
+
   return (
     <nav className="navbar">
       {/* 🌟 Logo */}
@@ -17,9 +75,11 @@ const Navbar = () => {
 
       {/* 🔔 Right Side */}
       <div className="navbar-right">
-        <div className="navbar-icon notification">
+        <div className="navbar-icon notification" onClick={() => setOpenNotif(!openNotif)}>
           <FiBell size={22} />
-          <span className="notification-badge">3</span>
+          {notifications.length > 0 && (
+            <span className="notification-badge">{notifications.length}</span>
+          )}
         </div>
 
         <div className="profile">
@@ -30,6 +90,8 @@ const Navbar = () => {
           />
         </div>
       </div>
+
+      {openNotif && <Notifications open={openNotif} setOpen={setOpenNotif} notifications={notifications} />}
     </nav>
   );
 };

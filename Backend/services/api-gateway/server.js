@@ -6,7 +6,7 @@ import authenticate from "./middleware/authenticate.js";
 
 dotenv.config();
 
-const {PORT,AUTH_URL,PROJECT_URL}=process.env;
+const {PORT,AUTH_URL,PROJECT_URL,NOTIF_URL}=process.env;
 
 const app=express();
 
@@ -48,7 +48,7 @@ app.use(
     })
 )
 
-// ------------------------------------------
+// ------------------Project Url---------------------
 
 app.use(
     "/api/project",
@@ -67,6 +67,19 @@ app.use(
         target:PROJECT_URL,
         changeOrigin:true,
         pathRewrite:{"":"/task"},
+        cookieDomainRewrite:{"*":""},
+        logLevel:"debug"
+    })
+)
+
+// -----------------------------------------
+
+app.use(
+    "/api/notifications",
+    createProxyMiddleware({
+        target:NOTIF_URL,
+        changeOrigin:true,
+        pathRewrite:{"":"/notifications"},
         cookieDomainRewrite:{"*":""},
         logLevel:"debug"
     })

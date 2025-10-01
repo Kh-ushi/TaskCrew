@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateOrganizationModal from "./CreateOrganizationModel";
 import Navbar from "../Navbar/Navbar";
-
+import AddMemberModal from "../Common/AddMemberModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,6 +15,8 @@ const Organizations = () => {
     const [isModelOpen, setIsModalOpen] = useState(false);
     const [organizations, setOrganizations] = useState([]);
     const [editOrg, setEditOrg] = useState(null);
+    const [openAddMemberModal, setOpenAddMemberModal] = useState(false);
+    const [organization, setOrganization] = useState(null);
 
     const navigate=useNavigate();
 
@@ -67,6 +69,7 @@ const Organizations = () => {
 
             console.log("✅ Organization created:", data);
         } catch (error) {
+            console.log(error);
             console.error("❌ Error creating organization:", error.response?.data || error.message);
         }
     };
@@ -127,6 +130,31 @@ const Organizations = () => {
         }
     };
 
+    const handleInviteMembers = async (members) => {
+        console.log(members);
+        try{
+            const token = localStorage.getItem("accessToken");
+            const { data } = await axios.post(`${BACKEND_URL}/api/org/invite/${organization._id}`,
+            {
+                emails: members,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const { message ,sent} = data;
+        alert(message + ". Invites sent to: " + sent.join(", "));
+        setOrganization(null);
+        setOpenAddMemberModal(false);
+    }
+    catch(error){
+        console.error("❌ Error inviting members:", error.response?.data || error.message);
+    }
+    }
+
 
 
 
@@ -164,7 +192,10 @@ const Organizations = () => {
 
                         <div className="org-actions">
                             <button className="org-btn primary" onClick={()=>navigate(`/organizations/${org._id}`)} >Enter</button>
-                            <button className="org-btn secondary">+Add Members</button>
+                            <button className="org-btn secondary" onClick={() =>{
+                                 setOpenAddMemberModal(true);
+                                 setOrganization(org);
+                            }}>+Add Members</button>
                             <button className="delete-org" onClick={() => handleDeleteOrg(org._id)}>
                                 <FiTrash2 size={20} />
                             </button>
@@ -188,6 +219,7 @@ const Organizations = () => {
             </button>
 
             {isModelOpen && <CreateOrganizationModal isOpen={isModelOpen} onClose={() => { setIsModalOpen(false) }} onSubmit={!editOrg ? handleCreateOrg : handleEditOrg} editOrg={editOrg}></CreateOrganizationModal>}
+            {openAddMemberModal && <AddMemberModal isOpen={openAddMemberModal} onClose={() => setOpenAddMemberModal(false)} onSubmit={handleInviteMembers}></AddMemberModal>}
         </div>
     );
 };

@@ -190,6 +190,7 @@ const inviteMembers = async (req, res) => {
         const { emails } = req.body;
         const { id } = req.params;
         const { userId } = req.user;
+        console.log(emails, id);
 
         const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
         const existingIds = existingUsers.map(u => u._id);
