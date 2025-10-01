@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import CreateOrganizationModal from "./CreateOrganizationModel";
 import Navbar from "../Navbar/Navbar";
 import AddMemberModal from "../Common/AddMemberModal";
+import { useOrgGlobalVersion } from "../../context/OrgRefreshContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -19,6 +20,7 @@ const Organizations = () => {
     const [organization, setOrganization] = useState(null);
 
     const navigate=useNavigate();
+    const version= useOrgGlobalVersion();
 
     useEffect(() => {
 
@@ -42,7 +44,7 @@ const Organizations = () => {
 
         fetchOrganizations();
 
-    }, []);
+    }, [version]);
 
     const handleCreateOrg = async (payload) => {
         console.log(payload);

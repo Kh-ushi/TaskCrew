@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import socket from "../../socket";
 import axios from "axios";
 import Notifications from "./Notifications";
+import { useBumpGlobalVersion } from "../../context/OrgRefreshContext";   
 
 
 const Navbar = () => {
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const bumpGlobalVersion = useBumpGlobalVersion();
 
   const [notifications, setNotifications] = useState([]);
   const [openNotif, setOpenNotif] = useState(false);
@@ -90,6 +92,8 @@ const Navbar = () => {
 
       const { message } = data;
       alert(message);
+      bumpGlobalVersion();
+
 
       setNotifications((prev) => (
         prev.filter(p => p.entity !== notif.entity)
