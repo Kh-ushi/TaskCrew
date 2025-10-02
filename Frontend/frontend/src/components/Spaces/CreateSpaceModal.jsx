@@ -6,7 +6,7 @@ const CreateSpaceModal = ({ isOpen, onClose, onSubmit ,editSpace}) => {
   const [spaceData, setSpaceData] = useState({
     name:editSpace?editSpace.name:"",
     description:editSpace?editSpace.description:"",
-    members:editSpace?editSpace.members:[],
+    members:editSpace?editSpace.members.map((m)=>m.userId.email):[],
   });
 
   const [emailInput, setEmailInput] = useState("");

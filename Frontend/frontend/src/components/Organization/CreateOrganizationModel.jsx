@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./CreateOrganizationModel.css";
 
-const CreateOrganizationModal = ({ isOpen, onClose, onSubmit,editOrg }) => {
+const CreateOrganizationModal = ({ isOpen, onClose, onSubmit, editOrg }) => {
+
   const [formData, setFormData] = useState({
-    name:editOrg?editOrg.name:"",
-    description:editOrg?editOrg.description:"",
-    members:editOrg?editOrg.members:[]
+    name: editOrg ? editOrg.name : "",
+    description: editOrg ? editOrg.description : "",
+    members: editOrg ? editOrg.members.map((m) => m.userId.email) : []
   });
 
   const [emailInput, setEmailInput] = useState("");
@@ -57,7 +58,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onSubmit,editOrg }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    editOrg?onSubmit(formData,editOrg._id):onSubmit(formData);
+    editOrg ? onSubmit(formData, editOrg._id) : onSubmit(formData);
   };
 
   if (!isOpen) return null;
@@ -111,6 +112,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onSubmit,editOrg }) => {
                   </span>
                 </div>
               ))}
+
               <input
                 type="email"
                 id="members"
@@ -123,7 +125,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onSubmit,editOrg }) => {
           </div>
 
           <button type="submit" className="submit-btn">
-            {editOrg?"Edit Organization":"Create Organization"}
+            {editOrg ? "Edit Organization" : "Create Organization"}
           </button>
         </form>
       </div>

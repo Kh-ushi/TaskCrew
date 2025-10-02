@@ -19,8 +19,8 @@ const Organizations = () => {
     const [openAddMemberModal, setOpenAddMemberModal] = useState(false);
     const [organization, setOrganization] = useState(null);
 
-    const navigate=useNavigate();
-    const version= useOrgGlobalVersion();
+    const navigate = useNavigate();
+    const version = useOrgGlobalVersion();
 
     useEffect(() => {
 
@@ -105,9 +105,41 @@ const Organizations = () => {
         console.log(payload);
         console.log(id);
         try {
+        //     const token = localStorage.getItem("accessToken");
+        //     const { data } = await axios.put(`${BACKEND_URL}/api/org/organization/${id}`,
+        //         payload,
+        //         {
+        //             headers: {
+        //                 Authorization: `Bearer ${token}`,
+        //             },
+        //         }
+        //     );
+
+        //     const { message, organization } = data;
+        //     setOrganizations((prev) => (
+        //         prev.map((p) => {
+        //             if (p._id == organization._id) {
+        //                 return organization;
+        //             }
+        //             return p;
+        //         })
+        //     ));
+        //     setIsModalOpen(false);
+        //     alert(message);
+        }
+        catch (error) {
+          console.log(error);
+        }
+    };
+
+    const handleInviteMembers = async (members) => {
+        console.log(members);
+        try {
             const token = localStorage.getItem("accessToken");
-            const { data } = await axios.put(`${BACKEND_URL}/api/org/organization/${id}`,
-                payload,
+            const { data } = await axios.post(`${BACKEND_URL}/api/org/invite/${organization._id}`,
+                {
+                    emails: members,
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -115,46 +147,14 @@ const Organizations = () => {
                 }
             );
 
-            const { message, organization } = data;
-            setOrganizations((prev) => (
-                prev.map((p) => {
-                    if (p._id == organization._id) {
-                        return organization;
-                    }
-                    return p;
-                })
-            ));
-            setIsModalOpen(false);
-            alert(message);
+            const { message, sent } = data;
+            alert(message + ". Invites sent to: " + sent.join(", "));
+            setOrganization(null);
+            setOpenAddMemberModal(false);
         }
         catch (error) {
-
+            console.error("❌ Error inviting members:", error.response?.data || error.message);
         }
-    };
-
-    const handleInviteMembers = async (members) => {
-        console.log(members);
-        try{
-            const token = localStorage.getItem("accessToken");
-            const { data } = await axios.post(`${BACKEND_URL}/api/org/invite/${organization._id}`,
-            {
-                emails: members,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        const { message ,sent} = data;
-        alert(message + ". Invites sent to: " + sent.join(", "));
-        setOrganization(null);
-        setOpenAddMemberModal(false);
-    }
-    catch(error){
-        console.error("❌ Error inviting members:", error.response?.data || error.message);
-    }
     }
 
 
@@ -172,7 +172,7 @@ const Organizations = () => {
                 </p>
             </div> */}
 
-            <h1 className="org-title" style={{display:"inline-block"}}>Organizations</h1>&nbsp;&nbsp;&nbsp;
+            <h1 className="org-title" style={{ display: "inline-block" }}>Organizations</h1>&nbsp;&nbsp;&nbsp;
             <span className="org-subtitle">
                 Manage and explore all your organizations at a glance.
             </span>
@@ -193,10 +193,10 @@ const Organizations = () => {
                         </div>
 
                         <div className="org-actions">
-                            <button className="org-btn primary" onClick={()=>navigate(`/organizations/${org._id}`)} >Enter</button>
-                            <button className="org-btn secondary" onClick={() =>{
-                                 setOpenAddMemberModal(true);
-                                 setOrganization(org);
+                            <button className="org-btn primary" onClick={() => navigate(`/organizations/${org._id}`)} >Enter</button>
+                            <button className="org-btn secondary" onClick={() => {
+                                setOpenAddMemberModal(true);
+                                setOrganization(org);
                             }}>+Add Members</button>
                             <button className="delete-org" onClick={() => handleDeleteOrg(org._id)}>
                                 <FiTrash2 size={20} />
