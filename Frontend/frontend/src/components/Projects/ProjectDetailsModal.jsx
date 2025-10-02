@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "./ProjectDetailsModal.css";
 import { FiX, FiPlus, FiUserPlus } from "react-icons/fi";
 import axios from "axios";
+
 
 const ProjectDetailsModal = ({ project, onClose }) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [editTask, setEditTask] = useState(null);
+    const [projectMembers, setProjectMembers] = useState([]);
+    const [showAssigneeList, setShowAssigneeList] = useState(null);
+    const [availableMembers, setAvailableMembers] = useState([]);
+    const [selectedAssignees, setSelectedAssignees] = useState([]);
+
 
     useEffect(() => {
         if (editTask) {
@@ -25,6 +31,23 @@ const ProjectDetailsModal = ({ project, onClose }) => {
         }
     }, [editTask]);
 
+    useEffect(() => {
+        const fetchMembers = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                const { data } = await axios.post(`${BACKEND_URL}/api/auth/members-info`, { members: project.members }, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
+                console.log(data);
+                setProjectMembers(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchMembers();
+    }, []);
 
     const [taskForm, setTaskForm] = useState({
         title: "",
@@ -131,6 +154,42 @@ const ProjectDetailsModal = ({ project, onClose }) => {
             alert(message);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const handleSelectAssignee = (memberId) => {
+        setSelectedAssignees((prev) => {
+            if (prev.includes(memberId)) {
+                return prev.filter(id => id !== memberId);
+            } else {
+                return [...prev, memberId];
+            }
+        });
+    }
+
+    const handleAssignSelected = async (taskId) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const { data } = await axios.post(`${BACKEND_URL}/api/task/${taskId}`, {
+                assignees: selectedAssignees
+            }, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
+
+            const { message, task: updatedTask } = data;
+            setTasks((prev) => (
+                prev.map((p) => {
+                    if (p._id == updatedTask._id) return updatedTask;
+                    return p;
+                })
+            ));
+            setAvailableMembers([]);
+            setShowAssigneeList(null);
+        }
+        catch (error) {
+           console.log("Error is Assigning task to assignees",error);
         }
     };
 
@@ -283,17 +342,61 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                             </div>
 
                             <div className="assignees">
-                                {task.assignees?.slice(0, 4).map((u) => (
+                                {task.assignedTo?.slice(0, 4).map((u) => (
                                     <img
                                         key={u._id}
                                         src={u.avatar || `https://i.pravatar.cc/40?u=${u._id}`}
-                                        alt={u.name}
-                                        title={u.name}
                                     />
                                 ))}
-                                <button className="add-assignee">
+                                <button className="add-assignee" onClick={() => {
+                                    const addedMembers = task.assignedTo;
+                                    const availableMembers = projectMembers.filter(m => !addedMembers.includes(m._id));
+                                    setAvailableMembers(availableMembers);
+                                    setShowAssigneeList((prev)=>{
+                                        if(prev==task._id)return null;
+                                        return task._id;
+                                    })
+                                }}>
                                     <FiUserPlus />
                                 </button>
+                                {showAssigneeList==task._id && (
+                                    <div className="assignee-dropdown">
+                                        {availableMembers.length > 0 ? (
+                                            availableMembers.map((m) => (
+                                                <label
+                                                    key={m._id}
+                                                    className="assignee-option"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedAssignees.includes(m._id)}
+                                                        onChange={() => handleSelectAssignee(m._id)}
+                                                    />
+                                                    <img
+                                                        src={m.avatar || `https://i.pravatar.cc/40?u=${m._id}`}
+                                                        alt={m.name}
+                                                    />
+                                                    <div className="assignee-info">
+                                                        <span className="assignee-name">{m.name}</span>
+                                                        <span className="assignee-email">{m.email}</span>
+                                                    </div>
+                                                </label>
+                                            ))
+                                        ) : (
+                                            <div className="no-members">✨ All members are already assigned!</div>
+                                        )}
+                                        {availableMembers.length > 0 && (
+                                            <button
+                                                className="assign-btn"
+                                                onClick={() => handleAssignSelected(task._id)}
+                                                disabled={selectedAssignees.length === 0}
+                                            >
+                                                ➕ Assign Selected
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+
                             </div>
 
                             <div className="task-progress">

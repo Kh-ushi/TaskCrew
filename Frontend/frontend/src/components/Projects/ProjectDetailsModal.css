@@ -1,8 +1,9 @@
+/* 🌌 Overlay */
 .project-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 17, 23, 0.85);
-  backdrop-filter: blur(18px);
+  background: rgba(15, 17, 23, 0.88);
+  backdrop-filter: blur(22px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -11,89 +12,105 @@
   overflow-y: auto;
 }
 
+/* 🪩 Modal Card */
 .project-modal {
-  background: rgba(24, 27, 35, 0.95);
+  background: linear-gradient(145deg, rgba(24, 27, 35, 0.96), rgba(18, 20, 28, 0.96));
   max-width: 1100px;
   width: 100%;
   border-radius: 28px;
-  padding: 2.5rem;
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
-  position: relative;
+  padding: 5rem;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4);
   animation: fadeIn 0.3s ease-in-out;
   color: #f9fafb;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* 🔝 Header */
 .project-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .project-header h2 {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 700;
-  color: #a78bfa;
+  color: #c4b5fd;
 }
 
 .project-header p {
   font-size: 1rem;
-  color: #a1a1aa;
+  color: #9ca3af;
   max-width: 700px;
-  margin-top: 0.3rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
 }
 
 .close-btn {
   background: transparent;
   border: none;
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #a1a1aa;
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+.close-btn:hover {
+  color: #fff;
 }
 
+/* 📅 Meta */
 .project-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   font-size: 0.95rem;
   margin-bottom: 2rem;
   color: #d1d5db;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.2rem 1.8rem;
+  border-radius: 16px;
 }
 
 .project-meta .completion strong {
   color: #22c55e;
 }
 
+/* ➕ Add Task Button */
 .task-control {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
 }
 
 .add-task-btn {
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   color: #fff;
   border: none;
-  padding: 0.8rem 1.6rem;
-  border-radius: 12px;
+  padding: 0.9rem 1.8rem;
+  border-radius: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .add-task-btn:hover {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.7);
   transform: translateY(-2px);
 }
 
 /* 📥 Task Form */
 .task-form {
-  background: rgba(32, 35, 45, 0.8);
-  padding: 1.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2rem;
   border-radius: 20px;
   margin-bottom: 2rem;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .form-group {
@@ -110,10 +127,10 @@
 
 .form-group input,
 .form-group select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 0.7rem;
+  padding: 0.8rem;
   color: #f9fafb;
   font-size: 0.95rem;
 }
@@ -124,50 +141,60 @@
 }
 
 .submit-task-btn {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
   width: 100%;
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   border: none;
-  padding: 0.9rem;
+  padding: 1rem;
   border-radius: 12px;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+.submit-task-btn:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.7);
 }
 
-/* 📋 Tasks Grid */
+/* 📋 Task Cards */
 .tasks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.8rem;
 }
 
 .task-card {
-  background: rgba(32, 35, 45, 0.95);
-  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1.8rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
-  transition: transform 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
 }
 .task-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
 }
 
 .task-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .task-header h3 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
+/* ✅ Status tags */
 .status {
-  padding: 0.3rem 0.7rem;
+  padding: 0.35rem 0.8rem;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
   text-transform: capitalize;
 }
 
@@ -175,34 +202,38 @@
   background: rgba(147, 197, 253, 0.15);
   color: #60a5fa;
 }
-
 .status.in-progress {
   background: rgba(251, 191, 36, 0.15);
   color: #facc15;
 }
-
 .status.completed {
   background: rgba(34, 197, 94, 0.15);
   color: #22c55e;
 }
 
+/* 👤 Assignees */
 .assignees {
   display: flex;
   align-items: center;
-  gap: -0.4rem;
-  margin: 0.8rem 0;
+  margin: 0.8rem 0 1rem 0;
 }
 
 .assignees img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 2px solid #1e2230;
+  margin-left: -10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.assignees img:first-child {
+  margin-left: 0;
 }
 
 .add-assignee {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 2px dashed #8b5cf6;
   background: transparent;
@@ -211,27 +242,188 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-left: -10px;
+  transition: all 0.3s ease;
+}
+.add-assignee:hover {
+  background: rgba(139, 92, 246, 0.1);
 }
 
+
+
+/* 👤 Assignee Dropdown */
+
+/* 📥 Dropdown container - stick to the task card */
+.assignee-dropdown {
+  position: absolute;
+  top: 65%; /* 👈 just below the Add Assignee button */
+  left: 7%;
+  width: 280px;
+  max-height: 220px; /* 🔥 fixed height */
+  overflow-y: auto; /* scroll rest */
+  background: rgba(24, 27, 35, 0.97);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.8rem;
+  z-index: 1000;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  animation: fadeIn 0.25s ease-in-out;
+  transform: translateY(4px);
+}
+
+/* make sure the parent task card is relative so dropdown stays attached */
+.task-card {
+  position: relative;
+}
+
+/* ✏️ Each option */
+.assignee-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  transition: background 0.25s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.assignee-option:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.assignee-option img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  object-fit: cover;
+}
+
+.assignee-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.assignee-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.assignee-email {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+/* ✅ Checkbox */
+.assignee-option input[type="checkbox"] {
+  accent-color: #8b5cf6;
+  transform: scale(1.2);
+}
+
+/* 📭 Empty state */
+.no-members {
+  text-align: center;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  font-style: italic;
+}
+
+/* ➕ Assign button */
+.assign-btn {
+  margin-top: 0.8rem;
+  width: 100%;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border: none;
+  padding: 0.7rem;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.assign-btn:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  box-shadow: 0 0 18px rgba(139, 92, 246, 0.6);
+}
+
+/* ✨ Scrollbar */
+.assignee-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.assignee-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 6px;
+}
+
+
+
+
+/*  */
+
+
+
+
+
+/* 📊 Progress */
 .task-progress {
   background: rgba(255, 255, 255, 0.1);
-  height: 8px;
+  height: 10px;
   border-radius: 10px;
   overflow: hidden;
 }
 
 .task-progress-bar {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
   height: 100%;
-  transition: width 0.3s ease;
+  transition: width 0.4s ease;
+  border-radius: 10px;
 }
 
 .task-completion {
   font-size: 0.85rem;
   color: #9ca3af;
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
+  text-align: right;
 }
 
+/* ✏️ Task Actions */
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.task-icon {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.task-icon.edit {
+  color: #60a5fa;
+}
+.task-icon.delete {
+  color: #ef4444;
+}
+
+.task-icon:hover {
+  transform: scale(1.15);
+}
+.task-icon.edit:hover {
+  color: #3b82f6;
+}
+.task-icon.delete:hover {
+  color: #dc2626;
+}
+
+/* 🪩 Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -243,42 +435,4 @@
   }
 }
 
-.task-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
 
-.task-icon {
-  background: transparent;
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.task-icon.edit {
-  color: #60a5fa;
-}
-
-.task-icon.delete {
-  color: #ef4444;
-}
-
-.task-icon:hover {
-  transform: scale(1.15);
-}
-
-.task-icon.edit:hover {
-  color: #3b82f6;
-}
-
-.task-icon.delete:hover {
-  color: #dc2626;
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
