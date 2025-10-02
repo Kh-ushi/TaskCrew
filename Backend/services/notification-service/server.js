@@ -113,13 +113,33 @@ subscriber.subscribe("notifications", async (message) => {
 
     if (event?.event == 'Space:MembersAdd') {
         const { space, members } = event;
-        members.forEach((member) => {
-            const room = `user:${member}`;
-            io.to(room).emit("notification", {
-                message: `You Have Been Invited to Join Sapce ${space.name}`,
-                spaceId: space._id
-            })
-        });
+        for (const member of members) {
+            if (member.toString() !== space.ownerId.toString()) {
+                const notif = await Notification.create({
+                    recipient: member,
+                    message: `You Have Been Invited to Join Space ${space.name}`,
+                    type: "Space:MembersAdded",
+                    entity: space._id,
+                    entityModel: "Space",
+                    join: true
+                });
+
+
+                const room = `user:${member}`;
+                console.log("Emitting to room:", room);
+
+                io.to(room).emit("notification", {
+                    message: `You Have Been Invited to Join Space ${space.name}`,
+                    type: "Space:MembersAdded",
+                    entity: space._id,
+                    entityModel: "Space",
+                    join: true,
+                    read: false,
+                    createdAt: new Date(),
+                    _id: notif._id
+                });
+            }
+        }
     }
 
     if (event?.event == 'Space:MembersDelete') {

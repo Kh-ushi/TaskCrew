@@ -104,6 +104,42 @@ const Navbar = () => {
     }
   }
 
+  const addToSpace=async(notif)=>{
+    try{
+      const token=localStorage.getItem("accessToken");
+      const {data}=await axios.get(`${BACKEND_URL}/api/space/accept-invite/${notif.entity}`,{
+        headers:{
+          authorization:`Bearer ${token}`
+        }
+      });
+      console.log(data);
+      const resp = await axios.put(
+        `${BACKEND_URL}/api/notifications/mark-as-read/${notif._id}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      console.log(resp.data.message);
+
+      const { message } = data;
+      alert(message);
+      bumpGlobalVersion();
+
+      setNotifications((prev) => (
+        prev.filter(p => p.entity !== notif.entity)
+      ));
+
+    }
+    catch(error){
+      console.log("Error joining space:",error);
+    }
+
+  }
+
   const resolveNotification = (notif) => {
 
     const entityModel = notif.entityModel;
@@ -111,6 +147,12 @@ const Navbar = () => {
       case "Organization":
         addToOrganization(notif);
         break;
+      case "Space":
+        addToSpace(notif);
+        break;
+      // case "Task":
+      //   window.location.href=`/task/${notif.entity}`;
+      //   break;
       // case "Project":
       //   window.location.href=`/project/${notif.entity}`;
       //   break;

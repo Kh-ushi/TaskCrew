@@ -24,7 +24,7 @@ function App() {
         <Route path='/login' element={<Login></Login>}></Route>
         <Route path='/organizations' element={<ProtectedRoute><Organizations></Organizations></ProtectedRoute>}></Route>
         <Route path='/organizations/:id' element={<ProtectedRoute><Spaces></Spaces></ProtectedRoute>}></Route>
-        <Route path='/space/:id' element={<SingleSpace></SingleSpace>}></Route>
+        <Route path='/space/:id' element={<ProtectedRoute><SingleSpace></SingleSpace></ProtectedRoute>}></Route>
       </Routes>
     </Router>
   )

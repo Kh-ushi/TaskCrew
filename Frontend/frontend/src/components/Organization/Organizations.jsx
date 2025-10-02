@@ -221,7 +221,7 @@ const Organizations = () => {
             </button>
 
             {isModelOpen && <CreateOrganizationModal isOpen={isModelOpen} onClose={() => { setIsModalOpen(false) }} onSubmit={!editOrg ? handleCreateOrg : handleEditOrg} editOrg={editOrg}></CreateOrganizationModal>}
-            {openAddMemberModal && <AddMemberModal isOpen={openAddMemberModal} onClose={() => setOpenAddMemberModal(false)} onSubmit={handleInviteMembers}></AddMemberModal>}
+            {openAddMemberModal && <AddMemberModal isOpen={openAddMemberModal} onClose={() => setOpenAddMemberModal(false)} onSubmit={handleInviteMembers} entityType="organization" entity={organization}></AddMemberModal>}
         </div>
     );
 };

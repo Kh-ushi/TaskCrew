@@ -1,5 +1,5 @@
 import express from "express";
-import {allSpaces,getSpace,createSpace, editSpace, deleteSpace,inviteMembers,deleteMember } from "../controllers/space.controller.js";
+import {allSpaces,getSpace,createSpace, editSpace, deleteSpace,inviteMembers,deleteMember,acceptInvite} from "../controllers/space.controller.js";
 import { spaceSchema } from "../validations/spaceSchema.js";
 import validateRequest from "../middlewares/validationRequest.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -22,8 +22,12 @@ router
 .delete(deleteSpace)
 
 router
-    .route("/invite/:spaceId")
+    .route("/invite-members/:spaceId")
     .post(inviteMembers)
     .delete(deleteMember)
+
+router
+     .route("/accept-invite/:spaceId")
+     .get(acceptInvite)    
 
 export default router;

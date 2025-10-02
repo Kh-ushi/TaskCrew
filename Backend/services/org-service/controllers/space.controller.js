@@ -169,6 +169,8 @@ const inviteMembers = async (req, res) => {
         const { userId } = req.user;
 
         const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
+        const missingEmails = emails.filter(email => !existingUsers.some(user => user.email === email));
+
         const existingIds = existingUsers.map(u => u._id);
 
         const space = await Space.findById(spaceId);
@@ -181,9 +183,10 @@ const inviteMembers = async (req, res) => {
 
         res.status(200).json({
             message: "Inviations sent succesfully",
-            sent: existingUsers
+            sent: existingUsers,
+            missing: missingEmails,
+            space
         });
-
 
     }
     catch (error) {
@@ -229,4 +232,29 @@ const deleteMember = async (req, res) => {
     }
 };
 
-export { allSpaces, getSpace, createSpace, editSpace, deleteSpace, inviteMembers, deleteMember };
+
+const acceptInvite = async (req, res) => {
+    try{
+
+        const { spaceId } = req.params;
+        const { userId } = req.user;
+        const space = await Space.findById(spaceId);
+        if(!space){
+            return res.status(404).json({message:"Space not found"});
+        }
+        const isMember = space.members.some(m => m.userId.toString() === userId);
+        if(isMember){
+            return res.status(400).json({message:"You are already a member of this space"});
+        }
+        space.members.push({userId});
+        await space.save();
+
+        res.status(200).json({message:"You have successfully joined the space",space});
+    }
+    catch(error){
+        console.error("❌ Error accepting invite:", error);
+        return res.status(500).json({message:"Internal Server Error"});
+    }
+}
+
+export { allSpaces, getSpace, createSpace, editSpace, deleteSpace, inviteMembers, deleteMember, acceptInvite };

@@ -16,6 +16,7 @@ const notificationSchema=new mongoose.Schema({
       type: String,
       enum: [
         "Org:MembersAdded",
+        "Space:MembersAdded",
         "Task:Assigned",
         "Project:Deadline",
         "Comment:Mention",
@@ -30,7 +31,7 @@ const notificationSchema=new mongoose.Schema({
     },
     entityModel: {
       type: String,
-      enum: ["Organization", "Task", "Project", "Comment"],
+      enum: ["Organization", "Space", "Task", "Project", "Comment"],
     },
     join:{
       type:Boolean,

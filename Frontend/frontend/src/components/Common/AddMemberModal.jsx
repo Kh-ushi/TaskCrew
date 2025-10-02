@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./AddMemberModal.css";
 import { FiX, FiPlus, FiTrash2 } from "react-icons/fi";
 
-const AddMemberModal = ({ isOpen, onClose, onSubmit }) => {
+const AddMemberModal = ({ isOpen, onClose, onSubmit ,entityType, entity}) => {
   const [email, setEmail] = useState("");
   const [members, setMembers] = useState([]);
 
@@ -26,12 +26,24 @@ const AddMemberModal = ({ isOpen, onClose, onSubmit }) => {
 
   if (!isOpen) return null;
 
+  let entityName="";
+  switch (entityType) {
+    case "organization":
+      entityName = entity.name;
+      break;
+    case "space":
+      entityName = entity.name;
+      break;
+    default:
+      break;
+  }
+
   return (
     <div className="addmember-overlay" onClick={onClose}>
       <div className="addmember-modal" onClick={(e) => e.stopPropagation()}>
         {/* ✨ Header */}
         <div className="addmember-header">
-          <h2>Invite Members</h2>
+          <h2>{`Invite Members to ${entityName}`}</h2>
           <button className="close-btn" onClick={onClose}>
             <FiX />
           </button>

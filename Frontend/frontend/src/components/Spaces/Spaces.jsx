@@ -3,22 +3,27 @@ import "./Spaces.css";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { FiPlus, FiUsers, FiFolder, FiCalendar, FiMoreHorizontal, FiArrowRight, FiTrash2, FiEdit } from "react-icons/fi";
-import { useParams,useNavigate} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import CreateSpaceModal from "./CreateSpaceModal";
+import AddMemberModal from "../Common/AddMemberModal";
+import { useOrgGlobalVersion } from "../../context/OrgRefreshContext";
 
 
 const Spaces = () => {
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const version = useOrgGlobalVersion();
 
   const [spaces, setSpaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isSpaceModalOpen, setIsSpaceModalOpen] = useState(false);
   const [editSpace, setEditSpace] = useState(null);
+  const [openAddMemberModal, setOpenAddMemberModal] = useState(false);
+  const [space, setSpace] = useState(null);
 
 
   const { id } = useParams();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -36,7 +41,7 @@ const Spaces = () => {
       }
     };
     fetchSpaces();
-  }, []);
+  }, [version]);
 
   const handleCreateSpace = async (payload) => {
     console.log("Create Space clicked");
@@ -104,16 +109,43 @@ const Spaces = () => {
         }
       });
       const { space, message } = data;
-      setSpaces((prev)=>(
-        prev.filter((p)=>p._id!==space._id)
+      setSpaces((prev) => (
+        prev.filter((p) => p._id !== space._id)
       ));
       alert(message);
     }
     catch (error) {
-       console.log(error);
+      console.log(error);
       console.error("❌ Error Deleting Space:", error.response?.data || error.message);
     }
   };
+
+
+  const handleInviteMembers = async (members) => {
+    console.log("Invite members to space:", members);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const { data } = await axios.post(`${BACKEND_URL}/api/space/invite-members/${space._id}`,
+        { emails: members },
+        {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log(data);
+      const { message, sent, missing } = data;
+      alert(
+        `✅ ${message}\n\n` +
+        `📩 Invited Members:\n- ${sent.map(s => s.email).join("\n- ")}\n\n` +
+        `⚠️ Missing (not part of this organization):\n- ${missing.join("\n- ")}`
+      );
+
+      setOpenAddMemberModal(false);
+    } catch (error) {
+      console.error("❌ Error inviting members:", error.response?.data || error.message);
+    }
+  }
 
   const handleView = (space) => {
     // navigate to /spaces/:id or open details
@@ -209,10 +241,13 @@ const Spaces = () => {
               </div>
 
               <div className="space-actions">
-                <button className="btn primary" onClick={()=>navigate(`/space/${sp._id}`)}>
+                <button className="btn primary" onClick={() => navigate(`/space/${sp._id}`)}>
                   Enter
                 </button>
-                <button className="btn ghost" onClick={() => handleManage(sp)}>
+                <button className="btn ghost" onClick={() => {
+                  setOpenAddMemberModal(true)
+                  setSpace(sp)
+                }}>
                   +Add Members
                 </button>
                 <button className="delete-org" onClick={() => handleDelete(sp._id)}>
@@ -238,6 +273,7 @@ const Spaces = () => {
       </button>
 
       {isSpaceModalOpen && <CreateSpaceModal isOpen={isSpaceModalOpen} onClose={() => { setIsSpaceModalOpen(false) }} onSubmit={editSpace ? handleEdit : handleCreateSpace} editSpace={editSpace} ></CreateSpaceModal>}
+      {openAddMemberModal && <AddMemberModal isOpen={openAddMemberModal} onClose={() => setOpenAddMemberModal(false)} onSubmit={handleInviteMembers} entityType="space" entity={space}></AddMemberModal>}
     </div>
   );
 };

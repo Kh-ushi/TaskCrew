@@ -49,9 +49,9 @@
   background: rgba(139, 92, 246, 0.08);
 } */
 
-.notif-item:hover {
-  /* background: rgba(139, 92, 246); */
-}
+/* .notif-item:hover {
+  background: rgba(139, 92, 246);
+} */
 
 .notif-item p {
   margin: 0;
