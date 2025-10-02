@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AddProjectMembersModal.css";
 import axios from "axios";
 
-const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId ,onAdd}) => {
+const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId, onAdd }) => {
 
     const [members, setMembers] = useState([]);
     const [selected, setSelected] = useState([]);
@@ -19,8 +19,10 @@ const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId ,onAdd}) => 
                         authorization: `Bearer ${token}`
                     }
                 });
-                data=data.filter(m=>!project.members.includes(m._id));//Changes need to be done when populated
-                // console.log(project);
+                console.log(data);
+                data = data.map(m => m.userId);
+                data = data.filter(m => !project.members.includes(m._id));
+                // console.log(data);
                 setMembers(data);
             } catch (error) {
                 console.log(error);
@@ -35,7 +37,8 @@ const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId ,onAdd}) => 
     };
 
     const handleAdd = async () => {
-      onAdd(selected);
+        console.log("Adding members:", selected);
+        onAdd(selected);
     };
 
 
@@ -52,8 +55,8 @@ const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId ,onAdd}) => 
                                 onChange={() => toggleSelect(m._id)}>
                             </input>
                             <img src={m.avatar || "https://i.pravatar.cc/40"} className="avatar" />
-                            <span>{m.userId.name}</span>
-                            <small>{m.userId.email}</small>
+                            <span>{m.name}</span>
+                            <small>{m.email}</small>
                         </label>
                     ))
                 }

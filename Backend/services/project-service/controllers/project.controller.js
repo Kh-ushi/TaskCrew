@@ -5,12 +5,13 @@ const getAllProjects = async (req, res) => {
     try {
         const { spaceId } = req.params;
         const { userId } = req.user;
+        console.log(userId);
 
         const projects = await Project.find({
             spaceId,
             $or: [
                 { ownerId: userId },
-                { members: userId }
+                { members: userId.toString() }
             ]
         });
 
