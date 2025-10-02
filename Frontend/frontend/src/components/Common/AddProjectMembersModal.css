@@ -1,0 +1,191 @@
+/* 🌌 Fullscreen Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 17, 23, 0.85);
+  backdrop-filter: blur(18px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 4rem 2rem;
+  z-index: 10000;
+  animation: fadeIn 0.25s ease-in-out;
+  overflow-y: auto;
+}
+
+/* 📦 Modal Card */
+.modal-card {
+  background: rgba(24, 27, 35, 0.95);
+  width: 550px;
+  max-width: 95%;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: slideUp 0.3s ease;
+  color: #f9fafb;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+}
+
+.modal-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #a78bfa;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* 👤 Members List */
+.members-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-right: 0.5rem;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.3s ease, border 0.3s ease;
+}
+
+.member-item:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.member-item input {
+  transform: scale(1.2);
+  accent-color: #8b5cf6;
+  cursor: pointer;
+}
+
+.member-item img.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+.member-item span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.member-item small {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  display: block;
+}
+
+/* 📤 Actions */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.cancel-btn,
+.add-btn {
+  padding: 0.9rem 1.6rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a1a1aa;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border: none;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.7);
+}
+
+.add-btn:disabled {
+  background: rgba(139, 92, 246, 0.3);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ✨ Scrollbar Styling */
+.members-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.members-list::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.4);
+  border-radius: 6px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .modal-card {
+    width: 100%;
+    padding: 2rem;
+  }
+
+  .member-item img.avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .cancel-btn,
+  .add-btn {
+    width: 100%;
+  }
+}
+
+/* ✨ Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

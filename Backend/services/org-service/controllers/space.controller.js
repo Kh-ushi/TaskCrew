@@ -13,7 +13,8 @@ const allSpaces = async (req, res) => {
                 { ownerId: req.user.userId },
                 { "members.userId": req.user.userId }
             ]
-        });
+        }).populate('members.userId').populate("ownerId");
+
         res.status(200).json(allSpaces);
     }
     catch (error) {
@@ -31,6 +32,18 @@ const getSpace = async (req, res) => {
     catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Failed to fetch the space" });
+    }
+}
+
+const getAllMembers = async (req, res) => {
+    try {
+        const { spaceId } = req.params;
+        const space = await Space.findById(spaceId).populate("members.userId");
+        res.status(200).json(space.members);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to fetch space members" });
     }
 }
 
@@ -257,4 +270,4 @@ const acceptInvite = async (req, res) => {
     }
 }
 
-export { allSpaces, getSpace, createSpace, editSpace, deleteSpace, inviteMembers, deleteMember, acceptInvite };
+export { allSpaces, getSpace, getAllMembers,createSpace, editSpace, deleteSpace, inviteMembers, deleteMember, acceptInvite };

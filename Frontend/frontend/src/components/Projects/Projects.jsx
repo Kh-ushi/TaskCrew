@@ -4,6 +4,7 @@ import axios from "axios";
 import { FiMoreVertical, FiPlus, FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
 import CreateProjectModal from "./CreateProjectModal";
 import ProjectDetailsModal from "./ProjectDetailsModal";
+import AddProjectMembersModal from "../Common/AddProjectMembersModal";
 
 const Projects = ({ spaceId }) => {
 
@@ -15,6 +16,7 @@ const Projects = ({ spaceId }) => {
   const [editProject,setEditProject]=useState(null);
   const [openProjectDetails,setOpenProjectDetails]=useState(false);
   const [project,setProject]=useState(null);
+  const [openAddMembersModal,setOpenAddMembersModal]=useState(false);
   
   useEffect(() => {
     const fetchAllProjects = async () => {
@@ -98,6 +100,30 @@ const Projects = ({ spaceId }) => {
     }
   }
 
+
+  const handleAddMembers=async(members)=>{
+     try {
+            console.log("Adding members:", members);
+            const token = localStorage.getItem("accessToken");
+            const data=await axios.post(
+                `${BACKEND_URL}/api/project/${project._id}`,
+                { members},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const{message,project}=data;
+            setProjects((prev)=>(
+              prev.map((p)=>{
+                if(p._id==project._id)return project;
+                return p;
+              })
+            ));
+            alert(message);
+            setOpenAddMembersModal(false);
+        } catch (error) {
+            console.error("Error adding members:", error);
+            alert("❌ Failed to add members");
+        }
+  };
 
 
   
@@ -183,6 +209,8 @@ const Projects = ({ spaceId }) => {
                   </button>
                   <button  onClick={(e)=>{
                       e.stopPropagation();
+                      setOpenAddMembersModal(true);
+                      setProject(p);
                   }}>
                     <FiUserPlus /> Add Members
                   </button>
@@ -225,6 +253,10 @@ const Projects = ({ spaceId }) => {
       }
       {
         openProjectDetails && <ProjectDetailsModal project={project} onClose={()=>setOpenProjectDetails(false)}></ProjectDetailsModal>
+      }
+
+      {
+        openAddMembersModal && <AddProjectMembersModal isOpen={openAddMembersModal} onClose={()=>setOpenAddMembersModal(false)} project={project} spaceId={spaceId}  onAdd={handleAddMembers}></AddProjectMembersModal>
       }
     </div>
   );
