@@ -14,7 +14,7 @@ const AddProjectMembersModal = ({ isOpen, onClose, project, spaceId ,onAdd}) => 
 
         const fetchMembers = async () => {
             try {
-                const { data } = await axios.get(`${BACKEND_URL}/api/space/${spaceId}/members`, {
+                let { data } = await axios.get(`${BACKEND_URL}/api/space/${spaceId}/members`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }

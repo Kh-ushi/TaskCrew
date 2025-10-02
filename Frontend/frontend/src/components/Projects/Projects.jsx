@@ -101,29 +101,34 @@ const Projects = ({ spaceId }) => {
   }
 
 
-  const handleAddMembers=async(members)=>{
-     try {
-            console.log("Adding members:", members);
-            const token = localStorage.getItem("accessToken");
-            const data=await axios.post(
-                `${BACKEND_URL}/api/project/${project._id}`,
-                { members},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const{message,project}=data;
-            setProjects((prev)=>(
-              prev.map((p)=>{
-                if(p._id==project._id)return project;
-                return p;
-              })
-            ));
-            alert(message);
-            setOpenAddMembersModal(false);
-        } catch (error) {
-            console.error("Error adding members:", error);
-            alert("❌ Failed to add members");
-        }
-  };
+  const handleAddMembers = async (members) => {
+  try {
+    console.log("Adding members:", members);
+    const token = localStorage.getItem("accessToken");
+
+    const { data } = await axios.post(
+      `${BACKEND_URL}/api/project/${project._id}`,
+      { members },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    console.log(data);
+    const { message, project: updatedProject } = data;
+
+    console.log(updatedProject);
+
+    setProjects((prev) =>
+      prev.map((p) => (p._id === updatedProject._id ? updatedProject : p))
+    );
+
+    alert(message);
+    setOpenAddMembersModal(false);
+  } catch (error) {
+    console.error("Error adding members:", error);
+    alert("❌ Failed to add members");
+  }
+};
+
 
 
   
