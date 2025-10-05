@@ -6,12 +6,22 @@ import axios from "axios";
 
 const ProjectDetailsModal = ({ project, onClose }) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+     const [taskForm, setTaskForm] = useState({
+        title: "",
+        startDate: "",
+        endDate: "",
+        priority: "medium",
+        status: "to-do",
+    });
+    const [tasks, setTasks] = useState([]);
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [editTask, setEditTask] = useState(null);
     const [projectMembers, setProjectMembers] = useState([]);
     const [showAssigneeList, setShowAssigneeList] = useState(null);
     const [availableMembers, setAvailableMembers] = useState([]);
     const [selectedAssignees, setSelectedAssignees] = useState([]);
+    const [metrics,setMetrics]=useState({});
 
 
     useEffect(() => {
@@ -49,15 +59,26 @@ const ProjectDetailsModal = ({ project, onClose }) => {
         fetchMembers();
     }, []);
 
-    const [taskForm, setTaskForm] = useState({
-        title: "",
-        startDate: "",
-        endDate: "",
-        priority: "medium",
-        status: "to-do",
-    });
-    const [tasks, setTasks] = useState([]);
+    useEffect(() => {
 
+        const fetchMetrics = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                const { data } = await axios.get(`${BACKEND_URL}/api/metrics/${project._id}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
+                setMetrics(data);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        };
+        fetchMetrics();
+    }, [tasks]);
+
+   
     useEffect(() => {
 
         const fetchTasks = async () => {
@@ -189,7 +210,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
             setShowAssigneeList(null);
         }
         catch (error) {
-           console.log("Error is Assigning task to assignees",error);
+            console.log("Error is Assigning task to assignees", error);
         }
     };
 
@@ -212,8 +233,17 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                 <div className="project-meta">
                     <div>📅 Start: {new Date(project.startDate).toLocaleDateString()}</div>
                     <div>📅 End: {new Date(project.endDate).toLocaleDateString()}</div>
+                     <div className="completion">
+                         Total: <strong  style={{color:""}}>{metrics.total}</strong>
+                    </div>
                     <div className="completion">
-                        ✅ Completion: <strong>{project.completion || 0}%</strong>
+                         Done: <strong  style={{color:""}}>{metrics.done}</strong>
+                    </div>
+                    <div className="completion">
+                        ✅ Completion: <strong>{metrics.completionRate}%</strong>
+                    </div>
+                     <div className="completion">
+                        overdue: <strong  style={{color:"red"}}>{metrics.overdueRate}%</strong>
                     </div>
                 </div>
 
@@ -299,7 +329,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                                 >
                                     <option value="to-do">To-do</option>
                                     <option value="in-progress">In-progress</option>
-                                    <option value="completed">Completed</option>
+                                    <option value="done">Completed</option>
                                 </select>
                             </div>
                         </div>
@@ -352,14 +382,14 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                                     const addedMembers = task.assignedTo;
                                     const availableMembers = projectMembers.filter(m => !addedMembers.includes(m._id));
                                     setAvailableMembers(availableMembers);
-                                    setShowAssigneeList((prev)=>{
-                                        if(prev==task._id)return null;
+                                    setShowAssigneeList((prev) => {
+                                        if (prev == task._id) return null;
                                         return task._id;
                                     })
                                 }}>
                                     <FiUserPlus />
                                 </button>
-                                {showAssigneeList==task._id && (
+                                {showAssigneeList == task._id && (
                                     <div className="assignee-dropdown">
                                         {availableMembers.length > 0 ? (
                                             availableMembers.map((m) => (

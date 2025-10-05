@@ -1,5 +1,6 @@
-import Task from "../models/Task";
-import Project from "../models/Project";
+import Task from "../models/Task.js";
+import Project from "../models/Project.js";
+import mongoose from "mongoose";
 
 
 const calculateSpaceMterics = async (req, res) => {
@@ -182,7 +183,10 @@ const calculateSpaceMtericsDeep = async (req, res) => {
 
 const calcProjectMetrics = async (req, res) => {
     try {
+
+        // console.log("Project Metrics");
         const projectId = new mongoose.Types.ObjectId(req.params.projectId);
+
         const now = new Date();
         const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
@@ -191,14 +195,19 @@ const calcProjectMetrics = async (req, res) => {
             { $group: { _id: "$status", count: { $sum: 1 } } }
         ]);
 
+        // console.log(statusBuckets);
+
         const total = statusBuckets?.reduce((s, x) => s + x.count, 0) || 0;
         const doneCount = statusBuckets?.find(x => x._id === "done")?.count || 0;
 
-        // This + in front of the parentheses is a unary plus operator.
-        // It converts the string returned by .toFixed(1) back into a number.
+
+        // // This + in front of the parentheses is a unary plus operator.
+        // // It converts the string returned by .toFixed(1) back into a number.
         const completionRate = total ? +(doneCount / total * 100).toFixed(1) : 0;
 
-        const [overdueAgg] = await Task.aggregate([
+        // console.log(completionRate);
+
+        const [overdueAgg]= await Task.aggregate([
             {
                 $match: {
                     projectId,
@@ -212,8 +221,13 @@ const calcProjectMetrics = async (req, res) => {
             { $count: "overdue" }
         ]);
 
+        // console.log(overdueAgg);
+
+
         const overdue = overdueAgg?.overdue || 0;
         const overdueRate = total ? +(overdue / total * 100).toFixed(1) : 0;
+
+        // console.log(overdueRate);
 
 
         const velocity = await Task.aggregate([
@@ -234,18 +248,19 @@ const calcProjectMetrics = async (req, res) => {
             { $group: { _id: null, avgDays: { $avg: "$d" } } }
         ]);
 
+        // console.log(lead);
+
         res.status(200).json({
             total, done: doneCount, completionRate,
             overdue, overdueRate,
-            velocity,                            // array of { _id: weekNumber, weekStart, done }
+            velocity, 
             leadTimeAvgDays: lead ? +lead.avgDays.toFixed(2) : null
         });
 
-
     }
     catch (error) {
+        console.log(error);
         res.status(500).json(error, "Internal Server error");
-
     }
 };
 

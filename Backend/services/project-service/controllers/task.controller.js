@@ -61,6 +61,7 @@ const createTask = async (req, res) => {
       priority,
       startDate,
       endDate: endDate || null,
+      completedAt: status == "done" ? new Date() : null
     });
 
     return res.status(201).json({
@@ -82,6 +83,13 @@ const editTask = async (req, res) => {
     const { taskId } = req.params;
     const { userId } = req.user;
     const updates = req.body;
+    
+    if(updates?.status=="done" && updates.completedAt==null){
+      updates.completedAt=new Date()
+    }
+    if(updates.status=="to-do" || updates.status=="in-progress"){
+      updates.completedAt=null
+    }
 
     const task = await Task.findById(taskId);
     if (!task) {
@@ -261,8 +269,8 @@ const updateTaskStatus = async (req, res) => {
 
     const prev = task.status;
     task.status = status;
-    if(status=="done"){
-      task.completedAt=new Date();
+    if (status == "done") {
+      task.completedAt = new Date();
     }
     const updated = await task.save();
 

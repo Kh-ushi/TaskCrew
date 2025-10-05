@@ -72,6 +72,17 @@ app.use(
     })
 )
 
+app.use(
+    "/api/metrics",
+    createProxyMiddleware({
+        target:PROJECT_URL,
+        changeOrigin:true,
+         pathRewrite:{"":"/metrics"},
+        cookieDomainRewrite:{"*":""},
+        logLevel:"debug"
+    })
+)
+
 // -----------------------------------------
 
 app.use(

@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDb from "./config/db.js";
 import projectRoutes from "./routes/project.route.js";
 import taskRoutes from "./routes/task.route.js";
+import metricsRoute from "./routes/metrics.route.js";
 
 dotenv.config();
 const app=express();
@@ -14,6 +15,7 @@ app.use(express.urlencoded({extended:true}));
 
 app.use("/project",projectRoutes);
 app.use("/task",taskRoutes);
+app.use("/metrics",metricsRoute);
 
 
 const startServer=async()=>{
