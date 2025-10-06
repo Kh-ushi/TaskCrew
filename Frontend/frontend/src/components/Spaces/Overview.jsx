@@ -4,35 +4,35 @@ import { FiFolder, FiList, FiClock, FiCheckCircle, FiTrendingUp, FiCalendar } fr
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import ManageProjects from './ManageProjects';
 
-const Overview = () => {
+const Overview = ({projectMetrics}) => {
 
-
+    console.log(projectMetrics);
 
     const cards = [
         {
             title: "Total Projects",
-            value: 42,
+            value:projectMetrics?.projectsTotal||0,
             sub: "Compare 35 (last month)",
             icon: <FiFolder />,
             gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
         },
         {
             title: "To-Do",
-            value: 12,
+            value: projectMetrics?.projectBuckets?.["to-do"]||0,
             sub: "Compare 9 (last month)",
             icon: <FiList />,
             gradient: "linear-gradient(135deg, #3b82f6, #2563eb)",
         },
         {
             title: "In Progress",
-            value: 18,
+            value:projectMetrics?.projectBuckets?.["in-progress"]||0,
             sub: "Compare 15 (last month)",
             icon: <FiClock />,
             gradient: "linear-gradient(135deg, #f59e0b, #d97706)",
         },
         {
             title: "Completed",
-            value: 12,
+            value:projectMetrics?.projectBuckets?.completed||0,
             sub: "Compare 11 (last month)",
             icon: <FiCheckCircle />,
             gradient: "linear-gradient(135deg, #22c55e, #16a34a)",

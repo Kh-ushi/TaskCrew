@@ -207,7 +207,7 @@ const calcProjectMetrics = async (req, res) => {
 
         // console.log(completionRate);
 
-        const [overdueAgg]= await Task.aggregate([
+        const [overdueAgg] = await Task.aggregate([
             {
                 $match: {
                     projectId,
@@ -253,7 +253,7 @@ const calcProjectMetrics = async (req, res) => {
         res.status(200).json({
             total, done: doneCount, completionRate,
             overdue, overdueRate,
-            velocity, 
+            velocity,
             leadTimeAvgDays: lead ? +lead.avgDays.toFixed(2) : null
         });
 
@@ -265,4 +265,153 @@ const calcProjectMetrics = async (req, res) => {
 };
 
 
-export { calculateSpaceMterics, calcProjectMetrics, calculateSpaceMtericsDeep };
+const overAllProjectMetrics = async (req, res) => {
+
+    try {
+
+        const { spaceId } = req.params;
+        const now = new Date();
+
+        const [out] = await Project.aggregate([
+            { $match: { spaceId } },
+            {
+                $lookup: {
+                    from: "tasks",
+                    let: { pid: "$_id" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$projectId", "$$pid"] } } },
+                        { $project: { status: 1, startDate: 1, endDate: 1, completedAt: 1, createdAt: 1 } }
+                    ],
+                    as: "tasks"
+                }
+            },
+            {
+                $facet: {
+                    totalProjects: [{ $count: "projectsTotal" }],
+                    projCounts: [{ $group: { _id: "$state", count: { $sum: 1 } } }],
+                    taskBuckets: [
+                        { $unwind: { path: "$tasks", preserveNullAndEmptyArrays: false } },
+                        {
+                            $group: {
+                                _id: {
+                                    $switch: {
+                                        branches: [
+                                            { case: { $eq: ["$tasks.status", "done"] }, then: "completed" },
+                                            { case: { $in: ["$tasks.status", ["in-progress", "review"]] }, then: "inProgress" }
+                                        ],
+                                        default: "todo"
+                                    }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ],
+                    taskTotals: [
+                        {
+                            $project: {
+                                tcount: { $size: { $ifNull: ["$tasks", []] } },
+                                overdue: {
+                                    $size: {
+                                        $filter: {
+                                            input: { $ifNull: ["$tasks", []] },
+                                            as: "t",
+                                            cond: {
+                                                $and: [
+                                                    { $ne: ["$$t.status", "done"] },
+                                                    { $ne: ["$$t.endDate", null] },
+                                                    { $lt: ["$$t.endDate", now] }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                tasksTotal: { $sum: "$tcount" },
+                                overdueTasks: { $sum: "$overdue" }
+                            }
+                        }
+                    ],
+
+                }
+            },
+            {
+                $project: {
+                    projectsTotal: {
+                        $ifNull: [{ $arrayElemAt: ["$totalProjects.projectsTotal", 0] }, 0]
+                    },
+                    projectBuckets: {
+                        $arrayToObject: {
+                            $map: { input: "$projCounts", as: "p", in: ["$$p._id", "$$p.count"] }
+                        }
+                    },
+                    taskBuckets: {
+                        $arrayToObject: {
+                            $map: { input: "$taskBuckets", as: "b", in: ["$$b._id", "$$b.count"] }
+                        }
+                    },
+                    totalTasks: { $ifNull: [{ $arrayElemAt: ["$taskTotals.tasksTotal", 0] }, 0] },
+                    overdueTasks: { $ifNull: [{ $arrayElemAt: ["$taskTotals.overdueTasks", 0] }, 0] }
+                }
+            },
+            {
+                $addFields: {
+                    todo: { $ifNull: ["$taskBuckets.todo", 0] },
+                    inProgress: { $ifNull: ["$taskBuckets.inProgress", 0] },
+                    completed: { $ifNull: ["$taskBuckets.completed", 0] },
+                    completionRate: {
+                        $cond: [
+                            { $gt: ["$totalTasks", 0] },
+                            {
+                                $round: [
+                                    {
+                                        $multiply: [
+                                            { $divide: ["$taskBuckets.completed", "$totalTasks"] },
+                                            100
+                                        ]
+                                    },
+                                    1
+                                ]
+                            },
+                            0
+                        ]
+                    }
+                }
+            },
+
+
+            {
+                $project: {
+                    projectsTotal: 1,
+                    projectBuckets: 1,
+                    totalTasks: 1,
+                    todo: 1,
+                    inProgress: 1,
+                    completed: 1,
+                    completionRate: 1,
+                    overdueTasks: 1
+                }
+            }
+        ]);
+
+
+        res.json(out || {
+            projectsTotal: 0, projectBuckets: {}, totalTasks: 0,
+            todo: 0, inProgress: 0, completed: 0, completionRate: 0, overdueTasks: 0
+        });
+
+    }
+
+    catch (error) {
+        console.log(error);
+        res.status(500).json(error, "Internal Server error");
+    }
+}
+
+
+
+
+export { calculateSpaceMterics, calcProjectMetrics, calculateSpaceMtericsDeep, overAllProjectMetrics };
