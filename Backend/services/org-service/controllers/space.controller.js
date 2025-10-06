@@ -70,6 +70,9 @@ const createSpace = async (req, res) => {
             ownerId: req.user.userId,
         });
 
+        await newSpace.populate("members.userId");
+        await newSpace.populate("ownerId");
+
         redisClient.publish("notifications", JSON.stringify({
             event: "Space:MembersAdd",
             space: newSpace,
@@ -118,6 +121,9 @@ const editSpace = async (req, res) => {
                 $pull: { members: { userId: { $in: removedUserIds } } }
             },
             { new: true });
+
+        await updatedSpace.populate("members.userId");
+        await updatedSpace.populate("ownerId");
 
         redisClient.publish("notifications", JSON.stringify({
             event: "Space:MembersAdd",
@@ -181,23 +187,32 @@ const inviteMembers = async (req, res) => {
         const { spaceId } = req.params;
         const { userId } = req.user;
 
-        const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
-        const missingEmails = emails.filter(email => !existingUsers.some(user => user.email === email));
 
+        const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
         const existingIds = existingUsers.map(u => u._id);
 
         const space = await Space.findById(spaceId);
 
+        const memberIds = space.members.map(m => m.userId.toString());
+
+        const eligibleIds = existingIds.filter(id => !memberIds.includes(id));
+        const nonEligibleIds = existingIds.filter(id => memberIds.includes(id));
+
+        const eligibleMails = await User.find({ _id: { $in: eligibleIds } }).select("email");
+        const nonEligibleMails = await User.find({ _id: { $in: nonEligibleIds } }).select("email");
+
+        // const missingEmails = emails.filter(email => !existingUsers.some(user => user.email === email));
+
         redisClient.publish("notifications", JSON.stringify({
             event: "Space:MembersAdd",
             space,
-            members: existingIds
+            members: nonEligibleIds
         }));
 
         res.status(200).json({
             message: "Inviations sent succesfully",
-            sent: existingUsers,
-            missing: missingEmails,
+            sent: eligibleMails,
+            missing: nonEligibleMails,
             space
         });
 
@@ -247,27 +262,27 @@ const deleteMember = async (req, res) => {
 
 
 const acceptInvite = async (req, res) => {
-    try{
+    try {
 
         const { spaceId } = req.params;
         const { userId } = req.user;
         const space = await Space.findById(spaceId);
-        if(!space){
-            return res.status(404).json({message:"Space not found"});
+        if (!space) {
+            return res.status(404).json({ message: "Space not found" });
         }
         const isMember = space.members.some(m => m.userId.toString() === userId);
-        if(isMember){
-            return res.status(400).json({message:"You are already a member of this space"});
+        if (isMember) {
+            return res.status(400).json({ message: "You are already a member of this space" });
         }
-        space.members.push({userId});
+        space.members.push({ userId });
         await space.save();
 
-        res.status(200).json({message:"You have successfully joined the space",space});
+        res.status(200).json({ message: "You have successfully joined the space", space });
     }
-    catch(error){
+    catch (error) {
         console.error("❌ Error accepting invite:", error);
-        return res.status(500).json({message:"Internal Server Error"});
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-export { allSpaces, getSpace, getAllMembers,createSpace, editSpace, deleteSpace, inviteMembers, deleteMember, acceptInvite };
+export { allSpaces, getSpace, getAllMembers, createSpace, editSpace, deleteSpace, inviteMembers, deleteMember, acceptInvite };
