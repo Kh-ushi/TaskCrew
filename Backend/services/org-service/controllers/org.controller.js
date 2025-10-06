@@ -85,20 +85,21 @@ const addOrganization = async (req, res) => {
 const editOrganization = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description,members } = req.body
+        const { name, description, members } = req.body
         console.log(req.body);
         const currentOrg = await Organization.findOne({ _id: id });
         const existing = await Organization.findOne({ name });
         console.log(existing);
 
-
         if (existing && existing._id.toString() !== currentOrg._id.toString()) {
+            console.log("I am here");
             return res.status(400).json({ message: "Cannot edit: organization name already exists" });
         }
-         
+
         await currentOrg.populate("members.userId");
 
         const prevMembers = currentOrg.members.map(m => m.userId.email);
+        console.log(prevMembers);
 
 
         const removed = prevMembers.filter(m => !members.includes(m));
@@ -110,7 +111,7 @@ const editOrganization = async (req, res) => {
         const addedUsers = await User.find({ email: { $in: added } });
         const addedUserIds = addedUsers.map(u => u._id);
 
-        // console.log(removedUserIds, addedUserIds);
+        console.log(removedUserIds, addedUserIds);
 
         const updatedOrg = await Organization.findByIdAndUpdate(
             id,
@@ -121,6 +122,9 @@ const editOrganization = async (req, res) => {
             },
             { new: true }
         );
+
+        await updatedOrg.populate("members.userId");
+        await updatedOrg.populate("owner");
 
 
         redisClient.publish("notifications", JSON.stringify({
@@ -138,8 +142,8 @@ const editOrganization = async (req, res) => {
 
         res.status(201).json({
             message: "Organization details updated successfully",
-            organization: updatedOrg
-        });
+            organization: updatedOrg,
+        })
 
     }
     catch (error) {
@@ -186,34 +190,41 @@ const deleteOrganization = async (req, res) => {
 
 const inviteMembers = async (req, res) => {
     try {
-
         const { emails } = req.body;
         const { id } = req.params;
         const { userId } = req.user;
-        console.log(emails, id);
 
         const existingUsers = await User.find({ email: { $in: emails }, _id: { $ne: userId } });
-        const existingIds = existingUsers.map(u => u._id);
+        const existingIds = existingUsers.map(u => u._id.toString());
+
         const organization = await Organization.findById(id);
+        const memberIds = organization.members.map(m => m.userId.toString());
+
+        //Filter eligible and non-eligible IDs
+        const eligibleIds = existingIds.filter(id => !memberIds.includes(id));
+        const nonEligibleIds = existingIds.filter(id => memberIds.includes(id));
+
+        // Fetch emails
+        const eligibleMails = await User.find({ _id: { $in: eligibleIds } }).select("email");
+        const nonEligibleMails = await User.find({ _id: { $in: nonEligibleIds } }).select("email");
 
         redisClient.publish("notifications", JSON.stringify({
             event: "Org:MembersAdded",
-            organization,
-            members: existingIds
+            organization: organization,
+            members: eligibleIds
         }));
 
-        const sent = existingUsers.map(m => m.email);
-
         res.status(200).json({
-            message: `Invites has been sent`,
-            sent
+            message: `Invites have been sent`,
+            sent: eligibleMails,
+            existing: nonEligibleMails
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error inviting members:", error);
         return res.status(500).json({ error: "Failed to invite members" });
     }
 };
+
 
 const deleteMember = async (req, res) => {
     try {
@@ -261,26 +272,26 @@ const deleteMember = async (req, res) => {
 
 
 const acceptInvite = async (req, res) => {
-    try{
-        const {id}=req.params;
-        const {userId}=req.user;
+    try {
+        const { id } = req.params;
+        const { userId } = req.user;
         const organization = await Organization.findById(id);
-        console.log(organization,userId,id);
-        if(!organization){
-            return res.status(404).json({message:"Organization not found"});
+        console.log(organization, userId, id);
+        if (!organization) {
+            return res.status(404).json({ message: "Organization not found" });
         }
         const isMember = organization.members.some(m => m.userId.toString() === userId);
-        if(isMember){ 
-            console.log("Already a member"); 
-            return res.status(400).json({message:"You are already a member of this organization"});
+        if (isMember) {
+            console.log("Already a member");
+            return res.status(400).json({ message: "You are already a member of this organization" });
         }
-        organization.members.push({userId});
+        organization.members.push({ userId });
         await organization.save();
-        return res.status(200).json({message:"You have successfully joined the organization",organization}); 
+        return res.status(200).json({ message: "You have successfully joined the organization", organization });
     }
-    catch(error){
+    catch (error) {
         console.error("Error joining organization:", error);
-        return res.status(500).json({error:"Failed to join organization"});     
+        return res.status(500).json({ error: "Failed to join organization" });
     }
 }
 

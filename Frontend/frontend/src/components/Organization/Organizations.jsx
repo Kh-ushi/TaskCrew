@@ -105,30 +105,30 @@ const Organizations = () => {
         console.log(payload);
         console.log(id);
         try {
-        //     const token = localStorage.getItem("accessToken");
-        //     const { data } = await axios.put(`${BACKEND_URL}/api/org/organization/${id}`,
-        //         payload,
-        //         {
-        //             headers: {
-        //                 Authorization: `Bearer ${token}`,
-        //             },
-        //         }
-        //     );
+                const token = localStorage.getItem("accessToken");
+                const { data } = await axios.put(`${BACKEND_URL}/api/org/organization/${id}`,
+                    payload,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-        //     const { message, organization } = data;
-        //     setOrganizations((prev) => (
-        //         prev.map((p) => {
-        //             if (p._id == organization._id) {
-        //                 return organization;
-        //             }
-        //             return p;
-        //         })
-        //     ));
-        //     setIsModalOpen(false);
-        //     alert(message);
+                const { message, organization } = data;
+                setOrganizations((prev) => (
+                    prev.map((p) => {
+                        if (p._id == organization._id) {
+                            return organization;
+                        }
+                        return p;
+                    })
+                ));
+                setIsModalOpen(false);
+                alert(message);
         }
         catch (error) {
-          console.log(error);
+            console.log(error);
         }
     };
 
@@ -147,8 +147,20 @@ const Organizations = () => {
                 }
             );
 
-            const { message, sent } = data;
-            alert(message + ". Invites sent to: " + sent.join(", "));
+            console.log(data);
+            const { message, sent, existing } = data;
+
+            let alertMessage = `${message}.\n`;
+
+            if (sent?.length > 0) {
+                alertMessage += ` ✅ Invites successfully sent to: ${sent.map(u => u.email).join(", ")}.\n`;
+            }
+
+            if (existing?.length > 0) {
+                alertMessage += ` 👥 These members were already part of the organization: ${existing.map(u => u.email).join(", ")}.\n`;
+            }
+
+            alert(alertMessage);
             setOrganization(null);
             setOpenAddMemberModal(false);
         }
