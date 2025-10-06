@@ -412,6 +412,160 @@ const overAllProjectMetrics = async (req, res) => {
 }
 
 
+const getProjectProgressLast4Weeks = async (req, res) => {
+    try {
+
+        const { spaceId } = req.params;
+        const now = new Date();
+        const fourWeeksAgo = new Date();
+        fourWeeksAgo.setDate(now.getDate() - 28);
+
+        const weeklyProgress = await Task.aggregate([
+            {
+                $lookup: {
+                    from: "projects",
+                    localField: "projectId",
+                    foreignField: "_id",
+                    as: "project"
+                }
+            },
+            { $unwind: { path: "$project", preserveNullAndEmptyArrays: false } },
+
+            {
+                $match: {
+                    "project.spaceId": spaceId,
+                    $or: [
+                        { completedAt: { $gte: fourWeeksAgo } },
+                        {
+                            $and: [
+                                { endDate: { $gte: fourWeeksAgo, $lte: now } },
+                                { status: { $ne: "done" } }
+                            ]
+                        }
+                    ]
+                }
+            },
+
+            {
+                $addFields: {
+                    weekStart: {
+                        $dateTrunc: {
+                            date: { $ifNull: ["$completedAt", { $ifNull: ["$updatedAt", "$endDate"] }] },
+                            unit: "week",
+                            binSize: 1
+                        }
+                    }
+                }
+            },
+
+            {
+                $group: {
+                    _id: "$weekStart",
+                    totalTasks: { $sum: 1 },
+                    doneTasks: {
+                        $sum: { $cond: [{ $eq: ["$status", "done"] }, 1, 0] }
+                    },
+                    inProgressTasks: {
+                        $sum: { $cond: [{ $eq: ["$status", "in-progress"] }, 1, 0] }
+                    },
+                    todoTasks: {
+                        $sum: { $cond: [{ $eq: ["$status", "to-do"] }, 1, 0] }
+                    }
+                }
+            },
+
+            {
+                $addFields: {
+                    progress: {
+                        $cond: [
+                            { $eq: ["$totalTasks", 0] },
+                            0,
+                            { $multiply: [{ $divide: ["$doneTasks", "$totalTasks"] }, 100] }
+                        ]
+                    }
+                }
+            },
+
+            { $sort: { _id: 1 } }
+        ]);
+
+        console.log(weeklyProgress);
 
 
-export { calculateSpaceMterics, calcProjectMetrics, calculateSpaceMtericsDeep, overAllProjectMetrics };
+        const [overall] = await Task.aggregate([
+            {
+                $lookup: {
+                    from: "projects",
+                    localField: "projectId",
+                    foreignField: "_id",
+                    as: "project"
+                }
+            },
+            { $unwind: { path: "$project", preserveNullAndEmptyArrays: false } },
+            {
+                $match: {
+                    "project.spaceId": spaceId,
+                    $or: [
+                        { completedAt: { $gte: fourWeeksAgo } },
+                        {
+                            $and: [
+                                { endDate: { $gte: fourWeeksAgo, $lte: now } },
+                                { status: { $ne: "done" } }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalTasks: { $sum: 1 },
+                    doneTasks: {
+                        $sum: { $cond: [{ $eq: ["$status", "done"] }, 1, 0] }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    currentProgress: {
+                        $cond: [
+                            { $eq: ["$totalTasks", 0] },
+                            0,
+                            { $multiply: [{ $divide: ["$doneTasks", "$totalTasks"] }, 100] }
+                        ]
+                    }
+                }
+            }
+
+        ]);
+
+        const currentProgress = overall?.currentProgress || 0;
+
+        let projectedProgress = currentProgress;
+        if (weeklyProgress.length >= 2) {
+            const lastTwo = weeklyProgress.slice(-2).map(w => w.progress);
+            const delta = lastTwo[1] - lastTwo[0];
+            projectedProgress = Math.min(100, currentProgress + delta);
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                weeklyProgress,
+                currentProgress: +currentProgress.toFixed(1),
+                projectedProgress: +projectedProgress.toFixed(1)
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json(error, "Internal Server error");
+    }
+
+};
+
+
+
+
+export { calculateSpaceMterics, calcProjectMetrics, calculateSpaceMtericsDeep, overAllProjectMetrics, getProjectProgressLast4Weeks };

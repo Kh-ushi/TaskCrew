@@ -69,6 +69,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                         authorization: `Bearer ${token}`
                     }
                 });
+                console.log(data);
                 setMetrics(data);
             }
             catch (error) {

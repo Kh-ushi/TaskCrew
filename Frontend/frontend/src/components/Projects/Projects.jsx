@@ -6,18 +6,20 @@ import CreateProjectModal from "./CreateProjectModal";
 import ProjectDetailsModal from "./ProjectDetailsModal";
 import AddProjectMembersModal from "../Common/AddProjectMembersModal";
 
-const Projects = ({ spaceId }) => {
+const Projects = ({ spaceId, projectMetrics }) => {
+
+  console.log(projectMetrics);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const [openProjectModal, setOpenProjectModal] = useState(false);
   const [projects, setProjects] = useState([]);
   const [menuOpen, setMenuOpen] = useState(null);
-  const [editProject,setEditProject]=useState(null);
-  const [openProjectDetails,setOpenProjectDetails]=useState(false);
-  const [project,setProject]=useState(null);
-  const [openAddMembersModal,setOpenAddMembersModal]=useState(false);
-  
+  const [editProject, setEditProject] = useState(null);
+  const [openProjectDetails, setOpenProjectDetails] = useState(false);
+  const [project, setProject] = useState(null);
+  const [openAddMembersModal, setOpenAddMembersModal] = useState(false);
+
   useEffect(() => {
     const fetchAllProjects = async () => {
       const token = localStorage.getItem("accessToken");
@@ -57,81 +59,81 @@ const Projects = ({ spaceId }) => {
     }
   };
 
-  const handleEditProject=async(payload,projectId)=>{
-     try{
+  const handleEditProject = async (payload, projectId) => {
+    try {
       console.log(payload);
-      const token=localStorage.getItem("accessToken");
-      const {data}=await axios.put(`${BACKEND_URL}/api/project/${projectId}`, payload, {
+      const token = localStorage.getItem("accessToken");
+      const { data } = await axios.put(`${BACKEND_URL}/api/project/${projectId}`, payload, {
         headers: {
           authorization: `Bearer ${token}`
         }
       });
-      const {message,project}=data;
-      setProjects((prev)=>(
-        prev.map((p)=>{
-          if(p._id==project._id)return project;
+      const { message, project } = data;
+      setProjects((prev) => (
+        prev.map((p) => {
+          if (p._id == project._id) return project;
           return p;
         })
       ));
       alert(message);
       setOpenProjectModal(false);
-     }
-     catch(error){
+    }
+    catch (error) {
       console.log(error);
-     }
+    }
   };
 
-  const handleDeleteProject=async(projectId)=>{
-    try{
-       const token=localStorage.getItem("accessToken");
-       const {data}=await axios.delete(`${BACKEND_URL}/api/project/${projectId}`,{
-          headers: {
+  const handleDeleteProject = async (projectId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const { data } = await axios.delete(`${BACKEND_URL}/api/project/${projectId}`, {
+        headers: {
           authorization: `Bearer ${token}`
         }
-       });
-       const {message,project}=data;
-       setProjects((prev)=>(
-        prev.filter((p)=>p._id!==project._id)
-       ));
-       alert(message);
+      });
+      const { message, project } = data;
+      setProjects((prev) => (
+        prev.filter((p) => p._id !== project._id)
+      ));
+      alert(message);
     }
-    catch(error){
+    catch (error) {
       console.log(error);
     }
   }
 
 
   const handleAddMembers = async (members) => {
-  try {
-    console.log("Adding members:", members);
-    const token = localStorage.getItem("accessToken");
+    try {
+      console.log("Adding members:", members);
+      const token = localStorage.getItem("accessToken");
 
-    const { data } = await axios.post(
-      `${BACKEND_URL}/api/project/${project._id}`,
-      { members },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+      const { data } = await axios.post(
+        `${BACKEND_URL}/api/project/${project._id}`,
+        { members },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    console.log(data);
-    const { message, project: updatedProject } = data;
+      console.log(data);
+      const { message, project: updatedProject } = data;
 
-    console.log(updatedProject);
+      console.log(updatedProject);
 
-    setProjects((prev) =>
-      prev.map((p) => (p._id === updatedProject._id ? updatedProject : p))
-    );
+      setProjects((prev) =>
+        prev.map((p) => (p._id === updatedProject._id ? updatedProject : p))
+      );
 
-    alert(message);
-    setOpenAddMembersModal(false);
-  } catch (error) {
-    console.error("Error adding members:", error);
-    alert("❌ Failed to add members");
-  }
-};
+      alert(message);
+      setOpenAddMembersModal(false);
+    } catch (error) {
+      console.error("Error adding members:", error);
+      alert("❌ Failed to add members");
+    }
+  };
 
 
 
-  
+
   return (
     <div className="projects-container">
       {/* 📁 Left: Project Table */}
@@ -140,7 +142,8 @@ const Projects = ({ spaceId }) => {
           <h2>Manage Projects</h2>
           <button className="add-project-btn" onClick={() => {
             setEditProject(null);
-            setOpenProjectModal(true)}}>
+            setOpenProjectModal(true)
+          }}>
             <FiPlus /> Add New Project
           </button>
         </div>
@@ -159,10 +162,10 @@ const Projects = ({ spaceId }) => {
 
 
           {projects.map((p) => (
-            <div className="table-row" key={p._id} onClick={()=>{
+            <div className="table-row" key={p._id} onClick={() => {
               setProject(p)
               setOpenProjectDetails(true)
-              }}>
+            }}>
               <div className="name-cell">
                 <h4>{p.name}</h4>
                 {/* <p>{p.description?.slice(0, 40) || "No description"}</p> */}
@@ -193,29 +196,29 @@ const Projects = ({ spaceId }) => {
               <div className="more" onClick={(e) => {
                 e.stopPropagation();
                 setMenuOpen(menuOpen === p._id ? null : p._id)
-                }}
+              }}
               ><FiMoreVertical /></div>
               {menuOpen === p._id && (
-                <div className="action-menu" style={{"zIndex":"99999"}} onMouseLeave={() => setMenuOpen(null)}>
-                  <button  onClick={(e)=>{
+                <div className="action-menu" style={{ "zIndex": "99999" }} onMouseLeave={() => setMenuOpen(null)}>
+                  <button onClick={(e) => {
                     e.stopPropagation();
                     setEditProject(p);
                     setOpenProjectModal(true);
                     setMenuOpen(null);
-                    }
-                    }>
+                  }
+                  }>
                     <FiEdit2 /> Edit
                   </button>
-                  <button onClick={(e)=>{
+                  <button onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteProject(p._id)
                   }}>
                     <FiTrash2 /> Delete
                   </button>
-                  <button  onClick={(e)=>{
-                      e.stopPropagation();
-                      setOpenAddMembersModal(true);
-                      setProject(p);
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenAddMembersModal(true);
+                    setProject(p);
                   }}>
                     <FiUserPlus /> Add Members
                   </button>
@@ -233,13 +236,13 @@ const Projects = ({ spaceId }) => {
         {/* ✅ Completion Rate Card */}
         <div className="stat-card">
           <h3>Task Completion Rate</h3>
-          <div className="big-number">94%</div>
+          <div className="big-number">{projectMetrics.completionRate || 0}%</div>
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: "94%" }}></div>
           </div>
-          <p className="stat-desc">
+          {/* <p className="stat-desc">
             Most projects completed within deadlines.
-          </p>
+          </p> */}
         </div>
 
         {/* ⏰ Overdue Projects Card */}
@@ -254,14 +257,14 @@ const Projects = ({ spaceId }) => {
       </div>
 
       {
-        openProjectModal && <CreateProjectModal isOpen={openProjectModal} onClose={() => setOpenProjectModal(false)} onSubmit={editProject?handleEditProject:handleAddProject} editProject={editProject}></CreateProjectModal>
+        openProjectModal && <CreateProjectModal isOpen={openProjectModal} onClose={() => setOpenProjectModal(false)} onSubmit={editProject ? handleEditProject : handleAddProject} editProject={editProject}></CreateProjectModal>
       }
       {
-        openProjectDetails && <ProjectDetailsModal project={project} onClose={()=>setOpenProjectDetails(false)}></ProjectDetailsModal>
+        openProjectDetails && <ProjectDetailsModal project={project} onClose={() => setOpenProjectDetails(false)}></ProjectDetailsModal>
       }
 
       {
-        openAddMembersModal && <AddProjectMembersModal isOpen={openAddMembersModal} onClose={()=>setOpenAddMembersModal(false)} project={project} spaceId={spaceId}  onAdd={handleAddMembers}></AddProjectMembersModal>
+        openAddMembersModal && <AddProjectMembersModal isOpen={openAddMembersModal} onClose={() => setOpenAddMembersModal(false)} project={project} spaceId={spaceId} onAdd={handleAddMembers}></AddProjectMembersModal>
       }
     </div>
   );

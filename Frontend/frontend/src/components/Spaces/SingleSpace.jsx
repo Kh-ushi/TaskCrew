@@ -43,11 +43,11 @@ const SingleSpace = () => {
     const renderContent = () => {
         switch (active) {
             case "Overview":
-                return <Overview projectMetrics={projectMetrics}/>;
+                return <Overview projectMetrics={projectMetrics} spaceId={id}/>;
             // case "clients":
             //     return <Clients />;
             case "Projects":
-                return <Projects spaceId={id} />;
+                return <Projects spaceId={id} projectMetrics={projectMetrics}/>;
             default:
                 return <Overview />;
         }
